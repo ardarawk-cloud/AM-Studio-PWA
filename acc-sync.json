@@ -10,7 +10,7 @@
   "lifecycle": "ACTIVE",
   "operationalStatus": "READER_ALPHA",
   "summary": "Official AM STUDIO comic reader PWA and private IP library foundation.",
-  "appUrl": null,
+  "appUrl": "https://am-studio-pwa.ardarawk.workers.dev/",
   "sync": {
     "direction": "DIVISION_TO_ACC",
     "mode": "READ_ONLY",
@@ -25,5 +25,5 @@
     "Continue Reading",
     "Asset Library Link"
   ],
-  "updatedAt": "2026-08-12T03:24:00+08:00"
+  "updatedAt": "2026-08-12T03:41:00+08:00"
 }
