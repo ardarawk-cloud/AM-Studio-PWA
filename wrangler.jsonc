@@ -3,6 +3,9 @@
   "name": "am-studio-pwa",
   "main": "./src/index.js",
   "compatibility_date": "2026-08-11",
+  "triggers": {
+    "crons": ["0 11 * * *"]
+  },
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
