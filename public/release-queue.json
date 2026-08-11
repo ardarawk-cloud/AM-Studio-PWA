@@ -1,0 +1,23 @@
+{
+  "engine": {
+    "name": "ACC Auto Release Engine",
+    "timezone": "Asia/Makassar",
+    "releaseTime": "19:00",
+    "mode": "AUTOMATIC",
+    "policy": "QC_PASS_AND_ASSET_COMPLETE_ONLY",
+    "freeDefault": 10
+  },
+  "states": ["DRAFT","ASSET_WAIT","QC_WAIT","QC_PASS","SCHEDULED","PUBLISHED","HOLD"],
+  "queue": [
+    {"seriesId":"amu","nextEpisode":null,"state":"ASSET_WAIT","autoPublish":true},
+    {"seriesId":"lt","nextEpisode":null,"state":"ASSET_WAIT","autoPublish":true},
+    {"seriesId":"hk","nextEpisode":null,"state":"ASSET_WAIT","autoPublish":true},
+    {"seriesId":"hy","nextEpisode":null,"state":"ASSET_WAIT","autoPublish":true},
+    {"seriesId":"sg-battle","nextEpisode":null,"state":"ASSET_WAIT","autoPublish":true},
+    {"seriesId":"sg-journey","nextEpisode":null,"state":"ASSET_WAIT","autoPublish":true},
+    {"seriesId":"royal-gambler","nextEpisode":null,"state":"ASSET_WAIT","autoPublish":true},
+    {"seriesId":"ld","nextEpisode":null,"state":"ASSET_WAIT","autoPublish":true},
+    {"seriesId":"13","nextEpisode":null,"state":"HOLD","autoPublish":false},
+    {"seriesId":"wr","nextEpisode":null,"state":"ASSET_WAIT","autoPublish":true}
+  ]
+}
