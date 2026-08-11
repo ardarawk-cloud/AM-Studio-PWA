@@ -1,38 +1,15 @@
 {
-  "studio": {
-    "name": "AM STUDIO",
-    "tagline": "Read. Collect. Enter the Universe.",
-    "freeDefault": 10,
-    "pass": {"name":"AM STUDIO PASS","status":"coming_soon"}
-  },
-  "series": [
-    {
-      "id":"amu","code":"AMU","title":"Arda Moron Universe","tag":"Sci-Fi • Cyberpunk","genre":"Sci-Fi","episodes":24,"freeEpisodes":10,"season":"Birth of the Ninja Cyber","status":"ONGOING","desc":"Neo Avalon 2047. Arda Moron, pewaris Moron Industries berusia 17 tahun, terseret ke perang teknologi yang akan melahirkan Ninja Cyber.",
-      "episodeTitles":["The Last Normal Day","The First Breach","Shadow Protocol","The Hidden Forge","The Enemy Revealed","First Ride","Drone Link","Stealth Mode","The SŌRAI Katana","Moron Tech Suit"]
-    },
-    {
-      "id":"lt","code":"LT","title":"Legenda Ling Tian","tag":"Wuxia • Adventure","genre":"Wuxia","episodes":18,"freeEpisodes":10,"season":"Warisan Langit","status":"ONGOING","desc":"Warisan, perguruan, persahabatan dan perjalanan menuju puncak dunia persilatan.","episodeTitles":[]
-    },
-    {
-      "id":"hk","code":"HK","title":"Han Kera","tag":"Wuxia • Legacy","genre":"Wuxia","episodes":18,"freeEpisodes":10,"season":"Warisan Sang Kera","status":"ONGOING","desc":"Petarung kera antropomorfis dari dunia Ling Tian yang membawa kekuatan, humor, dan warisan pertarungan unik.","episodeTitles":[]
-    },
-    {
-      "id":"hy","code":"HY","title":"Han You","tag":"Wuxia • Mystery","genre":"Wuxia","episodes":16,"freeEpisodes":10,"season":"Jejak Han You","status":"ONGOING","desc":"Misteri, persilatan, dan jejak masa lalu yang perlahan membuka hubungan besar di dunia Ling Tian.","episodeTitles":[]
-    },
-    {
-      "id":"sg-battle","code":"SGB","title":"Sun Gokong — Versi Pertempuran","tag":"Myth • Action","genre":"Myth","episodes":20,"freeEpisodes":10,"season":"Batu yang Membelah Langit","status":"ONGOING","desc":"Sun Gokong dalam versi penuh pertarungan: liar, sinematik, dan berfokus pada konflik besar serta kekuatan legendaris.","episodeTitles":["Batu yang Membelah Langit"]
-    },
-    {
-      "id":"sg-journey","code":"SGJ","title":"Sun Gokong — Versi Perjalanan","tag":"Myth • Journey","genre":"Myth","episodes":20,"freeEpisodes":10,"season":"Perjalanan ke Barat","status":"ONGOING","desc":"Perjalanan lima pengembara dalam versi AM STUDIO yang menekankan petualangan, persahabatan, rintangan, dan perjalanan spiritual.","episodeTitles":[]
-    },
-    {
-      "id":"ld","code":"LD","title":"The Legendary Decks","tag":"Action • Mystery","genre":"Action","episodes":12,"freeEpisodes":10,"season":"Blackjack","status":"ONGOING","desc":"Kartu, taruhan, rahasia dan konflik yang jauh lebih besar daripada permainan itu sendiri.","episodeTitles":[]
-    },
-    {
-      "id":"13","code":"13","title":"13 Pintu Neraka","tag":"Horror • Mystery","genre":"Horror","episodes":13,"freeEpisodes":10,"season":"The First Gate","status":"DEVELOPMENT","desc":"Tiga belas pintu, tiga belas kutukan, dan seorang manusia yang membuka pintu yang seharusnya tetap tertutup.","episodeTitles":[]
-    },
-    {
-      "id":"wr","code":"WR","title":"Warung Republik","tag":"Comedy • Satire","genre":"Comedy","episodes":20,"freeEpisodes":10,"season":"Warung Republik","status":"ONGOING","desc":"Satire kehidupan sehari-hari dari meja warung paling berisik di republik.","episodeTitles":[]
-    }
+  "studio":{"name":"AM STUDIO","tagline":"Read. Collect. Enter the Universe.","freeDefault":10,"pass":{"name":"AM STUDIO PASS","status":"coming_soon"}},
+  "series":[
+    {"id":"amu","code":"AMU","title":"Arda Moron Universe","tag":"Sci-Fi • Cyberpunk","genre":"Sci-Fi","episodes":24,"freeEpisodes":10,"season":"Birth of the Ninja Cyber","status":"ONGOING","desc":"Neo Avalon 2047. Arda Moron, pewaris Moron Industries berusia 17 tahun, terseret ke perang teknologi yang akan melahirkan Ninja Cyber.","episodeTitles":["The Last Normal Day","The First Breach","Shadow Protocol","The Hidden Forge","The Enemy Revealed","First Ride","Drone Link","Stealth Mode","The SŌRAI Katana","Moron Tech Suit"]},
+    {"id":"lt","code":"LT","title":"Legenda Ling Tian","tag":"Wuxia • Adventure","genre":"Wuxia","episodes":18,"freeEpisodes":10,"season":"Warisan Langit","status":"ONGOING","desc":"Warisan, perguruan, persahabatan dan perjalanan menuju puncak dunia persilatan.","episodeTitles":[]},
+    {"id":"hk","code":"HK","title":"Han Kera","tag":"Wuxia • Legacy","genre":"Wuxia","episodes":18,"freeEpisodes":10,"season":"Warisan Sang Kera","status":"ONGOING","desc":"Petarung kera antropomorfis dari dunia Ling Tian yang membawa kekuatan, humor, dan warisan pertarungan unik.","episodeTitles":[]},
+    {"id":"hy","code":"HY","title":"Han You","tag":"Wuxia • Mystery","genre":"Wuxia","episodes":16,"freeEpisodes":10,"season":"Jejak Han You","status":"ONGOING","desc":"Misteri, persilatan, dan jejak masa lalu yang perlahan membuka hubungan besar di dunia Ling Tian.","episodeTitles":[]},
+    {"id":"sg-battle","code":"SGB","title":"Sun Gokong — Versi Pertempuran","tag":"Myth • Action","genre":"Myth","episodes":20,"freeEpisodes":10,"season":"Batu yang Membelah Langit","status":"ONGOING","desc":"Sun Gokong dalam versi penuh pertarungan: liar, sinematik, dan berfokus pada konflik besar serta kekuatan legendaris.","episodeTitles":["Batu yang Membelah Langit"]},
+    {"id":"sg-journey","code":"SGJ","title":"Sun Gokong — Versi Perjalanan","tag":"Myth • Journey","genre":"Myth","episodes":20,"freeEpisodes":10,"season":"Perjalanan ke Barat","status":"ONGOING","desc":"Perjalanan lima pengembara dalam versi AM STUDIO yang menekankan petualangan, persahabatan, rintangan, dan perjalanan spiritual.","episodeTitles":[]},
+    {"id":"royal-gambler","code":"RG","title":"Royal Gambler","tag":"Western • Gambling • Action","genre":"Western","episodes":12,"freeEpisodes":10,"season":"Royal Gambler","status":"ONGOING","desc":"Dunia taruhan, duel, kehormatan dan rahasia berbahaya dalam gaya western graphic novel AM STUDIO.","episodeTitles":[]},
+    {"id":"ld","code":"LD","title":"The Legendary Decks","tag":"Action • Mystery","genre":"Action","episodes":12,"freeEpisodes":10,"season":"Blackjack","status":"ONGOING","desc":"Blackjack memasuki permainan kartu, taruhan, rahasia dan konflik yang jauh lebih besar daripada permainan itu sendiri.","episodeTitles":[]},
+    {"id":"13","code":"13","title":"13 Pintu Neraka","tag":"Horror • Mystery","genre":"Horror","episodes":13,"freeEpisodes":10,"season":"The First Gate","status":"DEVELOPMENT","desc":"Tiga belas pintu, tiga belas kutukan, dan seorang manusia yang membuka pintu yang seharusnya tetap tertutup.","episodeTitles":[]},
+    {"id":"wr","code":"WR","title":"Warung Republik","tag":"Comedy • Satire","genre":"Comedy","episodes":20,"freeEpisodes":10,"season":"Warung Republik","status":"ONGOING","desc":"Satire kehidupan sehari-hari dari meja warung paling berisik di republik.","episodeTitles":[]}
   ]
 }
