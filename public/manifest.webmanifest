@@ -1,12 +1,20 @@
 {
-  "name": "AM STUDIO Reader",
+  "id": "/",
+  "name": "AM STUDIO — Comics Reader",
   "short_name": "AM STUDIO",
+  "description": "Rumah resmi komik dan universe AM STUDIO.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#07090d",
-  "theme_color": "#07090d",
-  "description": "Rumah resmi komik AM STUDIO.",
+  "orientation": "portrait-primary",
+  "background_color": "#050507",
+  "theme_color": "#050507",
+  "categories": ["entertainment", "books"],
   "icons": [
     {"src":"/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ],
+  "shortcuts": [
+    {"name":"Library","short_name":"Library","url":"/?tab=library","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Continue Reading","short_name":"Continue","url":"/?continue=1","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]}
   ]
 }
