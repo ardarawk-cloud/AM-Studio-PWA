@@ -1,0 +1,29 @@
+{
+  "schema": "ACC_DIVISION_SYNC_V1",
+  "divisionId": "am-studio",
+  "name": "AM STUDIO",
+  "division": "ACC Creative / AM Studio",
+  "ownerRole": "AM STUDIO Team",
+  "repository": "ardarawk-cloud/AM-Studio-PWA",
+  "branch": "main",
+  "version": "v0.1 Alpha",
+  "lifecycle": "ACTIVE",
+  "operationalStatus": "READER_ALPHA",
+  "summary": "Official AM STUDIO comic reader PWA and private IP library foundation.",
+  "appUrl": null,
+  "sync": {
+    "direction": "DIVISION_TO_ACC",
+    "mode": "READ_ONLY",
+    "sourceOfTruth": "DIVISION_REPOSITORY",
+    "pollable": true
+  },
+  "capabilities": [
+    "Comic Library",
+    "Episode Catalog",
+    "Comic Reader",
+    "Bookmark",
+    "Continue Reading",
+    "Asset Library Link"
+  ],
+  "updatedAt": "2026-08-12T03:24:00+08:00"
+}
