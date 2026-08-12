@@ -2,6 +2,19 @@ import base from './index.js';
 
 const SNAPSHOT_KEY='system/fb-canon-audit/latest.json';
 
+function metaEnv(env){
+  // The working ACC Publish Connector discovers Pages with META_PAGE_ACCESS_TOKEN.
+  // Keep META_SYSTEM_USER_TOKEN as a backwards-compatible fallback, but present
+  // the publish-grade Page token to the base controller when it is configured.
+  if(!env?.META_PAGE_ACCESS_TOKEN)return env;
+  return new Proxy(env,{
+    get(target,prop){
+      if(prop==='META_SYSTEM_USER_TOKEN')return target.META_PAGE_ACCESS_TOKEN||target.META_SYSTEM_USER_TOKEN;
+      return target[prop];
+    }
+  });
+}
+
 async function readSnapshot(env){
   if(!env.COMIC_ASSETS)return null;
   const o=await env.COMIC_ASSETS.get(SNAPSHOT_KEY);
@@ -81,15 +94,24 @@ async function runtimeCatalog(request,env){
 export default {
   async fetch(request,env,ctx){
     const url=new URL(request.url);
+    if(url.pathname==='/api/meta/token-source'&&request.method==='GET'){
+      return Response.json({
+        ok:true,
+        pageAccessTokenConfigured:Boolean(env.META_PAGE_ACCESS_TOKEN),
+        legacySystemTokenConfigured:Boolean(env.META_SYSTEM_USER_TOKEN),
+        activeTokenSource:env.META_PAGE_ACCESS_TOKEN?'META_PAGE_ACCESS_TOKEN':env.META_SYSTEM_USER_TOKEN?'META_SYSTEM_USER_TOKEN':'NONE',
+        requiredForMultiPageDiscovery:'META_PAGE_ACCESS_TOKEN'
+      },{headers:{'cache-control':'no-store'}});
+    }
     if(url.pathname==='/api/published-index'&&request.method==='GET'){
       const snapshot=await readSnapshot(env);
       if(!snapshot)return Response.json({ok:false,error:'CANON_SNAPSHOT_NOT_FOUND'},{status:404,headers:{'cache-control':'no-store'}});
       return Response.json({ok:true,index:buildPublishedIndex(snapshot)},{headers:{'cache-control':'no-store'}});
     }
     if(url.pathname==='/catalog.json'&&request.method==='GET')return runtimeCatalog(request,env);
-    return base.fetch(request,env,ctx);
+    return base.fetch(request,metaEnv(env),ctx);
   },
   async scheduled(controller,env,ctx){
-    return base.scheduled(controller,env,ctx);
+    return base.scheduled(controller,metaEnv(env),ctx);
   }
 };
