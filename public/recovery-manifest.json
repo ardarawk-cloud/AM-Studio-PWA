@@ -1,0 +1,19 @@
+{
+  "vault": {
+    "name": "AM STUDIO Recovery Vault",
+    "policy": "CANON_FINAL_ONLY_IN_READER",
+    "states": ["DISCOVERED","UNVERIFIED","CANON_CANDIDATE","CANON_FINAL","REPLACED","ARCHIVED","TRANSFERRED"],
+    "note": "Recovered files may exist in ChatGPT File Library. Reader publishing requires CANON_FINAL plus a public asset path."
+  },
+  "items": [
+    {"seriesId":"hk","episode":2,"title":"Perjalanan Sang Kera Abadi","state":"CANON_CANDIDATE","source":"CHATGPT_FILE_LIBRARY","publicAsset":null},
+    {"seriesId":"hk","episode":19,"title":"Jejak Seorang Pewaris","state":"CANON_CANDIDATE","source":"CHATGPT_FILE_LIBRARY","publicAsset":null},
+    {"seriesId":"wr","episode":3,"title":"Nomor HP Pakai Biometrik, Privasi Aman atau Makin Diawasi?","state":"CANON_CANDIDATE","source":"CHATGPT_FILE_LIBRARY","publicAsset":null}
+  ],
+  "rules": {
+    "readerVisibleWhen": ["CANON_FINAL","publicAsset_present"],
+    "neverInferEpisodeFromUploadOrder": true,
+    "keepRevisionsInVault": true,
+    "oneCanonFinalPerEpisode": true
+  }
+}
