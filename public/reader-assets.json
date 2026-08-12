@@ -1,23 +1,47 @@
 {
   "registry": {
     "name": "AM STUDIO Reader Asset Registry",
-    "version": 1,
-    "policy": "CANON_FINAL_ONLY",
+    "version": 2,
+    "policy": "CANON_FINAL_OR_OWNER_APPROVED_PUBLICATION_RECOVERY",
     "publicBase": "/comics",
     "readerMode": "VERTICAL_LONGFORM"
   },
-  "episodes": [],
+  "episodes": [
+    {
+      "seriesId": "amu",
+      "episode": 1,
+      "title": "The Last Normal Day",
+      "canonState": "CANON_FINAL",
+      "qc": "QC_PASS",
+      "publicationState": "FB_PUBLISHED_OWNER_VERIFIED",
+      "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
+      "pageCount": 16,
+      "publishedPages": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
+      "readerAsset": "/comics/amu/ep001/episode-001-recovery-strip.jpg",
+      "assetQuality": "FACEBOOK_RECOVERY_CAPTURE",
+      "replacementPending": true,
+      "replacementRule": "Replace this recovery capture with clean source pages when Meta read sync or source-file recovery becomes available; do not alter page order.",
+      "nextPage": 17,
+      "evidence": {
+        "type": "OWNER_PROVIDED_FACEBOOK_SCREENSHOTS",
+        "verifiedAt": "2026-08-13",
+        "note": "Facebook screenshots visibly identify AM Studio, Arda Moron Universe, Episode 001 — The Last Normal Day, and Pages 1 through 16 in sequence."
+      }
+    }
+  ],
   "schema": {
-    "required": ["seriesId","episode","canonState","qc","pages"],
+    "required": ["seriesId","episode","canonState","qc","pageCount"],
     "canonState": ["CANON_FINAL"],
     "qc": ["QC_PASS"],
-    "pageExample": "/comics/amu/ep004/page-01.webp"
+    "pageExample": "/comics/amu/ep001/page-01.webp",
+    "recoveryStripExample": "/comics/amu/ep001/episode-001-recovery-strip.jpg"
   },
   "rules": {
     "neverPublishCandidate": true,
     "neverPublishReplaced": true,
-    "requireAtLeastOnePage": true,
+    "requireReaderAssetOrPages": true,
     "sortPagesAscending": true,
-    "oneActiveAssetSetPerEpisode": true
+    "oneActiveAssetSetPerEpisode": true,
+    "recoveryCaptureMustBeReplacedByCleanSourceWhenAvailable": true
   }
 }
