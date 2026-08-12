@@ -18,6 +18,7 @@
     {"seriesId":"royal-gambler","nextEpisode":null,"state":"ASSET_WAIT","autoPublish":true},
     {"seriesId":"ld","nextEpisode":null,"state":"ASSET_WAIT","autoPublish":true},
     {"seriesId":"13","nextEpisode":null,"state":"HOLD","autoPublish":false},
-    {"seriesId":"wr","nextEpisode":null,"state":"ASSET_WAIT","autoPublish":true}
+    {"seriesId":"wr","nextEpisode":null,"state":"ASSET_WAIT","autoPublish":true},
+    {"seriesId":"arda-family","nextEpisode":null,"state":"ASSET_WAIT","autoPublish":true}
   ]
 }
