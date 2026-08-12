@@ -6,14 +6,23 @@
     "note": "Recovered files may exist in ChatGPT File Library. Reader publishing requires CANON_FINAL plus a public asset path."
   },
   "items": [
-    {"seriesId":"hk","episode":2,"title":"Perjalanan Sang Kera Abadi","state":"CANON_CANDIDATE","source":"CHATGPT_FILE_LIBRARY","publicAsset":null},
+    {"seriesId":"hk","episode":2,"title":"Perjalanan Sang Kera Abadi","state":"CANON_CANDIDATE","source":"CHATGPT_FILE_LIBRARY","sourceTitle":"Perjalanan sang kera abadi: Episode 2.png","sourceRef":"turn55file1","publicAsset":null},
+    {"seriesId":"hk","episode":3,"title":"Raja Hutan Menantang Han Kera","state":"CANON_CANDIDATE","source":"CHATGPT_FILE_LIBRARY","sourceTitle":"Perjalanan Han Kera: Tantangan Raja Hutan.png","sourceRef":"turn55file11","publicAsset":null},
+    {"seriesId":"hk","episode":null,"title":"Misi Pertama","state":"UNVERIFIED","source":"CHATGPT_FILE_LIBRARY","sourceTitle":"Perjalanan Han Kera: Misi Pertama.png","sourceRef":"turn55file12","publicAsset":null},
+    {"seriesId":"hk","episode":null,"title":"Bayangan Kera Putih di Balik Perjalanan","state":"UNVERIFIED","source":"CHATGPT_FILE_LIBRARY","sourceTitle":"Bayangan Kera Putih di Balik Perjalanan.png","sourceRef":"turn55file3","publicAsset":null},
     {"seriesId":"hk","episode":19,"title":"Jejak Seorang Pewaris","state":"CANON_CANDIDATE","source":"CHATGPT_FILE_LIBRARY","publicAsset":null},
-    {"seriesId":"wr","episode":3,"title":"Nomor HP Pakai Biometrik, Privasi Aman atau Makin Diawasi?","state":"CANON_CANDIDATE","source":"CHATGPT_FILE_LIBRARY","publicAsset":null}
+    {"seriesId":"sg-battle","episode":2,"title":"Anak Liar Huaguo","state":"CANON_CANDIDATE","source":"CHATGPT_FILE_LIBRARY","sourceTitle":"Sun Gokong dan Monster Huaguo.png","sourceRef":"turn55file4","publicAsset":null},
+    {"seriesId":"wr","episode":3,"title":"Nomor HP Pakai Biometrik, Privasi Aman atau Makin Diawasi?","state":"CANON_CANDIDATE","source":"CHATGPT_FILE_LIBRARY","sourceTitle":"Poster Warung Republik: Biometrik dan Privasi.png","sourceRef":"turn55file5","publicAsset":null},
+    {"seriesId":"wr","episode":3,"title":"Nomor HP Pakai Biometrik, Privasi Aman atau Makin Diawasi?","state":"UNVERIFIED","source":"CHATGPT_FILE_LIBRARY","sourceTitle":"Poster Komik Warung Republik: Privasi Biometrik.png","sourceRef":"turn55file16","publicAsset":null,"note":"Duplicate/revision candidate. Compare visually before canon selection."},
+    {"seriesId":"wr","episode":4,"title":"Politik Itu Kotor... Benarkah?","state":"CANON_CANDIDATE","source":"CHATGPT_FILE_LIBRARY","sourceTitle":"Warung Republik: Politik itu dekat.png","sourceRef":"turn55file6","publicAsset":null},
+    {"seriesId":"royal-gambler","episode":null,"title":"Royal Gambler character dossier","state":"DISCOVERED","source":"CHATGPT_FILE_LIBRARY","sourceRef":"turn55file18","publicAsset":null,"note":"Character/design asset, not yet mapped to an episode."}
   ],
   "rules": {
     "readerVisibleWhen": ["CANON_FINAL","publicAsset_present"],
     "neverInferEpisodeFromUploadOrder": true,
     "keepRevisionsInVault": true,
-    "oneCanonFinalPerEpisode": true
+    "oneCanonFinalPerEpisode": true,
+    "duplicateAssetsRequireVisualCompare": true,
+    "unknownEpisodeStaysUnverified": true
   }
 }
