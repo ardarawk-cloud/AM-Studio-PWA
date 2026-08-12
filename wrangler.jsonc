@@ -10,5 +10,11 @@
     "directory": "./public",
     "binding": "ASSETS",
     "not_found_handling": "single-page-application"
-  }
+  },
+  "r2_buckets": [
+    {
+      "binding": "COMIC_ASSETS",
+      "bucket_name": "am-studio-comics"
+    }
+  ]
 }
