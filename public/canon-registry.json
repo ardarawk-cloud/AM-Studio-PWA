@@ -1,0 +1,28 @@
+{
+  "version":"1.0",
+  "status":"FOUNDATION_AUDIT",
+  "rule":"MASTER_STORY_FIRST_NO_INVENTION",
+  "provenanceStates":["MASTER_CANON","FB_VERIFIED","PROJECT_VERIFIED","QC_REQUIRED","UNVERIFIED","AWAITING_CANON_DEBUT","CANON_DEBUT","SERIES_UNLOCKED"],
+  "universes":[
+    {"id":"amu","name":"Arda Moron Universe","type":"standalone_universe","canon":{"protagonist":"Arda Moron","age":17,"hero":"Ninja Cyber","system":"SORAI modular tactical system","provenance":"MASTER_CANON"},"facebook":{"expectedPagePrefix":"AM Studio","audit":"PENDING_FB_INDEX"}},
+    {"id":"ling-tian","name":"Ling Tian Universe","type":"shared_universe","mainSeries":"Legenda Ling Tian","branches":["Han Kera","Han You"],"heirs":[
+      {"name":"Ling Tian","artifact":"Fragmen/Pedang Naga Asal","state":"MASTER_CANON"},
+      {"name":"Han You","artifact":"Api Abadi","state":"SERIES_UNLOCKED"},
+      {"name":"Han Kera","artifact":"Tongkat Langit","state":"SERIES_UNLOCKED"},
+      {"name":"Shui Yue","artifact":"Mutiara Samudra Roh","state":"AWAITING_CANON_DEBUT"},
+      {"name":"Lei Huang","artifact":"Tombak Petir Ungu","state":"AWAITING_CANON_DEBUT"},
+      {"name":"Feng Xiao","artifact":"Kipas Angin Surgawi","state":"AWAITING_CANON_DEBUT"},
+      {"name":"Han Bing","artifact":"Pedang Es Abadi","state":"AWAITING_CANON_DEBUT"},
+      {"name":"Mu Qing","artifact":"Pohon Kehidupan","state":"AWAITING_CANON_DEBUT"},
+      {"name":"Yue Shen","artifact":"Cermin Bulan","state":"AWAITING_CANON_DEBUT"},
+      {"name":"Yang Ri","artifact":"Mahkota Matahari","state":"AWAITING_CANON_DEBUT"}
+    ],"unlockRule":"HEIR_SERIES_UNLOCKS_ONLY_AFTER_CANON_DEBUT_IN_LING_TIAN","facebook":{"pages":["AM Studio Ling Tian","AM Studio Han kera","AM Studio Han You"],"audit":"PENDING_FB_INDEX"}},
+    {"id":"sun-gokong-battle","name":"Sun Gokong — Versi Pertempuran","type":"standalone_series","separateTimeline":true,"facebook":{"page":"AM Studio Sun Gokong Pertarungan","audit":"PENDING_FB_INDEX"}},
+    {"id":"sun-gokong-journey","name":"Sun Gokong — Versi Perjalanan","type":"standalone_series","separateTimeline":true,"facebook":{"page":"AM Studio Sun Gokong Perjalanan","audit":"PENDING_FB_INDEX"}},
+    {"id":"legendary-decks","name":"The Legendary Decks","type":"standalone_universe","hero":"Blackjack","rule":"BLACKJACK_IS_HERO_NOT_SEPARATE_COMIC","facebook":{"audit":"PENDING_PAGE_MAPPING"}},
+    {"id":"13-pintu-neraka","name":"13 Pintu Neraka","type":"standalone_universe","visualRule":"OFFICIAL_CHARACTER_SHEETS_PRIMARY_REFERENCE","facebook":{"page":"AM Studio 13 Pintu Neraka","audit":"PENDING_FB_INDEX"}},
+    {"id":"warung-republik","name":"Warung Republik","type":"standalone_series","hero":"Otonk Lennon","visualBenchmark":"Episode 15","facebook":{"audit":"PENDING_PAGE_MAPPING"}},
+    {"id":"arda-family","name":"Arda Family","type":"standalone_series","facebook":{"audit":"PENDING_PAGE_MAPPING"}}
+  ],
+  "publicationAudit":{"rule":"FACEBOOK_DETERMINES_PUBLISHED_STATE_ONLY","fields":["pageId","pageName","series","postId","episodeNumber","episodeTitle","publishedAt","captionStory","permalink","mediaReference","characterAppearances"],"placeholderCountsForbidden":true}
+}
