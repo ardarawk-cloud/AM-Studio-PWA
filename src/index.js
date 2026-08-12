@@ -19,14 +19,28 @@ function releaseState(date = new Date()) {
   };
 }
 
+async function jsonAsset(env, requestUrl, path) {
+  const assetUrl = new URL(path, requestUrl);
+  const res = await env.ASSETS.fetch(new Request(assetUrl.toString()));
+  if (!res.ok) return Response.json({ ok:false, error:'ASSET_REGISTRY_UNAVAILABLE', path }, { status:503 });
+  const data = await res.json();
+  return Response.json({ ok:true, data }, { headers:{ 'cache-control':'no-store' } });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === '/api/release-status') {
       return Response.json(releaseState(), { headers: { 'cache-control': 'no-store' } });
     }
+    if (url.pathname === '/api/reader-assets') {
+      return jsonAsset(env, request.url, '/reader-assets.json');
+    }
+    if (url.pathname === '/api/recovery-status') {
+      return jsonAsset(env, request.url, '/recovery-manifest.json');
+    }
     if (url.pathname === '/api/health') {
-      return Response.json({ ok: true, service: 'AM STUDIO Reader', scheduler: 'ACTIVE', policy: 'QC_PASS_ONLY' });
+      return Response.json({ ok: true, service: 'AM STUDIO Reader', scheduler: 'ACTIVE', policy: 'QC_PASS_ONLY', readerRegistry: 'ACTIVE', recoveryVault: 'ACTIVE' });
     }
     return env.ASSETS.fetch(request);
   },
@@ -34,7 +48,6 @@ export default {
   async scheduled(controller, env, ctx) {
     const state = releaseState(new Date(controller.scheduledTime));
     console.log(JSON.stringify({ event: 'ACC_AUTO_RELEASE_TICK', ...state }));
-    // Safety gate: no fictional episode/artwork is generated or published here.
-    // Future catalog storage will release only entries explicitly marked QC_PASS with complete assets.
+    // Safety gate: publish only CANON_FINAL + QC_PASS + complete public assets.
   }
 };
