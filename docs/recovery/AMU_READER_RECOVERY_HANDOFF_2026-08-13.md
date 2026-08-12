@@ -2,11 +2,20 @@
 
 Recovery date: 2026-08-13
 Status: RECOVERY_EVIDENCE_ONLY
-Conflict state: CONFLICT_REQUIRES_AUDIT
+Migration state: LEGACY_NUMBERING_MIGRATION_PENDING
 
 ## Safety note
 
-This recovery handoff preserves conversation-established production continuity. It MUST NOT silently override higher-confidence canon/publication evidence. Current PWA catalog and this handoff disagree about episode publication state, so episode counts remain subject to audit.
+This recovery handoff preserves conversation-established production continuity. It MUST NOT silently override higher-confidence canon/publication evidence.
+
+IMPORTANT FORMAT CLARIFICATION (Owner/Product Director, 2026-08-13):
+- Legacy production format used one short scene/segment as one numbered “episode”.
+- Professional AM STUDIO format later changed to one episode containing multiple comic pages.
+- Therefore legacy EP001–EP003 numbering must NOT be compared 1:1 with the professional multi-page Episode #001.
+- Existing legacy numbering is retained as historical publication evidence until a migration map is verified.
+- Do not delete, renumber, merge, or reinterpret legacy items automatically.
+
+The apparent disagreement between the current PWA catalog and this handoff is therefore treated as a FORMAT/NUMBERING MIGRATION issue, not automatically as a canon contradiction.
 
 ## 1. IP IDENTITY
 
@@ -171,15 +180,19 @@ Last known beat: Someone is directly outside Arda's bedroom door and says, “Tu
 Next Page: Page 17
 Story content: NOT YET CANON / DO NOT INVENT DURING RECOVERY.
 
-## 6. EPISODE 002 WARNING
+## 6. NUMBERING / FORMAT MIGRATION WARNING
 
-This recovery source states Episode #002 was incorrectly declared to have started and immediately corrected.
-Therefore it MUST NOT by itself be treated as active.
-Any Episode #002 material generated during that mistaken jump, including proposed “Shadow Protocol” direction, must NOT automatically be imported as canon.
+This recovery source states that Episode #002 was incorrectly declared to have started and immediately corrected inside the professional multi-page production flow.
+Therefore it MUST NOT by itself be treated as active in that flow.
+Any Episode #002 material generated during that mistaken jump, including proposed “Shadow Protocol” direction, must NOT automatically be imported as professional-format canon.
 
-Episode #002 current state from this recovery source: UNVERIFIED / NOT STARTED.
+At the same time, the current PWA catalog independently records legacy AMU EP001–EP003 publication state. Owner clarification establishes that older AMU production used a different unit: one short scene/segment was numbered as one episode. The newer professional production format groups multiple pages inside one episode.
 
-IMPORTANT CONFLICT: The current PWA catalog independently marks AMU Episodes 1–3 as verified and lists EP04 as next. Do not resolve this discrepancy automatically. Require higher-confidence evidence / publication audit.
+Therefore:
+- Do NOT interpret the PWA legacy EP001–EP003 records as proof that professional-format Episodes #001–#003 were completed.
+- Do NOT delete the legacy records.
+- Do NOT map legacy episode numbers to professional page numbers without evidence.
+- Build an explicit LEGACY → PROFESSIONAL migration map only after source assets/publication evidence are inspected.
 
 ## 7. COVER STATE
 
@@ -224,11 +237,12 @@ Do NOT regenerate missing canonical assets automatically.
 
 ## 10. PUBLICATION STATE FROM THIS RECOVERY SOURCE
 
-Confirmed: Episode #001 has production material through Page 16.
+Confirmed: Professional-format Episode #001 has production material through Page 16.
 
 Not confirmed / UNVERIFIED:
 - Which exact pages are uploaded to AM STUDIO PWA.
 - Which pages are publicly visible.
+- How legacy episode posts map into the professional multi-page format.
 - Which pages are free vs subscriber-locked.
 - Reader ordering in PWA.
 - Database episode IDs.
@@ -245,15 +259,20 @@ Repository/storage state determines what files physically exist. This handoff de
 If production asset exists but cannot be matched confidently: MARK UNVERIFIED. DO NOT DELETE.
 If canon says asset should exist but corresponding file cannot be found: MARK MISSING. DO NOT REGENERATE AUTOMATICALLY.
 If several versions exist: DO NOT choose by filename/date alone; compare against approval/revision state.
+If legacy numbering and professional numbering differ: preserve both until an explicit migration map is verified.
 
 ## 12. RECOVERY CHECKPOINT
 
 IP: Arda Moron Universe
+Production format: PROFESSIONAL_MULTI_PAGE_EPISODE
+Legacy format: SHORT_SCENE_AS_EPISODE
+Migration state: LEGACY_NUMBERING_MIGRATION_PENDING
 Recovery-source Active Episode: #001 — The Last Normal Day
 Latest known produced page: 16
 Next recovery-source production slot: Page 17
 Page 17 story: NOT YET CREATED
-Episode #002: NOT ACTIVE according to this recovery source
+Professional-format Episode #002: NOT ACTIVE according to this recovery source
+Legacy EP001–EP003: PRESERVE AS HISTORICAL PUBLICATION RECORDS UNTIL MAPPED
 SŌRAI activation: NOT YET during EP001
 Visual identity: American cinematic superhero comic
 PWA publication mapping: UNVERIFIED
