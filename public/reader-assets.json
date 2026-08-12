@@ -1,0 +1,23 @@
+{
+  "registry": {
+    "name": "AM STUDIO Reader Asset Registry",
+    "version": 1,
+    "policy": "CANON_FINAL_ONLY",
+    "publicBase": "/comics",
+    "readerMode": "VERTICAL_LONGFORM"
+  },
+  "episodes": [],
+  "schema": {
+    "required": ["seriesId","episode","canonState","qc","pages"],
+    "canonState": ["CANON_FINAL"],
+    "qc": ["QC_PASS"],
+    "pageExample": "/comics/amu/ep004/page-01.webp"
+  },
+  "rules": {
+    "neverPublishCandidate": true,
+    "neverPublishReplaced": true,
+    "requireAtLeastOnePage": true,
+    "sortPagesAscending": true,
+    "oneActiveAssetSetPerEpisode": true
+  }
+}
