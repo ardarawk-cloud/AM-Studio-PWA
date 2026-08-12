@@ -153,6 +153,24 @@ async function metaPostsApi(env, pageId, url, withEngagement = false) {
   });
 }
 
+async function assetResponseWithPageControl(env, request) {
+  const response = await env.ASSETS.fetch(request);
+  const contentType = response.headers.get('content-type') || '';
+  if (!response.ok || !contentType.includes('text/html')) return response;
+
+  const html = await response.text();
+  const marker = '<script src="/page-control.js" defer></script>';
+  if (html.includes(marker)) return new Response(html, response);
+
+  const injected = html.includes('</body>')
+    ? html.replace('</body>', `${marker}</body>`)
+    : `${html}${marker}`;
+
+  const headers = new Headers(response.headers);
+  headers.set('cache-control', 'no-store');
+  return new Response(injected, { status:response.status, statusText:response.statusText, headers });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -202,7 +220,7 @@ export default {
         metaPageController:metaTokenReady(env) ? 'READY' : 'WAITING_FOR_SECRET'
       });
     }
-    return env.ASSETS.fetch(request);
+    return assetResponseWithPageControl(env, request);
   },
 
   async scheduled(controller, env, ctx) {
