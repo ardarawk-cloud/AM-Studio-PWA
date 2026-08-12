@@ -27,9 +27,30 @@ async function jsonAsset(env, requestUrl, path) {
   return Response.json({ ok:true, data }, { headers:{ 'cache-control':'no-store' } });
 }
 
+function validComicKey(pathname) {
+  const key = decodeURIComponent(pathname.replace(/^\/comics\//, ''));
+  if (!key || key.includes('..') || key.startsWith('/') || key.includes('\\')) return null;
+  return key;
+}
+
+async function comicAsset(env, pathname) {
+  if (!env.COMIC_ASSETS) return Response.json({ ok:false, error:'COMIC_STORAGE_NOT_BOUND' }, { status:503 });
+  const key = validComicKey(pathname);
+  if (!key) return Response.json({ ok:false, error:'INVALID_COMIC_ASSET_PATH' }, { status:400 });
+  const object = await env.COMIC_ASSETS.get(key);
+  if (!object) return Response.json({ ok:false, error:'COMIC_ASSET_NOT_FOUND' }, { status:404 });
+  const headers = new Headers();
+  object.writeHttpMetadata(headers);
+  headers.set('etag', object.httpEtag);
+  headers.set('cache-control', 'public, max-age=86400, immutable');
+  headers.set('x-content-type-options', 'nosniff');
+  return new Response(object.body, { headers });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (url.pathname.startsWith('/comics/')) return comicAsset(env, url.pathname);
     if (url.pathname === '/api/release-status') {
       return Response.json(releaseState(), { headers: { 'cache-control': 'no-store' } });
     }
@@ -40,7 +61,7 @@ export default {
       return jsonAsset(env, request.url, '/recovery-manifest.json');
     }
     if (url.pathname === '/api/health') {
-      return Response.json({ ok: true, service: 'AM STUDIO Reader', scheduler: 'ACTIVE', policy: 'QC_PASS_ONLY', readerRegistry: 'ACTIVE', recoveryVault: 'ACTIVE' });
+      return Response.json({ ok: true, service: 'AM STUDIO Reader', scheduler: 'ACTIVE', policy: 'QC_PASS_ONLY', readerRegistry: 'ACTIVE', recoveryVault: 'ACTIVE', comicStorage: env.COMIC_ASSETS ? 'BOUND' : 'WAITING_FOR_R2' });
     }
     return env.ASSETS.fetch(request);
   },
