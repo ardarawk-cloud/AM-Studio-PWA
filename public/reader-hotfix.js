@@ -16,19 +16,6 @@
     if(card?.dataset?.open)sessionStorage.setItem('am_current_series',card.dataset.open);
   },true);
 
-  const recoveryChunks=[
-    'strip-00.b64','strip-01.b64','strip-02.b64','strip-03a.b64','strip-04.b64','strip-05.b64','strip-06.b64','strip-07.b64','strip-08.b64','strip-09.b64','strip-10.b64','strip-11.b64','strip-12.b64','strip-13.b64','strip-14.b64','strip-15.b64','strip-16.b64'
-  ];
-  let recoveryDataUriPromise;
-  function loadRecoveryDataUri(){
-    if(!recoveryDataUriPromise)recoveryDataUriPromise=Promise.all(recoveryChunks.map(async name=>{
-      const r=await fetch('/comics/amu/ep001/recovery/'+name+'?v=20260813c',{cache:'no-store'});
-      if(!r.ok)throw new Error('RECOVERY_CHUNK_'+name+'_HTTP_'+r.status);
-      return (await r.text()).replace(/\s+/g,'');
-    })).then(parts=>'data:image/jpeg;base64,'+parts.join(''));
-    return recoveryDataUriPromise;
-  }
-
   const originalRead=window.read;
   window.read=async n=>{
     const id=sessionStorage.getItem('am_current_series');
@@ -50,14 +37,20 @@
       document.getElementById('backEp').onclick=()=>window.openSeries?.(id);
       window.scrollTo({top:0,behavior:'instant'});
       const img=document.getElementById('recoveryImg'),loading=document.getElementById('recoveryLoading');
-      const dataUri=await loadRecoveryDataUri();
       img.onload=()=>{img.hidden=false;loading?.remove()};
-      img.onerror=()=>{if(loading)loading.textContent='Recovery image gagal dirender. Asset tetap dipertahankan untuk audit.'};
-      img.src=dataUri;
+      img.onerror=async()=>{
+        let msg='Recovery image gagal dirender.';
+        try{
+          const st=await fetch('/api/recovery/amu/ep001/status?t='+Date.now(),{cache:'no-store'}).then(r=>r.json());
+          msg=st?.error?`Recovery asset error: ${st.error}`:`Recovery asset invalid • chunks ${st.chunkCount||'-'} • JPEG start ${st.jpegStart?'OK':'FAIL'} • end ${st.jpegEnd?'OK':'FAIL'}`;
+        }catch{}
+        if(loading)loading.textContent=msg;
+      };
+      img.src='/comics/amu/ep001/episode-001-recovery-strip.jpg?v=20260813d';
     }catch(err){
       console.error('AMU_RECOVERY_READER_HOTFIX_FAILED',err);
       const loading=document.getElementById('recoveryLoading');
-      if(loading)loading.textContent='Recovery asset gagal dimuat. Coba refresh setelah deployment terbaru aktif.';
+      if(loading)loading.textContent='Recovery asset gagal dimuat.';
       else return originalRead?.(n);
     }
   };
