@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "am-studio-pwa",
-  "main": "./src/asset-runtime.js",
+  "main": "./src/order-repair-runtime.js",
   "compatibility_date": "2026-08-11",
   "triggers": {
     "crons": ["0 11 * * *"]
