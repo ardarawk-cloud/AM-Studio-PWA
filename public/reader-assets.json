@@ -1,7 +1,7 @@
 {
   "registry": {
     "name": "AM STUDIO Reader Asset Registry",
-    "version": 3,
+    "version": 4,
     "policy": "CANON_FINAL_OR_OWNER_APPROVED_PUBLICATION_RECOVERY",
     "publicBase": "/media/comics",
     "readerMode": "VERTICAL_LONGFORM",
@@ -18,9 +18,8 @@
       "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
       "coverAsset": "/media/comics/amu/cover.jpg",
       "coverState": "OWNER_APPROVED_VISUAL_REFERENCE",
-      "coverNote": "Owner explicitly selected the supplied ARDA MORON UNIVERSE key art as the official reader cover. It is a series cover, not Episode 001 artwork; existing logo mismatch is accepted for this cover.",
-      "pageCount": 16,
-      "publishedPages": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
+      "pageCount": 22,
+      "availablePageCount": 16,
       "pages": [
         "/media/comics/amu/ep001/page-01.jpg",
         "/media/comics/amu/ep001/page-02.jpg",
@@ -39,13 +38,14 @@
         "/media/comics/amu/ep001/page-15.jpg",
         "/media/comics/amu/ep001/page-16.jpg"
       ],
+      "missingReaderPages": [17,18,19,20,21,22],
+      "readerState": "PARTIAL_ASSET_RECOVERY",
       "assetQuality": "OWNER_FULL_IMAGE_RECOVERY",
       "replacementPending": false,
-      "nextPage": 17,
       "evidence": {
-        "type": "OWNER_PROVIDED_FACEBOOK_PUBLICATION_AND_FULL_IMAGES",
+        "type": "OWNER_VERIFIED",
         "verifiedAt": "2026-08-13",
-        "note": "Owner verified Facebook publication sequence Page 1 through Page 16 and supplied full images for Reader recovery."
+        "note": "Episode 001 total is 22 pages. Reader currently contains Page 1 through Page 16; Page 17 through Page 22 are pending."
       }
     }
   ],
