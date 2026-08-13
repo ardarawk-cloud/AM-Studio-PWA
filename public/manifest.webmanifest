@@ -11,10 +11,10 @@
   "theme_color": "#050507",
   "categories": ["entertainment", "books"],
   "icons": [
-    {"src":"/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+    {"src":"/icon.svg?v=2","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
   ],
   "shortcuts": [
-    {"name":"Library","short_name":"Library","url":"/?tab=library","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]},
-    {"name":"Continue Reading","short_name":"Continue","url":"/?continue=1","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]}
+    {"name":"Library","short_name":"Library","url":"/?tab=library","icons":[{"src":"/icon.svg?v=2","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Continue Reading","short_name":"Continue","url":"/?continue=1","icons":[{"src":"/icon.svg?v=2","sizes":"any","type":"image/svg+xml"}]}
   ]
 }
