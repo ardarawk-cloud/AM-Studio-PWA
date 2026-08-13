@@ -17,6 +17,8 @@
       "publicationState": "FB_PUBLISHED_OWNER_VERIFIED",
       "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
       "coverAsset": "/media/comics/amu/cover.jpg",
+      "coverState": "OWNER_APPROVED_VISUAL_REFERENCE",
+      "coverNote": "Owner explicitly selected the supplied ARDA MORON UNIVERSE key art as the official reader cover. It is a series cover, not Episode 001 artwork; existing logo mismatch is accepted for this cover.",
       "pageCount": 16,
       "publishedPages": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
       "pages": [
