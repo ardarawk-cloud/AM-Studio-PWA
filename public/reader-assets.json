@@ -1,10 +1,11 @@
 {
   "registry": {
     "name": "AM STUDIO Reader Asset Registry",
-    "version": 2,
+    "version": 3,
     "policy": "CANON_FINAL_OR_OWNER_APPROVED_PUBLICATION_RECOVERY",
-    "publicBase": "/comics",
-    "readerMode": "VERTICAL_LONGFORM"
+    "publicBase": "/media/comics",
+    "readerMode": "VERTICAL_LONGFORM",
+    "storage": "R2_COMIC_ASSETS"
   },
   "episodes": [
     {
@@ -15,26 +16,42 @@
       "qc": "QC_PASS",
       "publicationState": "FB_PUBLISHED_OWNER_VERIFIED",
       "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
+      "coverAsset": "/media/comics/amu/cover.jpg",
       "pageCount": 16,
       "publishedPages": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
-      "readerAsset": "/comics/amu/ep001/episode-001-recovery-strip.jpg",
-      "assetQuality": "FACEBOOK_RECOVERY_CAPTURE",
-      "replacementPending": true,
-      "replacementRule": "Replace this recovery capture with clean source pages when Meta read sync or source-file recovery becomes available; do not alter page order.",
+      "pages": [
+        "/media/comics/amu/ep001/page-01.jpg",
+        "/media/comics/amu/ep001/page-02.jpg",
+        "/media/comics/amu/ep001/page-03.jpg",
+        "/media/comics/amu/ep001/page-04.jpg",
+        "/media/comics/amu/ep001/page-05.jpg",
+        "/media/comics/amu/ep001/page-06.jpg",
+        "/media/comics/amu/ep001/page-07.jpg",
+        "/media/comics/amu/ep001/page-08.jpg",
+        "/media/comics/amu/ep001/page-09.jpg",
+        "/media/comics/amu/ep001/page-10.jpg",
+        "/media/comics/amu/ep001/page-11.jpg",
+        "/media/comics/amu/ep001/page-12.jpg",
+        "/media/comics/amu/ep001/page-13.jpg",
+        "/media/comics/amu/ep001/page-14.jpg",
+        "/media/comics/amu/ep001/page-15.jpg",
+        "/media/comics/amu/ep001/page-16.jpg"
+      ],
+      "assetQuality": "OWNER_FULL_IMAGE_RECOVERY",
+      "replacementPending": false,
       "nextPage": 17,
       "evidence": {
-        "type": "OWNER_PROVIDED_FACEBOOK_SCREENSHOTS",
+        "type": "OWNER_PROVIDED_FACEBOOK_PUBLICATION_AND_FULL_IMAGES",
         "verifiedAt": "2026-08-13",
-        "note": "Facebook screenshots visibly identify AM Studio, Arda Moron Universe, Episode 001 — The Last Normal Day, and Pages 1 through 16 in sequence."
+        "note": "Owner verified Facebook publication sequence Page 1 through Page 16 and supplied full images for Reader recovery."
       }
     }
   ],
   "schema": {
-    "required": ["seriesId","episode","canonState","qc","pageCount"],
+    "required": ["seriesId","episode","canonState","qc","pageCount","pages"],
     "canonState": ["CANON_FINAL"],
     "qc": ["QC_PASS"],
-    "pageExample": "/comics/amu/ep001/page-01.webp",
-    "recoveryStripExample": "/comics/amu/ep001/episode-001-recovery-strip.jpg"
+    "pageExample": "/media/comics/amu/ep001/page-01.jpg"
   },
   "rules": {
     "neverPublishCandidate": true,
@@ -42,6 +59,6 @@
     "requireReaderAssetOrPages": true,
     "sortPagesAscending": true,
     "oneActiveAssetSetPerEpisode": true,
-    "recoveryCaptureMustBeReplacedByCleanSourceWhenAvailable": true
+    "ownerApprovedRecoveryAllowed": true
   }
 }
