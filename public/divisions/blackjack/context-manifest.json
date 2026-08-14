@@ -1,30 +1,38 @@
 {
-  "protocolVersion":"1.0",
-  "divisionId":"blackjack",
-  "bootOrder":[
+  "protocolVersion": "1.0",
+  "canonVersion": "1.0",
+  "divisionId": "blackjack",
+  "bootOrder": [
     {"priority":1,"type":"PASSPORT","path":"/divisions/blackjack/passport.json","required":true},
     {"priority":2,"type":"CANON_LOCK","path":"/divisions/blackjack/canon-lock.json","required":true},
-    {"priority":3,"type":"SOURCE_LEDGER","path":"/divisions/blackjack/source-ledger.json","required":true},
-    {"priority":4,"type":"RECOVERY_LEDGER","path":"/divisions/blackjack/recovery-ledger.json","required":true},
-    {"priority":5,"type":"CURRENT_STATE","path":"/divisions/blackjack/current-state.json","required":true}
+    {"priority":3,"type":"CANON_PROMOTION","path":"/divisions/blackjack/canon-promotion-v1.json","required":true},
+    {"priority":4,"type":"MASTER_STORY","path":"/divisions/blackjack/master-story.director-draft-v1.md","required":true,"sha256":"e723778a3d5260ba2ede2b1a277c6bcc0be908ff086ce64bc96f15cc40f76060"},
+    {"priority":5,"type":"POWER_COMBAT_BIBLE","path":"/divisions/blackjack/power-bible.black-deck.director-draft-v1.json","required":true},
+    {"priority":6,"type":"SEVEN_DECKS_MAP","path":"/divisions/blackjack/seven-decks.director-draft-v1.json","required":true},
+    {"priority":7,"type":"EPISODE_001_CANON_PLAN","path":"/divisions/blackjack/episode-001.director-draft-v1.json","required":true},
+    {"priority":8,"type":"CURRENT_STATE","path":"/divisions/blackjack/current-state.json","required":true},
+    {"priority":9,"type":"SOURCE_LEDGER_HISTORY","path":"/divisions/blackjack/source-ledger.json","required":true,"authority":"RECOVERY_HISTORY_BELOW_LOCKED_CANON"},
+    {"priority":10,"type":"RECOVERY_LEDGER_HISTORY","path":"/divisions/blackjack/recovery-ledger.json","required":true,"authority":"RECOVERY_HISTORY_BELOW_LOCKED_CANON"}
   ],
-  "divisionLocalOnly":true,
-  "crossDivisionImports":[],
-  "blockedImports":[
+  "divisionLocalOnly": true,
+  "crossDivisionImports": [],
+  "blockedImports": [
     "other_division_master_story",
     "other_division_character_bible",
     "other_division_power_bible",
     "other_division_current_state",
-    "royal_gambler_plot_mechanics_without_explicit_owner_source",
+    "royal_gambler_plot_or_probability_mechanics_without_explicit_owner_revision",
     "ai_memory_as_canon",
     "unverified_story_fill",
-    "newer_source_automatically_overrides_older_source",
-    "older_source_automatically_overrides_newer_source"
+    "app_output_overriding_owner_lock"
   ],
-  "missingMemoryPolicy":"STOP_CANON_FIREWALL_NEVER_INVENT",
-  "conflictPolicy":"STOP_AND_REQUIRE_OWNER_RESOLUTION",
-  "sourcePriorityPolicy":"OWNER_LOCK_NOT_FILE_DATE",
-  "handoffTarget":"AM_STUDIO_CORE",
-  "bootState":"CANON_RECOVERY_HOLD",
-  "generationAllowed":false
+  "missingMemoryPolicy": "STOP_CANON_FIREWALL_NEVER_INVENT",
+  "conflictPolicy": "LOCKED_CANON_WINS; NEW_UNRESOLVED_CONFLICT_STOPS_PRODUCTION",
+  "sourcePriorityPolicy": "OWNER_LOCK_AND_HASHED_MASTER_STORY_NOT_FILE_DATE",
+  "handoffTarget": "AM_STUDIO_CORE",
+  "bootState": "CANON_LOCKED_READY_FOR_PRODUCTION",
+  "generationAllowed": true,
+  "stateAdvanceAllowed": true,
+  "releaseAllowed": false,
+  "releaseRule": "EPISODE_COMPLETE_QC_AND_OWNER_RELEASE_APPROVAL_REQUIRED"
 }
