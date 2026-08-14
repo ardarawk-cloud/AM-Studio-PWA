@@ -1,11 +1,11 @@
 import app from './order-repair-runtime.js';
 
-const HELD_SERIES=new Set(['royal-gambler','ld']);
+const HELD_SERIES=new Set(['ld']);
 const HOLD_REASON='OWNER_MASTER_STORY_RECOVERY_REQUIRED';
 
 function isHeldSeries(id=''){return HELD_SERIES.has(String(id).trim().toLowerCase())}
 function isHeldEpisodeMedia(pathname=''){
-  return /^\/media\/comics\/(royal-gambler|ld)\/ep\d{3}\//i.test(pathname);
+  return /^\/media\/comics\/ld\/ep\d{3}\//i.test(pathname);
 }
 
 async function holdCatalog(response){
