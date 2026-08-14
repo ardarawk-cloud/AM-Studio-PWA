@@ -1,4 +1,4 @@
-import {validatePassport,validateIsolation,evaluateProductionGate} from './division-core.js';
+import {validatePassport,validateIsolation,evaluateProductionGate,detectCrossDivisionTitleCollisions} from './division-core.js';
 
 async function readJsonAsset(env,requestUrl,path){
   if(!env?.ASSETS)throw new Error('ASSETS_BINDING_REQUIRED');
@@ -56,10 +56,15 @@ export async function loadDivisionContext(env,requestUrl,divisionId){
     [division.currentState]:currentState,
     [division.contextManifest]:manifest
   });
+  const states=await Promise.all((registry.divisions||[]).map(async item=>{
+    const state=item.divisionId===divisionId?currentState:await readJsonAsset(env,requestUrl,item.currentState);
+    return {division:item,currentState:state};
+  }));
+  const crossDivisionConflicts=detectCrossDivisionTitleCollisions({divisionId,currentState,states});
   const canonLock=bootMemory.CANON_LOCK||null;
   const sourceLedger=bootMemory.SOURCE_LEDGER||null;
   const recoveryLedger=bootMemory.RECOVERY_LEDGER||null;
-  const productionGate=evaluateProductionGate({passport,contextManifest:manifest,canonLock,sourceLedger,recoveryLedger});
+  const productionGate=evaluateProductionGate({passport,contextManifest:manifest,canonLock,sourceLedger,recoveryLedger,crossDivisionConflicts});
 
   return {
     protocolVersion:registry.protocolVersion,
@@ -69,6 +74,7 @@ export async function loadDivisionContext(env,requestUrl,divisionId){
     currentState,
     contextManifest:manifest,
     bootMemory,
+    crossDivisionConflicts,
     productionGate:{safeToProduce:productionGate.ok,errors:productionGate.errors},
     loadedDivisionOnly:divisionId
   };
