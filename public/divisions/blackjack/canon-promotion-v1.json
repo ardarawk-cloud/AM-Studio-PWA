@@ -1,0 +1,51 @@
+{
+  "protocolVersion": "1.0",
+  "divisionId": "blackjack",
+  "seriesId": "ld",
+  "promotionVersion": "1.0",
+  "owner": "ARDA",
+  "ownerApprovedAt": "2026-08-15T00:30:00+08:00",
+  "approval": "OWNER_APPROVED_DIRECTOR_DRAFT_V1_FOR_CANON_PROMOTION",
+  "masterStory": {
+    "path": "/divisions/blackjack/master-story.director-draft-v1.md",
+    "gitBlobSha": "92f2e6be5d2f0c068869ebc839ca692b029b99e7",
+    "sha256": "e723778a3d5260ba2ede2b1a277c6bcc0be908ff086ce64bc96f15cc40f76060",
+    "promotedAs": "MASTER_STORY_V1",
+    "immutable": true
+  },
+  "powerBible": {
+    "path": "/divisions/blackjack/power-bible.black-deck.director-draft-v1.json",
+    "gitBlobSha": "e94e0b16e18501aefc1a09569f87f93d7690f7fd",
+    "promotedAs": "BLACK_DECK_POWER_BIBLE_V1",
+    "ownerApproved": true
+  },
+  "sevenDecks": {
+    "path": "/divisions/blackjack/seven-decks.director-draft-v1.json",
+    "gitBlobSha": "088aa249e05658a42e8f19e57457db496d799b0e",
+    "promotedAs": "SEVEN_DECKS_MAP_V1",
+    "ownerApproved": true
+  },
+  "episode001": {
+    "path": "/divisions/blackjack/episode-001.director-draft-v1.json",
+    "gitBlobSha": "02777935e0c3f5f410cc8aa7bb464cfb6f4925dc",
+    "title": "The Ace in the Rain",
+    "completedPages": 0,
+    "promotedAs": "EPISODE_001_CANON_PLAN_V1",
+    "ownerApproved": true
+  },
+  "resolvedByPromotion": [
+    "COMPLETE_MASTER_STORY",
+    "EPISODE_1_IDENTITY",
+    "BLACK_DECK_POWER_BIBLE",
+    "FINAL_OTHER_SIX_DECK_NAMES_AND_BEARER_MAPPING",
+    "FINAL_WORLD_VALUE_MAPPING",
+    "EPISODE_PAGE_STATE"
+  ],
+  "productionGates": {
+    "generation": "OPEN",
+    "stateAdvance": "OPEN",
+    "release": "HOLD_UNTIL_EPISODE_COMPLETE_QC_AND_OWNER_RELEASE_APPROVAL",
+    "monetization": "OFF"
+  },
+  "rule": "Promotion changes authority status only. The promoted source blobs remain unchanged and are now immutable canon unless ARDA explicitly revises them."
+}
