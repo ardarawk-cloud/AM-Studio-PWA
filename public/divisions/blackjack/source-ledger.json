@@ -1,5 +1,6 @@
 {
-  "protocolVersion": "1.3",
+  "protocolVersion": "1.0",
+  "recoveryVersion": "1.3",
   "divisionId": "blackjack",
   "purpose": "Track source provenance without letting AI silently choose between conflicting Blackjack canon revisions.",
   "policy": "OWNER_LOCK_WINS_SOURCE_DATE_DOES_NOT_EQUAL_CANON_PRIORITY_CURRENT_APP_OUTPUT_CANNOT_SELF_VALIDATE",
