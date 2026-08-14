@@ -1,14 +1,14 @@
 {
   "protocolVersion": "1.0",
-  "recoveryVersion": "1.2",
+  "canonVersion": "1.0",
   "divisionNumber": "004",
   "divisionId": "blackjack",
   "seriesId": "ld",
   "identity": {
     "name": "The Legendary Decks — Blackjack",
     "code": "LD-BJ",
-    "type": "canon_recovery_comic",
-    "status": "CANON_RECOVERY_HOLD",
+    "type": "canon_locked_comic",
+    "status": "CANON_LOCKED_READY_FOR_PRODUCTION",
     "studio": "AM STUDIO",
     "heroName": "Blackjack",
     "civilianIdentity": "Adrian Lucien Vale",
@@ -16,78 +16,71 @@
     "honorificRule": "ROYAL_GAMBLER_IS_TITLE_ONLY_NOT_CURRENT_HERO_NAME",
     "role": "Guardian of Choice"
   },
-  "recoveredStoryLocks": {
+  "storyLocks": {
     "chapter1Title": "The Man with the Black Deck",
-    "chapter1TitleStatus": "OWNER_APPROVED_2026_07_31",
-    "episode1Title": null,
-    "episode1TitleStatus": "UNKNOWN_CROSS_IP_COLLISION",
-    "worldAnchor": "Asterion",
-    "realmStructure": "SEVEN_REALMS_HISTORICAL_OWNER_CANON",
-    "astracrownAnchor": "Fate kingdom"
+    "episode1Title": "The Ace in the Rain",
+    "world": "Asterion",
+    "realmStructure": "SEVEN_REALMS",
+    "homeRealm": "Astracrown",
+    "homeRealmIdentity": "Kingdom of Fate",
+    "primarySetting": "Crownhaven",
+    "primaryAntagonisticInstitution": "The House",
+    "seriesEndgame": "The Final Table"
   },
-  "recoveredVisualCharacterLock": {
-    "status": "OWNER_APPROVED_2026_08_03",
+  "characterLock": {
     "genreDirection": "EPIC_FANTASY_PLUS_STEAMPUNK_GOTHIC",
-    "distinctFromSeparateRoyalGamblerProject": true,
-    "signatureItems": [
-      "TOP_HAT",
-      "BLACK_DECK",
-      "ROYAL_CANE"
-    ],
+    "signatureItems": ["TOP_HAT", "BLACK_DECK", "ROYAL_CANE"],
     "characterPerformance": "ELEGANT_STRATEGIST_GUARDIAN",
-    "blackDeckStatus": "OWNER_LOCK",
-    "royalDeckCurrentAppEvidence": "QUARANTINED_UNTIL_OWNER_SOURCE_PROVES_LATER_REPLACEMENT"
+    "powerSystem": "VOLITION_ENERGY_CARD_COMBAT",
+    "blackDeckStatus": "OWNER_APPROVED_CANON",
+    "legacyProbabilityMechanics": "QUARANTINED"
   },
   "brain": {
     "mode": "ISOLATED_DIVISION_BRAIN",
     "contextPolicy": "LOAD_THIS_DIVISION_ONLY",
     "authorityOrder": [
       "OWNER_APPROVED_LOCK",
-      "MASTER_STORY",
+      "MASTER_STORY_V1",
       "MASTER_CANON_UNIVERSE_BIBLE",
-      "CHARACTER_DECK_POWER_BIBLES",
-      "OFFICIAL_OWNER_SUPPLIED_VISUAL_SOURCES",
-      "CANON_REGISTRY",
+      "BLACK_DECK_POWER_BIBLE_V1",
+      "SEVEN_DECKS_MAP_V1",
+      "OFFICIAL_EPISODE_PLAN",
       "CURRENT_STATE_AND_CONTINUITY",
-      "OWNER_APPROVED_EPISODE_PAGE_LOCKS",
       "RECOVERY_EVIDENCE",
       "AI_DRAFT_NEVER_CANON"
     ],
-    "sharedUniverseContract": null,
-    "rule": "MISSING_OR_CONFLICTING_CANON_MUST_STOP_PRODUCTION_NEVER_INVENT"
+    "rule": "LOCKED_CANON_MUST_NOT_BE_REWRITTEN_WITHOUT_EXPLICIT_OWNER_REVISION"
   },
   "memory": {
     "passport": "/divisions/blackjack/passport.json",
+    "canonLock": "/divisions/blackjack/canon-lock.json",
+    "promotionManifest": "/divisions/blackjack/canon-promotion-v1.json",
+    "masterStory": "/divisions/blackjack/master-story.director-draft-v1.md",
+    "powerCombatBible": "/divisions/blackjack/power-bible.black-deck.director-draft-v1.json",
+    "sevenDecksMap": "/divisions/blackjack/seven-decks.director-draft-v1.json",
+    "episode001": "/divisions/blackjack/episode-001.director-draft-v1.json",
     "currentState": "/divisions/blackjack/current-state.json",
     "contextManifest": "/divisions/blackjack/context-manifest.json",
-    "canonLock": "/divisions/blackjack/canon-lock.json",
     "sourceLedger": "/divisions/blackjack/source-ledger.json",
     "recoveryLedger": "/divisions/blackjack/recovery-ledger.json",
-    "masterStory": null,
-    "masterCanon": null,
-    "characterBible": null,
-    "worldBible": null,
-    "visualBible": null,
-    "powerCombatBible": null,
-    "canonRegistry": null,
-    "episodeRegistry": null,
-    "migrationNote": "Blackjack is under canon recovery. Owner locks recovered from 2026-07-31 establish Blackjack / Adrian Lucien Vale, Royal Gambler as honorific only, and Chapter 1 The Man with the Black Deck. Owner direction recovered from 2026-08-03 locks Epic Fantasy + Steampunk Gothic, Guardian identity, Top Hat, Black Deck, Royal Cane and elegant strategist presentation, distinct from the separate Royal Gambler project. Do not import later Royal Gambler mechanics automatically."
+    "masterStorySha256": "e723778a3d5260ba2ede2b1a277c6bcc0be908ff086ce64bc96f15cc40f76060"
   },
   "production": {
     "currentTarget": {
       "episode": 1,
-      "title": null,
+      "title": "The Ace in the Rain",
+      "page": 1,
       "chapterContext": "The Man with the Black Deck",
-      "state": "BLOCKED_UNTIL_MASTER_STORY_POWER_BIBLE_AND_EPISODE_IDENTITY_RECOVERED"
+      "state": "READY_FOR_PAGE_PRODUCTION"
     },
-    "ownerApprovalRequired": true,
+    "ownerApprovalRequiredForCanonRevision": true,
     "pageCountPolicy": "STORY_DRIVEN_NO_FIXED_PAGE_COUNT",
     "language": "id-ID",
-    "generationAllowed": false,
-    "reason": "CANON_RECOVERY_HOLD_REMAINING_CONFLICTS"
+    "generationAllowed": true,
+    "stateAdvanceAllowed": true
   },
   "release": {
-    "mode": "HOLD",
+    "mode": "HOLD_UNTIL_EPISODE_COMPLETE_QC_AND_OWNER_RELEASE_APPROVAL",
     "pipeline": "AM_STUDIO_AUTO_EPISODE_PIPELINE_V1",
     "defaultSlot": "19:00 WITA",
     "monetization": {
@@ -99,19 +92,16 @@
     "character": "BLACKJACK_DIVISION_ONLY_NO_CROSS_DIVISION_SUBSTITUTION",
     "canon": "BLACKJACK_ONLY",
     "currentState": "BLACKJACK_DIVISION_WRITE_ONLY",
-    "visual": "BLACKJACK_SOURCE_LOCK_ONLY",
-    "royalGambler": "ROYAL_GAMBLER_TITLE_IS_VALID_FOR_BLACKJACK_BUT_SEPARATE_LEGACY_ROYAL_GAMBLER_PROJECT_MECHANICS_ARE_NOT_AUTO_IMPORTED"
+    "royalGambler": "SEPARATE_PROJECT_LEGACY_MECHANICS_NOT_IMPORTED"
   },
   "handoff": {
     "target": "AM_STUDIO_CORE",
     "schema": "/divisions/schema/release-package.schema.json",
-    "requiredGates": [
-      "MASTER_STORY_RECOVERED",
-      "CANON_CONFLICTS_RESOLVED",
-      "CANON_LOCK_ACTIVE",
-      "ASSET_COMPLETE",
+    "requiredReleaseGates": [
+      "EPISODE_COMPLETE",
       "DIVISION_QC_PASS",
-      "OWNER_APPROVED"
+      "CANON_CONTINUITY_PASS",
+      "OWNER_RELEASE_APPROVED"
     ]
   }
 }
