@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validatePassport,validateIsolation,evaluateProductionGate,buildReleasePackage,canHandoffToCore} from '../src/division-core.js';
+import {validatePassport,validateIsolation,evaluateProductionGate,detectCrossDivisionTitleCollisions,buildReleasePackage,canHandoffToCore} from '../src/division-core.js';
 
 const passport={
   protocolVersion:'1.0',divisionNumber:'001',divisionId:'amu',seriesId:'amu',
@@ -50,5 +50,28 @@ test('canon recovery division cannot generate or build a release package',()=>{
   });
   assert.equal(gate.ok,false);
   assert.ok(gate.errors.includes('CANON_RECOVERY_HOLD'));
-  assert.throws(()=>buildReleasePackage({passport:held,currentState:{nextProductionTarget:{number:1,title:'The Last Normal Day'}},episode:1,pageCount:1}),/DIVISION_CANON_HOLD_GENERATION_BLOCKED/);
+  assert.throws(()=>buildReleasePackage({passport:held,currentState:{nextProductionTarget:{number:1,title:'Unknown'}},episode:1,pageCount:1}),/DIVISION_CANON_HOLD_GENERATION_BLOCKED/);
+});
+
+test('AMU authoritative episode title cannot silently leak into Blackjack',()=>{
+  const blackjackState={
+    divisionId:'blackjack',
+    currentEpisode:{number:1,title:'The Last Normal Day',canon:'RECOVERY_EVIDENCE'}
+  };
+  const allStates=[
+    {
+      division:{divisionId:'amu'},
+      currentState:{
+        divisionId:'amu',
+        lastCompletedEpisode:{number:1,title:'The Last Normal Day',canon:'CANON_FINAL',ownerVerified:true}
+      }
+    },
+    {division:{divisionId:'blackjack'},currentState:blackjackState}
+  ];
+  const collisions=detectCrossDivisionTitleCollisions({divisionId:'blackjack',currentState:blackjackState,states:allStates});
+  assert.equal(collisions.length,1);
+  assert.equal(collisions[0].authoritativeDivisionId,'amu');
+  const gate=evaluateProductionGate({passport:{production:{}},contextManifest:{},crossDivisionConflicts:collisions});
+  assert.equal(gate.ok,false);
+  assert.ok(gate.errors.includes('CROSS_DIVISION_CANON_COLLISION'));
 });
