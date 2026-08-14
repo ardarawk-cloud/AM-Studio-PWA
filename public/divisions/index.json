@@ -42,7 +42,7 @@
       "seriesId":"ld",
       "code":"LD-BJ",
       "name":"The Legendary Decks — Blackjack",
-      "status":"CANON_RECOVERY_HOLD",
+      "status":"CANON_LOCKED_READY_FOR_PRODUCTION",
       "passport":"/divisions/blackjack/passport.json",
       "currentState":"/divisions/blackjack/current-state.json",
       "contextManifest":"/divisions/blackjack/context-manifest.json"
