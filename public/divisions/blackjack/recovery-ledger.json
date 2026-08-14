@@ -26,19 +26,14 @@
       "source":"ACC_OS_X Brand & Canon Lock"
     },
     {
-      "fact":"Episode 1 title is The Last Normal Day.",
-      "status":"VISUAL_VERIFIED",
-      "source":"Owner-supplied original Blackjack visual shown 2026-08-14"
-    },
-    {
-      "fact":"Blackjack visual sheet associates the hero with the Royal Deck and the role Guardian of Choice.",
-      "status":"VISUAL_VERIFIED",
-      "source":"Owner-supplied original Blackjack character sheet shown 2026-08-14"
+      "fact":"Current owner-supplied app evidence associates Blackjack with the Royal Deck and the role Guardian of Choice.",
+      "status":"VISUAL_RECOVERY_EVIDENCE_NOT_FINAL_MASTER",
+      "source":"Owner-supplied current Blackjack character/library screenshot shown 2026-08-14"
     },
     {
       "fact":"A newer owner-supplied character set visibly uses deck labels Equilibrium, Reaper, Diamond, Spade, Clover, Heart and Royal.",
       "status":"VISUAL_VERIFIED_SOURCE_B_NOT_FINALIZED",
-      "source":"Owner-supplied original character set shown 2026-08-14",
+      "source":"Owner-supplied current character set shown 2026-08-14",
       "note":"This conflicts with older individual character-sheet deck names and must not silently replace them."
     },
     {
@@ -48,26 +43,27 @@
       "note":"Exact power mechanics remain UNKNOWN until recovered from a source document."
     }
   ],
-  "rejectedDrift":[
+  "quarantinedCurrentAppEvidence":[
     {
-      "fact":"Episode 1 renamed to The First Bet.",
-      "status":"REJECTED_DRIFT",
-      "reason":"Owner identified this as an unauthorized change; original visual evidence shows The Last Normal Day."
+      "fact":"Current Blackjack app/library image displays Episode 1 title The Last Normal Day.",
+      "status":"QUARANTINED_CROSS_IP_CONTAMINATION_RISK",
+      "reason":"The Last Normal Day is independently established as AMU Episode 001. No recovered Blackjack Master Story currently proves that Blackjack legitimately shares this exact episode title. Current app output cannot self-validate canon."
     }
   ],
   "quarantinedLegacy":[
     {
       "source":"Royal Gambler legacy material",
-      "examples":["Arthur Kingsley","Probability Engine","Deck Dimension","The Croupier","The House"],
+      "examples":["Adrian Lucien Vale","Royal Deck probability-control material","Arthur Kingsley","Probability Engine","Deck Dimension","The Croupier","The House"],
       "status":"QUARANTINED_FROM_BLACKJACK",
-      "reason":"Royal Gambler is being left unchanged. These mechanics must not be imported into Blackjack unless an explicit owner-approved Blackjack source proves the connection."
+      "reason":"Royal Gambler is being left unchanged. These identities/mechanics must not be imported into Blackjack unless an explicit owner-approved Blackjack source proves the connection."
     }
   ],
   "unknown":[
     "Complete Blackjack Master Story",
+    "Official Blackjack Episode 1 title",
     "Exact Blackjack real name and full biography",
     "Exact card/energy power mechanics",
-    "Rules and limitations of the Royal Deck",
+    "Rules and limitations of the Royal Deck if Royal Deck remains final canon",
     "The Dealer identity and motivation",
     "Final owner-approved names and biographies of all seven deck bearers",
     "Final owner-approved seven-deck naming revision",
@@ -78,20 +74,34 @@
   ],
   "conflicts":[
     {
+      "conflictId":"EPISODE_1_TITLE_CROSS_IP_COLLISION",
+      "status":"CONFLICT",
+      "sourceA":"Current Blackjack app/library evidence shows Episode 1 title The Last Normal Day.",
+      "sourceB":"AMU canon and owner-library episode evidence establish The Last Normal Day as AMU Episode 001.",
+      "impact":"Possible cross-IP title contamination. Blackjack Episode 1 title is UNKNOWN until recovered from Blackjack Master Story or owner-approved source."
+    },
+    {
+      "conflictId":"CHAPTER_1_STORY_REVISION",
+      "status":"CONFLICT",
+      "sourceA":"2026-07-30 The Legendary Decks source labels Chapter 1 as The Last Night of House Vale.",
+      "sourceB":"2026-07-31 The Legendary Decks source labels Chapter 1 as The Man with the Black Deck.",
+      "impact":"Both claim Chapter 1 and cannot be merged or selected by AI."
+    },
+    {
       "conflictId":"DECK-NAMING-REVISION",
       "status":"CONFLICT",
-      "sourceA":"2026-07-30 individual Legendary Decks character sheets: Golden Deck, Azure Deck, Emerald Deck, Crimson Deck and related named identities.",
-      "sourceB":"2026-08-14 owner-supplied character set: Equilibrium Deck, Reaper Deck, Diamond Deck, Spade Deck, Clover Deck, Heart Deck and Royal Deck.",
+      "sourceA":"2026-07-30/31 individual Legendary Decks character sheets use Golden, Azure, Emerald, Crimson, Obsidian and related deck identities.",
+      "sourceB":"2026-08-14 current character set shows Equilibrium, Reaper, Diamond, Spade, Clover, Heart and Royal.",
       "impact":"AI cannot decide whether these are replacements, aliases or separate revisions."
     },
     {
       "conflictId":"SEVEN-VALUES-WORLD-REVISION",
       "status":"CONFLICT",
-      "sourceA":"2026-07-30 ensemble source: Choice, Courage, Wisdom, Freedom, Justice, Sacrifice, Truth across Astracrown, Vermillion Dominion, Sylvanor, Skyhaven, Solaria, Noctis and Nullhaven; references Asterion.",
-      "sourceB":"2026-08-14 owner-supplied set visibly emphasizes Balance, Death & Renewal, Justice, Freedom, Wisdom, Courage and Choice.",
+      "sourceA":"Older ensemble source uses Choice, Courage, Wisdom, Freedom, Justice, Sacrifice, Truth across Astracrown, Vermillion Dominion, Sylvanor, Skyhaven, Solaria, Noctis and Nullhaven; references Asterion.",
+      "sourceB":"Newer current set visibly emphasizes Balance, Death & Renewal, Justice, Freedom, Wisdom, Courage and Choice.",
       "impact":"Core value/domain system may have been revised and cannot be merged by AI."
     }
   ],
   "safeToGenerate":false,
-  "nextRecoveryTarget":"FIND_FINAL_MASTER_STORY_OR_OWNER_APPROVED_REVISION_THAT_RESOLVES_SOURCE_A_VS_SOURCE_B"
+  "nextRecoveryTarget":"FIND_OWNER_APPROVED_BLACKJACK_MASTER_STORY_OR_FINAL_REVISION_THAT_RESOLVES_EPISODE_TITLE_CHAPTER_STORY_DECK_AND_WORLD_CONFLICTS"
 }
