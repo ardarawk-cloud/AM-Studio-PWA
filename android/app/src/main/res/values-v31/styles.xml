@@ -9,7 +9,7 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
         <item name="android:windowSplashScreenBackground">#050507</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_am_studio</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_am_studio_splash</item>
         <item name="android:windowSplashScreenAnimationDuration">250</item>
     </style>
 </resources>
