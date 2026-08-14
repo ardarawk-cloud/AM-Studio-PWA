@@ -1,12 +1,15 @@
 import {validatePassport,validateIsolation,evaluateProductionGate,detectCrossDivisionTitleCollisions} from './division-core.js';
 
-async function readJsonAsset(env,requestUrl,path){
+async function readAsset(env,requestUrl,path){
   if(!env?.ASSETS)throw new Error('ASSETS_BINDING_REQUIRED');
   const url=new URL(path,requestUrl);
-  const response=await env.ASSETS.fetch(new Request(url.toString(),{method:'GET',headers:{accept:'application/json'}}));
+  const wantsText=/\.(?:md|txt)$/i.test(path);
+  const response=await env.ASSETS.fetch(new Request(url.toString(),{method:'GET',headers:{accept:wantsText?'text/plain':'application/json'}}));
   if(!response.ok)throw new Error(`DIVISION_ASSET_HTTP_${response.status}:${path}`);
-  return response.json();
+  return wantsText?response.text():response.json();
 }
+
+async function readJsonAsset(env,requestUrl,path){return readAsset(env,requestUrl,path)}
 
 export async function loadDivisionRegistry(env,requestUrl){
   return readJsonAsset(env,requestUrl,'/divisions/index.json');
@@ -27,7 +30,7 @@ async function loadBootMemory(env,requestUrl,manifest,preloaded={}){
   for(const item of [...(manifest.bootOrder||[])].sort((a,b)=>Number(a.priority||0)-Number(b.priority||0))){
     if(!item?.type||!item?.path)continue;
     try{
-      memory[item.type]=preloaded[item.path]||await readJsonAsset(env,requestUrl,item.path);
+      memory[item.type]=preloaded[item.path]??await readAsset(env,requestUrl,item.path);
     }catch(error){
       if(item.required===true)throw new Error(`REQUIRED_BOOT_MEMORY_FAILED:${item.type}:${String(error?.message||error)}`);
       memory[item.type]={unavailable:true,error:String(error?.message||error)};
@@ -62,8 +65,8 @@ export async function loadDivisionContext(env,requestUrl,divisionId){
   }));
   const crossDivisionConflicts=detectCrossDivisionTitleCollisions({divisionId,currentState,states});
   const canonLock=bootMemory.CANON_LOCK||null;
-  const sourceLedger=bootMemory.SOURCE_LEDGER||null;
-  const recoveryLedger=bootMemory.RECOVERY_LEDGER||null;
+  const sourceLedger=bootMemory.SOURCE_LEDGER||bootMemory.SOURCE_LEDGER_HISTORY||null;
+  const recoveryLedger=bootMemory.RECOVERY_LEDGER||bootMemory.RECOVERY_LEDGER_HISTORY||null;
   const productionGate=evaluateProductionGate({passport,contextManifest:manifest,canonLock,sourceLedger,recoveryLedger,crossDivisionConflicts});
 
   return {

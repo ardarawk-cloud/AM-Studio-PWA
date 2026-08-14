@@ -28,12 +28,12 @@ test('AMU working memory freezes EP001 at 22 pages and advances target to EP002'
   assert.equal(state.nextProductionTarget.title,'The First Breach');
 });
 
-test('Blackjack is Division 004 and remains hard-blocked during canon recovery',async()=>{
+test('Blackjack is Division 004 with locked canon ready for private production',async()=>{
   const registry=await json('../public/divisions/index.json');
   const division=registry.divisions.find(x=>x.divisionId==='blackjack');
   assert.equal(division.divisionNumber,'004');
   assert.equal(division.seriesId,'ld');
-  assert.equal(division.status,'CANON_RECOVERY_HOLD');
+  assert.equal(division.status,'CANON_LOCKED_READY_FOR_PRODUCTION');
 
   const passport=await json('../public/divisions/blackjack/passport.json');
   const manifest=await json('../public/divisions/blackjack/context-manifest.json');
@@ -45,13 +45,15 @@ test('Blackjack is Division 004 and remains hard-blocked during canon recovery',
   assert.deepEqual(validatePassport(passport),{ok:true,errors:[]});
   assert.deepEqual(validateIsolation(passport,manifest),{ok:true,errors:[]});
   const gate=evaluateProductionGate({passport,contextManifest:manifest,canonLock:lock,sourceLedger,recoveryLedger:ledger});
-  assert.equal(gate.ok,false);
-  assert.ok(gate.errors.includes('UNRESOLVED_SOURCE_CONFLICT'));
-  assert.ok(gate.errors.includes('UNRESOLVED_CANON_CONFLICT'));
-  assert.equal(state.currentEpisode.title,null);
-  assert.equal(state.currentEpisode.titleStatus,'UNKNOWN_CROSS_IP_COLLISION');
-  assert.ok(sourceLedger.conflicts.some(x=>x.conflictId==='EPISODE_1_TITLE_CROSS_IP_COLLISION'));
-  assert.equal(lock.masterStory.ownerApproved,false);
-  assert.equal(sourceLedger.safeToResolveByAI,false);
-  assert.equal(ledger.safeToGenerate,false);
+  assert.equal(gate.ok,true);
+  assert.deepEqual(gate.errors,[]);
+  assert.equal(state.currentEpisode.title,'The Ace in the Rain');
+  assert.equal(state.currentEpisode.completedPages,0);
+  assert.equal(state.nextProductionTarget.page,1);
+  assert.equal(lock.masterStory.ownerApproved,true);
+  assert.equal(lock.masterStory.immutable,true);
+  assert.equal(sourceLedger.conflicts.length,0);
+  assert.equal(sourceLedger.recoveryComplete,true);
+  assert.equal(ledger.safeToGenerate,true);
+  assert.equal(ledger.safeToRelease,false);
 });
