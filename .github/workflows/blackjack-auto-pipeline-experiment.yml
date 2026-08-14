@@ -12,15 +12,25 @@ permissions:
 jobs:
   blackjack-auto-trial:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: npm install --no-audit --no-fund
       - name: Canon brain baseline tests
         run: node --test tests/division-*.test.mjs
       - name: Blackjack automatic pipeline trial
         run: node --test tests/blackjack-auto-pipeline.test.mjs
-      - name: Syntax check experimental pipeline core
-        run: node --check src/pipeline-core.js
+      - name: Private owner production tests
+        run: node --test tests/private-production.test.mjs
+      - name: Syntax checks
+        run: |
+          node --check src/division-core.js
+          node --check src/division-loader.js
+          node --check src/private-production-core.js
+          node --check src/private-production-runtime.js
+          node --check public/private-production.js
+      - name: Worker dry-run
+        run: npx wrangler deploy --dry-run
