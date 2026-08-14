@@ -3,6 +3,7 @@ name: AM STUDIO Canon Brain Validation
 on:
   push:
     branches:
+      - main
       - feature/canon-brain-integration-v1
   pull_request:
     branches:
