@@ -1,107 +1,154 @@
 {
-  "protocolVersion":"1.0",
-  "divisionId":"blackjack",
-  "mode":"CANON_RECOVERY",
-  "ownerDirective":{
-    "date":"2026-08-14",
-    "focus":"FIX_BLACKJACK_FIRST",
-    "royalGambler":"LEAVE_EXISTING_ROYAL_GAMBLER_PROJECT_UNCHANGED",
-    "rule":"DO_NOT_REQUIRE_OWNER_TO_REMEMBER_STORY_FROM_SCRATCH"
+  "protocolVersion": "1.1",
+  "divisionId": "blackjack",
+  "mode": "CANON_RECOVERY",
+  "ownerDirective": {
+    "date": "2026-08-14",
+    "focus": "FIX_BLACKJACK_FIRST",
+    "royalGambler": "LEAVE_EXISTING_ROYAL_GAMBLER_PROJECT_UNCHANGED",
+    "rule": "DO_NOT_REQUIRE_OWNER_TO_REMEMBER_STORY_FROM_SCRATCH"
   },
-  "sourceLedger":"/divisions/blackjack/source-ledger.json",
-  "verified":[
+  "recoveredOwnerLocks": [
     {
-      "fact":"Series identity is The Legendary Decks Universe.",
-      "status":"VERIFIED",
-      "source":"ACC_OS_X locked production profile"
+      "date": "2026-07-31T15:04:40Z",
+      "fact": "Current hero name is Blackjack. Royal Gambler is no longer the hero name.",
+      "status": "OWNER_LOCK_RECOVERED"
     },
     {
-      "fact":"Core mission anchor: The Dealer, seven legendary decks and hero Blackjack in Crownhaven.",
-      "status":"VERIFIED",
-      "source":"ACC_OS_X locked production profile"
+      "date": "2026-07-31T15:05:03Z",
+      "fact": "Royal Gambler is retained only as an honorific title; civilian identity is Adrian Lucien Vale.",
+      "status": "OWNER_LOCK_RECOVERED"
     },
     {
-      "fact":"Locked visual identity: American comic, gentleman casino aura and steampunk gothic identity.",
-      "status":"VERIFIED",
-      "source":"ACC_OS_X Brand & Canon Lock"
-    },
-    {
-      "fact":"Current owner-supplied app evidence associates Blackjack with the Royal Deck and the role Guardian of Choice.",
-      "status":"VISUAL_RECOVERY_EVIDENCE_NOT_FINAL_MASTER",
-      "source":"Owner-supplied current Blackjack character/library screenshot shown 2026-08-14"
-    },
-    {
-      "fact":"A newer owner-supplied character set visibly uses deck labels Equilibrium, Reaper, Diamond, Spade, Clover, Heart and Royal.",
-      "status":"VISUAL_VERIFIED_SOURCE_B_NOT_FINALIZED",
-      "source":"Owner-supplied current character set shown 2026-08-14",
-      "note":"This conflicts with older individual character-sheet deck names and must not silently replace them."
-    },
-    {
-      "fact":"Original owner intent included a superhero concept using card/energy powers comparable in feel to Gambit.",
-      "status":"OWNER_RECALL_VERIFIED_AS_INTENT_NOT_MECHANICS",
-      "source":"Owner statement 2026-08-14",
-      "note":"Exact power mechanics remain UNKNOWN until recovered from a source document."
+      "date": "2026-07-31T15:08:54Z",
+      "fact": "Chapter 1 title The Man with the Black Deck was accepted by the owner.",
+      "status": "OWNER_LOCK_RECOVERED",
+      "scope": "CHAPTER_TITLE_NOT_EPISODE_TITLE"
     }
   ],
-  "quarantinedCurrentAppEvidence":[
+  "verified": [
     {
-      "fact":"Current Blackjack app/library image displays Episode 1 title The Last Normal Day.",
-      "status":"QUARANTINED_CROSS_IP_CONTAMINATION_RISK",
-      "reason":"The Last Normal Day is independently established as AMU Episode 001. No recovered Blackjack Master Story currently proves that Blackjack legitimately shares this exact episode title. Current app output cannot self-validate canon."
+      "fact": "Series identity is The Legendary Decks Universe.",
+      "status": "VERIFIED",
+      "source": "ACC_OS_X locked production profile"
+    },
+    {
+      "fact": "Core mission anchor: The Dealer, seven legendary decks and hero Blackjack in Crownhaven.",
+      "status": "VERIFIED",
+      "source": "ACC_OS_X locked production profile"
+    },
+    {
+      "fact": "Locked visual identity: American comic, gentleman casino aura and steampunk gothic identity.",
+      "status": "VERIFIED",
+      "source": "ACC_OS_X Brand & Canon Lock"
+    },
+    {
+      "fact": "Hero name is Blackjack; Royal Gambler is honorific only; civilian identity is Adrian Lucien Vale.",
+      "status": "VERIFIED_OWNER_LOCK",
+      "source": "Recovered owner approvals 2026-07-31"
+    },
+    {
+      "fact": "Chapter 1 title is The Man with the Black Deck.",
+      "status": "VERIFIED_OWNER_LOCK",
+      "source": "Recovered owner acceptance 2026-07-31",
+      "note": "This resolves the historical Chapter 1 title conflict. It does not establish the Episode 1 title."
+    },
+    {
+      "fact": "Historical owner canon identifies Asterion as the world and includes seven realms; Astracrown is the Fate kingdom.",
+      "status": "RECOVERED_OWNER_CANON_ANCHOR",
+      "source": "Owner statement 2026-07-30",
+      "note": "Keep as a historical owner canon anchor while later deck/value naming revisions remain unresolved."
+    },
+    {
+      "fact": "Current owner-supplied app evidence associates Blackjack with the Royal Deck and the role Guardian of Choice.",
+      "status": "VISUAL_RECOVERY_EVIDENCE_NOT_FINAL_MASTER",
+      "source": "Owner-supplied current Blackjack character/library screenshot shown 2026-08-14"
+    },
+    {
+      "fact": "A newer owner-supplied character set visibly uses deck labels Equilibrium, Reaper, Diamond, Spade, Clover, Heart and Royal.",
+      "status": "VISUAL_VERIFIED_SOURCE_B_NOT_FINALIZED",
+      "source": "Owner-supplied current character set shown 2026-08-14",
+      "note": "This conflicts with older individual character-sheet deck names and must not silently replace them."
+    },
+    {
+      "fact": "Original owner intent included a superhero concept using card/energy powers comparable in feel to Gambit.",
+      "status": "OWNER_RECALL_VERIFIED_AS_INTENT_NOT_MECHANICS",
+      "source": "Owner statement 2026-08-14",
+      "note": "Exact power mechanics remain UNKNOWN until recovered from a source document."
     }
   ],
-  "quarantinedLegacy":[
+  "quarantinedCurrentAppEvidence": [
     {
-      "source":"Royal Gambler legacy material",
-      "examples":["Adrian Lucien Vale","Royal Deck probability-control material","Arthur Kingsley","Probability Engine","Deck Dimension","The Croupier","The House"],
-      "status":"QUARANTINED_FROM_BLACKJACK",
-      "reason":"Royal Gambler is being left unchanged. These identities/mechanics must not be imported into Blackjack unless an explicit owner-approved Blackjack source proves the connection."
+      "fact": "Current Blackjack app/library image displays Episode 1 title The Last Normal Day.",
+      "status": "QUARANTINED_CROSS_IP_CONTAMINATION_RISK",
+      "reason": "The Last Normal Day is independently established as AMU Episode 001. No recovered Blackjack Master Story proves that Blackjack legitimately shares this exact episode title. Current app output cannot self-validate canon."
     }
   ],
-  "unknown":[
-    "Complete Blackjack Master Story",
+  "quarantinedLegacy": [
+    {
+      "source": "Royal Gambler legacy material",
+      "examples": [
+        "Arthur Kingsley",
+        "Probability Engine",
+        "Deck Dimension",
+        "The Croupier mechanics",
+        "The House mechanics"
+      ],
+      "status": "QUARANTINED_FROM_BLACKJACK",
+      "reason": "Royal Gambler is a separate legacy project for current recovery purposes. Mechanics from later Royal Gambler revisions must not be imported into Blackjack without explicit owner approval. Adrian Lucien Vale is no longer quarantined because his civilian identity was explicitly owner-locked for Blackjack on 2026-07-31."
+    }
+  ],
+  "unknown": [
+    "Complete Blackjack Master Story wording and arc structure",
     "Official Blackjack Episode 1 title",
-    "Exact Blackjack real name and full biography",
-    "Exact card/energy power mechanics",
-    "Rules and limitations of the Royal Deck if Royal Deck remains final canon",
+    "Exact card/energy power mechanics and limitations",
+    "Final rules and limitations of the Royal Deck if Royal Deck remains final canon",
     "The Dealer identity and motivation",
     "Final owner-approved names and biographies of all seven deck bearers",
     "Final owner-approved seven-deck naming revision",
-    "Final owner-approved seven-value/world-domain revision",
-    "Full world history of Crownhaven and its relationship, if any, to Asterion",
-    "Episode 1 page count and exact completed page state",
-    "Locked arc structure and final story direction"
+    "Final relationship between older seven-value realm labels and the newer current character-set labels",
+    "Full world history of Crownhaven and its relationship to Asterion",
+    "Episode 1 page count and exact completed page state"
   ],
-  "conflicts":[
+  "resolvedConflicts": [
     {
-      "conflictId":"EPISODE_1_TITLE_CROSS_IP_COLLISION",
-      "status":"CONFLICT",
-      "sourceA":"Current Blackjack app/library evidence shows Episode 1 title The Last Normal Day.",
-      "sourceB":"AMU canon and owner-library episode evidence establish The Last Normal Day as AMU Episode 001.",
-      "impact":"Possible cross-IP title contamination. Blackjack Episode 1 title is UNKNOWN until recovered from Blackjack Master Story or owner-approved source."
+      "conflictId": "CHAPTER_1_STORY_REVISION",
+      "resolution": "The Man with the Black Deck",
+      "status": "RESOLVED_BY_RECOVERED_OWNER_LOCK",
+      "ownerAcceptanceDate": "2026-07-31T15:08:54Z",
+      "rejectedAsFinalChapterTitle": "The Last Night of House Vale",
+      "note": "House Vale visual remains historical recovery evidence but does not override the later explicit owner acceptance."
     },
     {
-      "conflictId":"CHAPTER_1_STORY_REVISION",
-      "status":"CONFLICT",
-      "sourceA":"2026-07-30 The Legendary Decks source labels Chapter 1 as The Last Night of House Vale.",
-      "sourceB":"2026-07-31 The Legendary Decks source labels Chapter 1 as The Man with the Black Deck.",
-      "impact":"Both claim Chapter 1 and cannot be merged or selected by AI."
-    },
-    {
-      "conflictId":"DECK-NAMING-REVISION",
-      "status":"CONFLICT",
-      "sourceA":"2026-07-30/31 individual Legendary Decks character sheets use Golden, Azure, Emerald, Crimson, Obsidian and related deck identities.",
-      "sourceB":"2026-08-14 current character set shows Equilibrium, Reaper, Diamond, Spade, Clover, Heart and Royal.",
-      "impact":"AI cannot decide whether these are replacements, aliases or separate revisions."
-    },
-    {
-      "conflictId":"SEVEN-VALUES-WORLD-REVISION",
-      "status":"CONFLICT",
-      "sourceA":"Older ensemble source uses Choice, Courage, Wisdom, Freedom, Justice, Sacrifice, Truth across Astracrown, Vermillion Dominion, Sylvanor, Skyhaven, Solaria, Noctis and Nullhaven; references Asterion.",
-      "sourceB":"Newer current set visibly emphasizes Balance, Death & Renewal, Justice, Freedom, Wisdom, Courage and Choice.",
-      "impact":"Core value/domain system may have been revised and cannot be merged by AI."
+      "conflictId": "HERO_IDENTITY_REVISION",
+      "resolution": "Hero = Blackjack; civilian = Adrian Lucien Vale; Royal Gambler = honorific title only",
+      "status": "RESOLVED_BY_RECOVERED_OWNER_LOCK",
+      "ownerLockDate": "2026-07-31T15:05:03Z"
     }
   ],
-  "safeToGenerate":false,
-  "nextRecoveryTarget":"FIND_OWNER_APPROVED_BLACKJACK_MASTER_STORY_OR_FINAL_REVISION_THAT_RESOLVES_EPISODE_TITLE_CHAPTER_STORY_DECK_AND_WORLD_CONFLICTS"
+  "conflicts": [
+    {
+      "conflictId": "EPISODE_1_TITLE_CROSS_IP_COLLISION",
+      "status": "CONFLICT",
+      "sourceA": "Current Blackjack app/library evidence shows Episode 1 title The Last Normal Day.",
+      "sourceB": "AMU canon and owner-library episode evidence establish The Last Normal Day as AMU Episode 001.",
+      "impact": "Possible cross-IP title contamination. Blackjack Episode 1 title remains UNKNOWN."
+    },
+    {
+      "conflictId": "DECK-NAMING-REVISION",
+      "status": "CONFLICT",
+      "sourceA": "2026-07-30/31 individual Legendary Decks character sheets use Golden, Azure, Emerald, Crimson, Obsidian and related deck identities.",
+      "sourceB": "2026-08-14 current character set shows Equilibrium, Reaper, Diamond, Spade, Clover, Heart and Royal.",
+      "impact": "AI cannot decide whether these are replacements, aliases or separate revisions."
+    },
+    {
+      "conflictId": "SEVEN-VALUES-WORLD-REVISION",
+      "status": "PARTIALLY_RESOLVED",
+      "sourceA": "Recovered owner canon establishes Asterion with seven realms and Astracrown as the Fate kingdom; older visual sources map Choice, Courage, Wisdom, Freedom, Justice, Sacrifice and Truth across seven realms.",
+      "sourceB": "Newer current set visibly emphasizes Balance, Death & Renewal, Justice, Freedom, Wisdom, Courage and Choice.",
+      "impact": "Asterion/seven-realm structure is recovered as an owner canon anchor, but the final mapping of newer deck/value labels is still unresolved."
+    }
+  ],
+  "safeToGenerate": false,
+  "nextRecoveryTarget": "RECOVER_COMPLETE_MASTER_STORY_POWER_BIBLE_DEALER_IDENTITY_EPISODE_1_IDENTITY_AND_FINAL_SEVEN_DECK_NAMING_BEFORE_GENERATION"
 }
