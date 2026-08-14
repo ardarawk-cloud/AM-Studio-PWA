@@ -1,0 +1,79 @@
+{
+  "protocolVersion":"1.0",
+  "divisionId":"blackjack",
+  "mode":"CANON_RECOVERY",
+  "ownerDirective":{
+    "date":"2026-08-14",
+    "focus":"FIX_BLACKJACK_FIRST",
+    "royalGambler":"LEAVE_EXISTING_ROYAL_GAMBLER_PROJECT_UNCHANGED",
+    "rule":"DO_NOT_REQUIRE_OWNER_TO_REMEMBER_STORY_FROM_SCRATCH"
+  },
+  "verified":[
+    {
+      "fact":"Series identity is The Legendary Decks Universe.",
+      "status":"VERIFIED",
+      "source":"ACC_OS_X locked production profile"
+    },
+    {
+      "fact":"Core mission anchor: The Dealer, seven legendary decks and hero Blackjack in Crownhaven.",
+      "status":"VERIFIED",
+      "source":"ACC_OS_X locked production profile"
+    },
+    {
+      "fact":"Locked visual identity: American comic, gentleman casino aura and steampunk gothic identity.",
+      "status":"VERIFIED",
+      "source":"ACC_OS_X Brand & Canon Lock"
+    },
+    {
+      "fact":"Episode 1 title is The Last Normal Day.",
+      "status":"VISUAL_VERIFIED",
+      "source":"Owner-supplied original Blackjack visual shown 2026-08-14"
+    },
+    {
+      "fact":"Blackjack visual sheet associates the hero with the Royal Deck and the role Guardian of Choice.",
+      "status":"VISUAL_VERIFIED",
+      "source":"Owner-supplied original Blackjack character sheet shown 2026-08-14"
+    },
+    {
+      "fact":"Seven deck labels visible in the owner-supplied character set are Equilibrium Deck, Reaper Deck, Diamond Deck, Spade Deck, Clover Deck, Heart Deck and Royal Deck.",
+      "status":"VISUAL_VERIFIED_LABELS",
+      "source":"Owner-supplied original character set shown 2026-08-14",
+      "note":"Character names and detailed mechanics are not inferred from this evidence."
+    },
+    {
+      "fact":"Original owner intent included a superhero concept using card/energy powers comparable in feel to Gambit.",
+      "status":"OWNER_RECALL_VERIFIED_AS_INTENT_NOT_MECHANICS",
+      "source":"Owner statement 2026-08-14",
+      "note":"Exact power mechanics remain UNKNOWN until recovered from a source document."
+    }
+  ],
+  "rejectedDrift":[
+    {
+      "fact":"Episode 1 renamed to The First Bet.",
+      "status":"REJECTED_DRIFT",
+      "reason":"Owner identified this as an unauthorized change; original visual evidence shows The Last Normal Day."
+    }
+  ],
+  "quarantinedLegacy":[
+    {
+      "source":"Royal Gambler legacy material",
+      "examples":["Arthur Kingsley","Probability Engine","Deck Dimension","The Croupier","The House"],
+      "status":"QUARANTINED_FROM_BLACKJACK",
+      "reason":"Royal Gambler is being left unchanged. These mechanics must not be imported into Blackjack unless an explicit owner-approved Blackjack source proves the connection."
+    }
+  ],
+  "unknown":[
+    "Complete Blackjack Master Story",
+    "Exact Blackjack real name and full biography",
+    "Exact card/energy power mechanics",
+    "Rules and limitations of the Royal Deck",
+    "The Dealer identity and motivation",
+    "Names and biographies of all seven deck bearers",
+    "Full world history of Crownhaven",
+    "Episode 1 page count and exact completed page state",
+    "Locked arc structure and final story direction"
+  ],
+  "conflicts":[],
+  "safeToGenerate":false,
+  "nextRecoveryTarget":"RECOVER_OWNER_APPROVED_MASTER_STORY_AND_CHARACTER_DECK_POWER_BIBLES"
+}
