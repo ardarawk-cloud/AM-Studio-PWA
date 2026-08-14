@@ -1,0 +1,29 @@
+{
+  "protocolVersion":"1.0",
+  "divisionId":"13-pintu-neraka",
+  "purpose":"OWNER_APPROVED_VISUAL_CONTINUITY_SOURCE",
+  "sources":[
+    {
+      "id":"EP001_PAGE001_OWNER_SOURCE",
+      "episode":1,
+      "page":1,
+      "title":"Kedatangan di Watu Kembar",
+      "status":"LOCKED_CANON_REFERENCE",
+      "dimensions":"1024x1536",
+      "sha256":"c277906d7e327ec89af51272c1f9d58e09e51f0caef740d5ad65e5df2f7cb963",
+      "notes":"Owner-supplied official sequential page. Use for Raka/Nara appearance, costume, props, Watu Kembar night atmosphere, and scene continuity."
+    },
+    {
+      "id":"EP001_PAGE002_OWNER_SOURCE",
+      "episode":1,
+      "page":2,
+      "title":"Bangunan yang Kosong",
+      "status":"LOCKED_CANON_REFERENCE",
+      "dimensions":"1024x1536",
+      "sha256":"5c5ffb496a6930353cc90486de07b79e0ca9139bb2fea4a677c6cdfd08c5591b",
+      "notes":"Owner-supplied official sequential page. This is the active visual and narrative continuation point."
+    }
+  ],
+  "nextVisualRule":"Page 3 must continue from Page 2 without repeating prior scenes or changing character identity.",
+  "assetNote":"These hashes identify the owner-supplied source images. Binary source migration into studio asset storage is a separate step."
+}
