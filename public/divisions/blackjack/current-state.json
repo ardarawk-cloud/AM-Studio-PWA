@@ -1,5 +1,5 @@
 {
-  "protocolVersion": "1.1",
+  "protocolVersion": "1.2",
   "divisionId": "blackjack",
   "seriesId": "ld",
   "workingMemoryStatus": "CANON_RECOVERY_HOLD",
@@ -7,7 +7,15 @@
     "hero": "Blackjack",
     "civilianIdentity": "Adrian Lucien Vale",
     "honorificTitle": "Royal Gambler",
-    "status": "OWNER_LOCK_RECOVERED_2026_07_31"
+    "role": "Guardian of Choice",
+    "status": "OWNER_LOCK_RECOVERED"
+  },
+  "recoveredCharacterVisual": {
+    "genreDirection": "Epic Fantasy + Steampunk Gothic",
+    "signatureItems": ["Top Hat", "Black Deck", "Royal Cane"],
+    "performance": "Elegant strategist Guardian",
+    "status": "OWNER_APPROVED_2026_08_03",
+    "royalDeckAppOutput": "QUARANTINED_UNTIL_EXPLICIT_LATER_OWNER_LOCK"
   },
   "storyContext": {
     "chapter1Title": "The Man with the Black Deck",
@@ -37,17 +45,18 @@
     "hero": "Blackjack",
     "civilianIdentity": "Adrian Lucien Vale",
     "honorificTitle": "Royal Gambler",
+    "deck": "Black Deck",
     "knownPremise": "The Dealer, seven legendary decks and hero Blackjack in Crownhaven.",
-    "knownVisualIdentity": "American comic, gentleman casino aura, steampunk gothic.",
+    "knownVisualIdentity": "Epic Fantasy + Steampunk Gothic; American comic; gentleman casino aura; Top Hat; Royal Cane; elegant strategist Guardian.",
     "knownChapter1Title": "The Man with the Black Deck",
-    "hardRule": "Do not continue story, invent exact powers, assign an Episode 1 title, resolve final deck naming, or import later Royal Gambler legacy mechanics until remaining Blackjack source conflicts are resolved."
+    "hardRule": "Do not continue story, invent exact powers, assign an Episode 1 title, rename the Black Deck from app output, resolve the other six deck names, or import later Royal Gambler legacy mechanics until remaining Blackjack source conflicts are resolved."
   },
   "remainingRecovery": [
     "Complete Master Story and arc structure",
     "Official Episode 1 title",
-    "Exact card-energy powers and limitations",
+    "Exact Black Deck card-energy powers and limitations",
     "The Dealer identity and motivation",
-    "Final seven-deck names and bearer mapping",
+    "Final other six Legendary Deck names and bearer mapping",
     "Final mapping between older Asterion realm/value labels and newer deck/value labels",
     "Exact completed Episode 1 page state"
   ],
