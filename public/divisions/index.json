@@ -13,6 +13,17 @@
       "passport":"/divisions/amu/passport.json",
       "currentState":"/divisions/amu/current-state.json",
       "contextManifest":"/divisions/amu/context-manifest.json"
+    },
+    {
+      "divisionNumber":"002",
+      "divisionId":"hikayat-pohon-ganja",
+      "seriesId":"hikayat-pohon-ganja",
+      "code":"HPG",
+      "name":"Hikayat Pohon Ganja",
+      "status":"MIGRATION_PENDING",
+      "passport":"/divisions/hikayat-pohon-ganja/passport.json",
+      "currentState":"/divisions/hikayat-pohon-ganja/current-state.json",
+      "contextManifest":"/divisions/hikayat-pohon-ganja/context-manifest.json"
     }
   ]
 }
