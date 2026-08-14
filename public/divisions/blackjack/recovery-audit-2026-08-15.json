@@ -1,0 +1,142 @@
+{
+  "protocolVersion": "1.0",
+  "recoveryAuditVersion": "2026-08-15.1",
+  "divisionId": "blackjack",
+  "seriesId": "ld",
+  "mode": "CANON_RECOVERY_EVIDENCE_ONLY",
+  "authority": "NON_CANON_RECOVERY_AUDIT",
+  "canonMutation": false,
+  "holdMutation": false,
+  "searchScope": [
+    "Recovered owner conversation evidence from 2026-07-30 through 2026-08-03",
+    "File Library visual/story/character evidence from 2026-07-30 through 2026-08-14",
+    "Current Blackjack Brain files on main",
+    "Relevant GitHub commit history"
+  ],
+  "verifiedOwnerLocksUnchanged": [
+    "Hero = Blackjack",
+    "Civilian identity = Adrian Lucien Vale",
+    "Royal Gambler = honorific only",
+    "Role = Guardian of Choice",
+    "Chapter 1 = The Man with the Black Deck",
+    "Blackjack signature = Top Hat + Black Deck + Royal Cane + elegant strategist Guardian",
+    "The Dealer = unique immortal neutral balance/free-will/rules keeper with strict non-intervention rules",
+    "World anchor = Asterion with Seven Realms",
+    "Astracrown = Fate kingdom",
+    "Crownhaven = production setting anchor",
+    "Blackjack remains separate from the Royal Gambler legacy project"
+  ],
+  "newRecoveryFindings": [
+    {
+      "finding": "Five standalone supporting Guardian character sheets were recovered from 2026-07-30/31 owner-library evidence.",
+      "status": "SOURCE_CANDIDATE_A_NOT_OWNER_RELOCKED"
+    },
+    {
+      "finding": "No standalone Guardian of Truth / Nullhaven character sheet or final Truth deck name was recovered.",
+      "status": "UNKNOWN"
+    },
+    {
+      "finding": "Older ensemble evidence labels Astracrown as Choice while recovered owner canon labels Astracrown as the Fate kingdom.",
+      "status": "WORLD_VALUE_MAPPING_UNRESOLVED_OWNER_LOCK_WINS_FOR_KINGDOM_ANCHOR"
+    },
+    {
+      "finding": "Freedom realm evidence conflicts between Skyhaven in the ensemble source and Aerion Skyfarers in the Azure Tempest standalone sheet.",
+      "status": "CONFLICT"
+    },
+    {
+      "finding": "After the 2026-07-31 Blackjack identity and Chapter 1 owner locks, the recovered The Legendary Decks asset is a Chapter 1 ensemble/story poster. Sequential Crownhaven pages recovered around the same period belong to the separate Royal Gambler/Arthur Kingsley/Probability Engine line and remain quarantined.",
+      "status": "AUDIT_VERIFIED"
+    },
+    {
+      "finding": "No standalone final Blackjack Master Story was recovered from available sources.",
+      "status": "UNKNOWN"
+    },
+    {
+      "finding": "No post-lock exact Black Deck card-energy Power Bible or limitations document was recovered.",
+      "status": "UNKNOWN"
+    },
+    {
+      "finding": "No verified completed sequential Blackjack Episode 1 page asset was recovered. Current lastCompletedEpisode and lastCompletedPage must remain null until stronger owner-approved evidence is found.",
+      "status": "UNKNOWN_NONE_VERIFIED"
+    },
+    {
+      "finding": "Older Royal Gambler power sets such as Kinetic Cards, Probability Manipulation, Royal Vision, Deck Armor and Ace Mode are tied to incompatible Royal Gambler revisions and cannot be inherited into Blackjack automatically.",
+      "status": "QUARANTINED_FROM_BLACKJACK"
+    }
+  ],
+  "candidateGuardianEvidence": [
+    {
+      "alias": "Golden Paladin",
+      "realName": "Cassian Auremont",
+      "role": "Guardian of Justice",
+      "realmOrKingdom": "Solaria",
+      "deck": "Golden Deck",
+      "status": "SOURCE_CANDIDATE_A"
+    },
+    {
+      "alias": "Azure Tempest",
+      "realName": "Lyra Caelum",
+      "role": "Guardian of Freedom",
+      "realmOrKingdom": "Aerion Skyfarers",
+      "deck": "Azure Deck",
+      "status": "SOURCE_CANDIDATE_A_WITH_REALM_CONFLICT"
+    },
+    {
+      "alias": "Emerald Sage",
+      "realName": "Elias Verdant",
+      "role": "Guardian of Wisdom",
+      "realmOrKingdom": "Sylvanor",
+      "deck": "Emerald Deck",
+      "status": "SOURCE_CANDIDATE_A"
+    },
+    {
+      "alias": "Crimson Monarch",
+      "realName": "Aurelius Draven",
+      "role": "Guardian of Courage",
+      "realmOrKingdom": "Vermillion Dominion",
+      "deck": "Crimson Deck",
+      "status": "SOURCE_CANDIDATE_A"
+    },
+    {
+      "alias": "Obsidian Reaper",
+      "realName": "Darius Nocturne",
+      "role": "Guardian of Sacrifice",
+      "realmOrKingdom": "Noctis",
+      "deck": "Obsidian Deck",
+      "status": "SOURCE_CANDIDATE_A"
+    },
+    {
+      "alias": null,
+      "realName": null,
+      "role": "Guardian of Truth",
+      "realmOrKingdom": "Nullhaven",
+      "deck": null,
+      "status": "UNKNOWN"
+    }
+  ],
+  "quarantinedLegacyMechanics": [
+    "Arthur Kingsley",
+    "Probability Engine",
+    "Deck Dimension",
+    "Kinetic Cards as a final Blackjack mechanic",
+    "Probability Manipulation as a final Blackjack mechanic",
+    "Royal Vision as a final Blackjack mechanic",
+    "Deck Armor as a final Blackjack mechanic",
+    "Ace Mode as a final Blackjack mechanic"
+  ],
+  "ownerDecisionSurface": [
+    "FINAL_OTHER_SIX_DECK_AND_BEARER_MAPPING",
+    "FINAL_WORLD_VALUE_DECK_MAPPING",
+    "FREEDOM_REALM_SKYHAVEN_VS_AERION_SKYFARERS",
+    "TRUTH_BEARER_AND_TRUTH_DECK",
+    "OFFICIAL_BLACKJACK_EPISODE_1_TITLE",
+    "EXACT_BLACK_DECK_POWER_BIBLE_AND_LIMITATIONS",
+    "FINAL_MASTER_STORY"
+  ],
+  "safeToGenerate": false,
+  "safeToAdvanceState": false,
+  "safeToRelease": false,
+  "monetization": "OFF",
+  "hold": "CANON_RECOVERY_HOLD",
+  "nextAction": "OWNER_APPROVAL_OF_EVIDENCE_BACKED_CANDIDATES_OR_DISCOVERY_OF_STRONGER_OWNER_SOURCE_REQUIRED_BEFORE_MASTER_STORY_HASH_LOCK"
+}
