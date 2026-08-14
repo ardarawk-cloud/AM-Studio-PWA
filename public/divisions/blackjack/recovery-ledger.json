@@ -1,5 +1,6 @@
 {
-  "protocolVersion": "1.3",
+  "protocolVersion": "1.0",
+  "recoveryVersion": "1.3",
   "divisionId": "blackjack",
   "mode": "CANON_RECOVERY",
   "ownerDirective": {
