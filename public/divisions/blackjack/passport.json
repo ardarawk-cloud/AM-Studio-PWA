@@ -1,5 +1,5 @@
 {
-  "protocolVersion": "1.1",
+  "protocolVersion": "1.2",
   "divisionNumber": "004",
   "divisionId": "blackjack",
   "seriesId": "ld",
@@ -12,7 +12,8 @@
     "heroName": "Blackjack",
     "civilianIdentity": "Adrian Lucien Vale",
     "honorificTitle": "Royal Gambler",
-    "honorificRule": "ROYAL_GAMBLER_IS_TITLE_ONLY_NOT_CURRENT_HERO_NAME"
+    "honorificRule": "ROYAL_GAMBLER_IS_TITLE_ONLY_NOT_CURRENT_HERO_NAME",
+    "role": "Guardian of Choice"
   },
   "recoveredStoryLocks": {
     "chapter1Title": "The Man with the Black Deck",
@@ -22,6 +23,19 @@
     "worldAnchor": "Asterion",
     "realmStructure": "SEVEN_REALMS_HISTORICAL_OWNER_CANON",
     "astracrownAnchor": "Fate kingdom"
+  },
+  "recoveredVisualCharacterLock": {
+    "status": "OWNER_APPROVED_2026_08_03",
+    "genreDirection": "EPIC_FANTASY_PLUS_STEAMPUNK_GOTHIC",
+    "distinctFromSeparateRoyalGamblerProject": true,
+    "signatureItems": [
+      "TOP_HAT",
+      "BLACK_DECK",
+      "ROYAL_CANE"
+    ],
+    "characterPerformance": "ELEGANT_STRATEGIST_GUARDIAN",
+    "blackDeckStatus": "OWNER_LOCK",
+    "royalDeckCurrentAppEvidence": "QUARANTINED_UNTIL_OWNER_SOURCE_PROVES_LATER_REPLACEMENT"
   },
   "brain": {
     "mode": "ISOLATED_DIVISION_BRAIN",
@@ -56,7 +70,7 @@
     "powerCombatBible": null,
     "canonRegistry": null,
     "episodeRegistry": null,
-    "migrationNote": "Blackjack is under canon recovery. Owner locks recovered from 2026-07-31 establish Blackjack / Adrian Lucien Vale, Royal Gambler as honorific only, and Chapter 1 The Man with the Black Deck. Do not import later Royal Gambler story mechanics automatically. Restore remaining canon only from owner-approved or source-verified Blackjack material."
+    "migrationNote": "Blackjack is under canon recovery. Owner locks recovered from 2026-07-31 establish Blackjack / Adrian Lucien Vale, Royal Gambler as honorific only, and Chapter 1 The Man with the Black Deck. Owner direction recovered from 2026-08-03 locks Epic Fantasy + Steampunk Gothic, Guardian identity, Top Hat, Black Deck, Royal Cane and elegant strategist presentation, distinct from the separate Royal Gambler project. Do not import later Royal Gambler mechanics automatically."
   },
   "production": {
     "currentTarget": {
