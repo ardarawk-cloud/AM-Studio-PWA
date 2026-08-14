@@ -1,0 +1,79 @@
+{
+  "protocolVersion":"1.0",
+  "divisionNumber":"001",
+  "divisionId":"amu",
+  "seriesId":"amu",
+  "identity":{
+    "name":"Arda Moron Universe",
+    "code":"AMU",
+    "type":"standalone_universe",
+    "status":"ACTIVE",
+    "studio":"AM STUDIO",
+    "setting":"Neo Avalon 2047",
+    "protagonist":"Arda Moron",
+    "heroIdentity":"Ninja Cyber"
+  },
+  "brain":{
+    "mode":"ISOLATED_DIVISION_BRAIN",
+    "contextPolicy":"LOAD_THIS_DIVISION_ONLY",
+    "authorityOrder":[
+      "OWNER_APPROVED_LOCK",
+      "MASTER_STORY",
+      "CHARACTER_WORLD_VISUAL_POWER_BIBLES",
+      "CANON_REGISTRY",
+      "CURRENT_STATE_AND_CONTINUITY",
+      "EPISODE_REGISTRY",
+      "PRODUCTION_DRAFT"
+    ],
+    "sharedUniverseContract":null,
+    "rule":"MISSING_CANON_MUST_NOT_BE_INVENTED"
+  },
+  "memory":{
+    "passport":"/divisions/amu/passport.json",
+    "currentState":"/divisions/amu/current-state.json",
+    "contextManifest":"/divisions/amu/context-manifest.json",
+    "masterStory":null,
+    "characterBible":null,
+    "worldBible":null,
+    "visualBible":null,
+    "powerCombatBible":null,
+    "canonRegistry":"/canon-registry.json",
+    "episodeRegistry":"/reader-assets.json",
+    "researchPolicy":null,
+    "migrationNote":"Full AMU bibles remain authoritative studio assets and will be migrated into division-local files without changing canon."
+  },
+  "canonAnchors":{
+    "protagonist":{"name":"Arda Moron","age":17,"visual":"teenage face, messy black hair, slim build"},
+    "parents":["Adrian Moron","Elena Moron"],
+    "allies":["NADMO97","Ethan Cole"],
+    "heroIdentity":"Ninja Cyber",
+    "system":"SORAI modular tactical ecosystem",
+    "soraiModes":["Original","Night","White","Red"],
+    "soraiEvolution":{"4":"Hidden Forge discovery","5":"Mask sync","6":"Bike Mk.I","7":"Drone link","8":"HUD"},
+    "city":"Neo Avalon 2047"
+  },
+  "production":{
+    "currentTarget":{"episode":2,"title":"The First Breach","state":"NEXT_PRODUCTION_TARGET"},
+    "ownerApprovalRequired":true,
+    "pageCountPolicy":"STORY_DRIVEN_NO_FIXED_PAGE_COUNT",
+    "visualPriority":["STORY_FIRST","CONTINUITY_SECOND","VISUAL_THIRD","EFFECTS_LAST"],
+    "language":"id-ID"
+  },
+  "release":{
+    "mode":"FREE_BETA",
+    "pipeline":"AM_STUDIO_AUTO_EPISODE_PIPELINE_V1",
+    "defaultSlot":"19:00 WITA",
+    "monetization":{"inheritGlobal":true,"status":"OFF"}
+  },
+  "isolation":{
+    "character":"AMU_ONLY_NO_CROSS_DIVISION_SUBSTITUTION",
+    "canon":"AMU_ONLY",
+    "currentState":"AMU_DIVISION_WRITE_ONLY",
+    "visual":"AMU_BIBLE_ONLY_UNLESS_OWNER_OVERRIDE"
+  },
+  "handoff":{
+    "target":"AM_STUDIO_CORE",
+    "schema":"/divisions/schema/release-package.schema.json",
+    "requiredGates":["ASSET_COMPLETE","DIVISION_QC_PASS","OWNER_APPROVED"]
+  }
+}

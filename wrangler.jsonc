@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "am-studio-pwa",
-  "main": "./src/canon-hold-runtime.js",
+  "main": "./src/canon-brain-runtime.js",
   "compatibility_date": "2026-08-11",
   "triggers": {
     "crons": ["0 11 * * *"]
