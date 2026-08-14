@@ -1,0 +1,15 @@
+{
+  "protocolVersion":"1.0",
+  "divisionId":"hikayat-pohon-ganja",
+  "policy":"RESEARCH_FIRST",
+  "status":"LOCKED",
+  "rules":[
+    "Every factual claim used in narration, dialogue, caption, infographic, timeline, map, or visual must be traceable to research.",
+    "A Research Dossier and Source Ledger are required before visual production for each episode.",
+    "Evidence must be classified as established fact, strong evidence, limited or preliminary evidence, historical interpretation, disputed claim, or unknown.",
+    "Primary and official sources, peer-reviewed research, systematic reviews or meta-analyses, scientific institutions, archives or museums, and government regulations are preferred.",
+    "Missing, disputed, or unverified information must never be promoted to canon as fact merely to complete automation."
+  ],
+  "productionGate":"RESEARCH_DOSSIER_READY_BEFORE_VISUAL_PRODUCTION",
+  "migrationState":"AWAITING_EXISTING_PROJECT_SOURCE_LEDGER"
+}

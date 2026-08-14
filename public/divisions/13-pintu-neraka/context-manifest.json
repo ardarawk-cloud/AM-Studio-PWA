@@ -1,0 +1,17 @@
+{
+  "protocolVersion":"1.0",
+  "divisionId":"13-pintu-neraka",
+  "bootOrder":[
+    {"priority":1,"type":"PASSPORT","path":"/divisions/13-pintu-neraka/passport.json","required":true},
+    {"priority":2,"type":"VISUAL_SOURCE_LEDGER","path":"/divisions/13-pintu-neraka/visual-source-ledger.json","required":true},
+    {"priority":3,"type":"CANON_REGISTRY","path":"/canon-registry.json","required":true},
+    {"priority":4,"type":"CURRENT_STATE","path":"/divisions/13-pintu-neraka/current-state.json","required":true},
+    {"priority":5,"type":"EPISODE_REGISTRY","path":"/reader-assets.json","required":true},
+    {"priority":6,"type":"CATALOG","path":"/catalog.json","required":true}
+  ],
+  "divisionLocalOnly":true,
+  "crossDivisionImports":[],
+  "blockedImports":["other_division_character_bible","other_division_current_state","other_division_visual_bible","other_division_production_state"],
+  "missingMemoryPolicy":"STOP_OR_REQUEST_OWNER_SOURCE_NEVER_INVENT_CANON",
+  "handoffTarget":"AM_STUDIO_CORE"
+}

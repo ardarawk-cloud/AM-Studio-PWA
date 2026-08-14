@@ -1,0 +1,43 @@
+{
+  "protocolVersion":"1.0",
+  "divisionId":"amu",
+  "seriesId":"amu",
+  "workingMemoryStatus":"AUTHORITATIVE_AFTER_LATEST_COMPLETE_EPISODE",
+  "lastCompletedEpisode":{
+    "number":1,
+    "title":"The Last Normal Day",
+    "pageCount":22,
+    "production":"COMPLETE",
+    "reader":"COMPLETE",
+    "canon":"CANON_FINAL",
+    "qc":"QC_PASS",
+    "ownerVerified":true
+  },
+  "nextProductionTarget":{
+    "number":2,
+    "title":"The First Breach",
+    "state":"READY_FOR_STORY_PRODUCTION"
+  },
+  "continuity":{
+    "setting":"Neo Avalon 2047",
+    "protagonist":"Arda Moron, age 17",
+    "heroIdentity":"Ninja Cyber",
+    "soraiEvolutionGate":"Episode 4 discovery; do not advance SORAI evolution early",
+    "rule":"Episode 2 must continue from the canonical ending of Episode 1 and must not reset character/world state."
+  },
+  "productionPolicy":{
+    "fixedPageCount":false,
+    "fullEpisodeBeforeRelease":true,
+    "ownerImageRevisionOnlyOnExplicitRequest":true,
+    "language":"Indonesian",
+    "canvas":"1080x1920"
+  },
+  "releaseState":{
+    "episode1":"PUBLISHED_BASELINE",
+    "episode2":"NOT_STARTED",
+    "releaseMode":"FREE_BETA",
+    "monetization":"OFF"
+  },
+  "updatedBy":"OWNER_VERIFIED_DIVISION_INITIALIZATION",
+  "updatedAt":"2026-08-14T17:21:00+08:00"
+}

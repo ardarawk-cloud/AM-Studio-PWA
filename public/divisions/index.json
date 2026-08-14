@@ -1,0 +1,51 @@
+{
+  "protocolVersion":"1.0",
+  "architecture":"1_COMIC_1_DIVISION_1_BRAIN_1_PASSPORT",
+  "coreRole":"STUDIO_ORCHESTRATOR",
+  "divisions":[
+    {
+      "divisionNumber":"001",
+      "divisionId":"amu",
+      "seriesId":"amu",
+      "code":"AMU",
+      "name":"Arda Moron Universe",
+      "status":"ACTIVE_REFERENCE_IMPLEMENTATION",
+      "passport":"/divisions/amu/passport.json",
+      "currentState":"/divisions/amu/current-state.json",
+      "contextManifest":"/divisions/amu/context-manifest.json"
+    },
+    {
+      "divisionNumber":"002",
+      "divisionId":"hikayat-pohon-ganja",
+      "seriesId":"hikayat-pohon-ganja",
+      "code":"HPG",
+      "name":"Hikayat Pohon Ganja",
+      "status":"MIGRATION_PENDING",
+      "passport":"/divisions/hikayat-pohon-ganja/passport.json",
+      "currentState":"/divisions/hikayat-pohon-ganja/current-state.json",
+      "contextManifest":"/divisions/hikayat-pohon-ganja/context-manifest.json"
+    },
+    {
+      "divisionNumber":"003",
+      "divisionId":"13-pintu-neraka",
+      "seriesId":"13",
+      "code":"13",
+      "name":"13 Pintu Neraka",
+      "status":"ACTIVE_PARTIAL_CANON",
+      "passport":"/divisions/13-pintu-neraka/passport.json",
+      "currentState":"/divisions/13-pintu-neraka/current-state.json",
+      "contextManifest":"/divisions/13-pintu-neraka/context-manifest.json"
+    },
+    {
+      "divisionNumber":"004",
+      "divisionId":"blackjack",
+      "seriesId":"ld",
+      "code":"LD-BJ",
+      "name":"The Legendary Decks — Blackjack",
+      "status":"CANON_RECOVERY_HOLD",
+      "passport":"/divisions/blackjack/passport.json",
+      "currentState":"/divisions/blackjack/current-state.json",
+      "contextManifest":"/divisions/blackjack/context-manifest.json"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "protocolVersion":"1.0",
+  "divisionId":"hikayat-pohon-ganja",
+  "seriesId":"hikayat-pohon-ganja",
+  "workingMemoryStatus":"MIGRATION_PENDING",
+  "lastCompletedEpisode":null,
+  "nextProductionTarget":{
+    "number":1,
+    "title":null,
+    "state":"BLOCKED_UNTIL_CANON_MIGRATION"
+  },
+  "continuity":{
+    "state":"NOT_LOADED",
+    "rule":"Do not infer story continuity before approved project sources are migrated into this division."
+  },
+  "research":{
+    "policy":"RESEARCH_FIRST",
+    "dossierRequiredBeforeVisualProduction":true,
+    "sourceLedgerRequired":true,
+    "state":"AWAITING_SOURCE_MIGRATION"
+  },
+  "productionPolicy":{
+    "fixedPageCount":false,
+    "fullEpisodeBeforeRelease":true,
+    "ownerImageRevisionOnlyOnExplicitRequest":true,
+    "language":"Indonesian",
+    "canvas":"1080x1920"
+  },
+  "releaseState":{
+    "releaseMode":"HOLD",
+    "monetization":"OFF",
+    "reason":"CANON_AND_RESEARCH_MIGRATION_REQUIRED"
+  },
+  "updatedBy":"DIVISION_SLOT_INITIALIZATION",
+  "updatedAt":"2026-08-14T18:52:00+08:00"
+}

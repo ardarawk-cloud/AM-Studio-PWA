@@ -1,0 +1,146 @@
+{
+  "protocolVersion":"1.0",
+  "divisionId":"blackjack",
+  "purpose":"Track source provenance without letting AI silently choose between conflicting Blackjack canon revisions.",
+  "policy":"SOURCE_DATE_DOES_NOT_EQUAL_CANON_PRIORITY_OWNER_LOCK_WINS",
+  "sources":[
+    {
+      "sourceId":"SRC-ACC-20260807",
+      "date":"2026-08-07",
+      "type":"ACC_LOCKED_PROFILE",
+      "authority":"LOCKED_PRODUCTION_PROFILE",
+      "facts":[
+        "The Legendary Decks Universe",
+        "The Dealer, seven legendary decks and hero Blackjack in Crownhaven",
+        "American comic, gentleman casino aura and steampunk gothic identity"
+      ],
+      "status":"VERIFIED_ANCHOR"
+    },
+    {
+      "sourceId":"SRC-HOUSE-VALE-20260730",
+      "date":"2026-07-30",
+      "type":"OWNER_LIBRARY_STORY_VISUAL",
+      "authority":"STORY_RECOVERY_EVIDENCE_NOT_FINAL_MASTER",
+      "facts":[
+        "The Legendary Decks Universe",
+        "Chapter 1 title shown as The Last Night of House Vale",
+        "Young dark-haired protagonist at a burning Vale estate in heavy rain",
+        "Protagonist holds a glowing Ace of Spades",
+        "A shadowy top-hatted cane-bearing figure looms behind the event",
+        "Theme line centers a single choice that changes everything"
+      ],
+      "status":"SOURCE_CANDIDATE_A_STORY"
+    },
+    {
+      "sourceId":"SRC-ENSEMBLE-20260730",
+      "date":"2026-07-30",
+      "type":"OWNER_LIBRARY_VISUAL",
+      "authority":"RECOVERY_EVIDENCE_NOT_YET_FINAL_MASTER",
+      "facts":[
+        "Seven Guardians. Seven Decks.",
+        "Asterion",
+        "Astracrown = Choice",
+        "Vermillion Dominion = Courage",
+        "Sylvanor = Wisdom",
+        "Skyhaven = Freedom",
+        "Solaria = Justice",
+        "Noctis = Sacrifice",
+        "Nullhaven = Truth"
+      ],
+      "status":"SOURCE_CANDIDATE_A"
+    },
+    {
+      "sourceId":"SRC-CHARACTERS-20260730",
+      "date":"2026-07-30",
+      "type":"OWNER_LIBRARY_CHARACTER_SHEETS",
+      "authority":"CHARACTER_BIBLE_RECOVERY_EVIDENCE_NOT_YET_OWNER_RELOCKED",
+      "characters":[
+        {"alias":"Golden Paladin","realName":"Cassian Auremont","role":"Guardian of Justice","kingdom":"Solaria","deck":"Golden Deck"},
+        {"alias":"Azure Tempest","realName":"Lyra Caelum","role":"Guardian of Freedom","kingdom":"Aerion Skyfarers","deck":"Azure Deck"},
+        {"alias":"Emerald Sage","realName":"Elias Verdant","role":"Guardian of Wisdom","kingdom":"Sylvanor","deck":"Emerald Deck"},
+        {"alias":"Crimson Monarch","realName":"Aurelius Draven","role":"Guardian of Courage","kingdom":"Vermillion Dominion","deck":"Crimson Deck"},
+        {"alias":"Obsidian Reaper","realName":"Darius Nocturne","role":"Guardian of Sacrifice","kingdom":"Noctis","deck":"Obsidian Deck"}
+      ],
+      "status":"SOURCE_CANDIDATE_A_CHARACTER_SET"
+    },
+    {
+      "sourceId":"SRC-BLACK-DECK-CH1-20260731",
+      "date":"2026-07-31",
+      "type":"OWNER_LIBRARY_STORY_VISUAL",
+      "authority":"STORY_RECOVERY_EVIDENCE_NOT_FINAL_MASTER",
+      "facts":[
+        "The Legendary Decks Universe",
+        "Chapter 1 title shown as The Man with the Black Deck",
+        "Central top-hatted protagonist holds a black/gold spade-emblem card and cane",
+        "Seven-card structure remains visually present",
+        "Steampunk city, floating fortress, council-hall and train imagery appear as story-world cues",
+        "Tagline: Pilihan pertama sering kali menentukan semua pilihan berikutnya"
+      ],
+      "status":"SOURCE_CANDIDATE_A2_STORY"
+    },
+    {
+      "sourceId":"SRC-OWNER-SCREENSHOT-20260814",
+      "date":"2026-08-14",
+      "type":"OWNER_SUPPLIED_VISUAL_SET",
+      "authority":"OWNER_RECOVERY_EVIDENCE_NOT_AUTOMATIC_FINAL_CANON",
+      "facts":[
+        "Episode 1 title: The Last Normal Day",
+        "Blackjack associated with Royal Deck and Guardian of Choice",
+        "Visible deck labels include Equilibrium Deck, Reaper Deck, Diamond Deck, Spade Deck, Clover Deck, Heart Deck and Royal Deck"
+      ],
+      "status":"SOURCE_CANDIDATE_B"
+    },
+    {
+      "sourceId":"SRC-OWNER-RECALL-20260814",
+      "date":"2026-08-14",
+      "type":"OWNER_RECALL",
+      "authority":"OWNER_INTENT_ANCHOR_NOT_EXACT_MECHANIC_SPEC",
+      "facts":["Blackjack was originally intended as a superhero with card/energy powers with a Gambit-like feel"],
+      "status":"VERIFIED_OWNER_INTENT_EXACT_MECHANICS_UNKNOWN"
+    },
+    {
+      "sourceId":"SRC-ROYAL-GAMBLER-LEGACY",
+      "date":"2026-07-30_to_2026-07-31",
+      "type":"LEGACY_LINKED_PROJECT",
+      "authority":"QUARANTINED_FROM_BLACKJACK_UNLESS_OWNER_EXPLICITLY_RELINKS",
+      "facts":[
+        "Historical Royal Gambler materials contain multiple incompatible revisions, including Adrian Lucien Vale / Royal Deck and later Arthur Kingsley / Deck Dimension mechanics",
+        "User directive on 2026-08-14 is to leave Royal Gambler unchanged and fix Blackjack first"
+      ],
+      "status":"QUARANTINED_PROVENANCE_ONLY"
+    }
+  ],
+  "conflicts":[
+    {
+      "conflictId":"CHAPTER_1_STORY_REVISION",
+      "candidateA":"2026-07-30 source labels Chapter 1 as The Last Night of House Vale, centered on a burning Vale estate and an Ace of Spades.",
+      "candidateB":"2026-07-31 source labels Chapter 1 as The Man with the Black Deck, centered on a top-hatted card wielder and broader seven-deck world imagery.",
+      "impact":"Both explicitly claim Chapter 1. AI must not splice them together or choose by date alone. Episode 1 The Last Normal Day may be nested under a chapter, but that relationship is not yet proven.",
+      "status":"UNRESOLVED_OWNER_DECISION_REQUIRED"
+    },
+    {
+      "conflictId":"DECK-NAMING-REVISION",
+      "candidateA":"Golden Deck / Azure Deck / Emerald Deck / Crimson Deck / Obsidian Deck and value/domain naming from 2026-07-30/31 sources",
+      "candidateB":"Diamond Deck / Spade Deck / Clover Deck / Heart Deck plus Equilibrium Deck / Reaper Deck / Royal Deck visible in 2026-08-14 owner screenshot",
+      "impact":"Deck names and possibly identities changed between revisions. AI must not merge or rename them automatically.",
+      "status":"UNRESOLVED_OWNER_DECISION_REQUIRED"
+    },
+    {
+      "conflictId":"WORLD-DOMAIN-REVISION",
+      "candidateA":"Asterion with Astracrown, Vermillion Dominion, Sylvanor, Skyhaven, Solaria, Noctis and Nullhaven; values Choice, Courage, Wisdom, Freedom, Justice, Sacrifice and Truth",
+      "candidateB":"Newer visual set visibly emphasizes Balance, Death & Renewal, Justice, Freedom, Wisdom, Courage and Choice",
+      "impact":"Core seven-value structure may have been revised. Do not pick chronology as authority by itself.",
+      "status":"UNRESOLVED_OWNER_DECISION_REQUIRED"
+    }
+  ],
+  "nonConflictAnchors":[
+    "Blackjack is the hero of The Legendary Decks",
+    "Seven-deck structure exists",
+    "Episode 1 is The Last Normal Day in current owner-supplied evidence",
+    "Choice is a persistent central theme across multiple historical sources",
+    "Blackjack is associated with Choice / Royal Deck in current owner evidence",
+    "Royal Gambler remains a separate legacy project for current recovery purposes"
+  ],
+  "nextAction":"Recover any Master Story / Universe Bible / final approved story document that resolves Chapter 1, deck naming and world/value revisions. Until then CANON_HOLD remains active.",
+  "safeToResolveByAI":false
+}

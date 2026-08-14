@@ -1,0 +1,16 @@
+{
+  "protocolVersion":"1.0",
+  "divisionId":"amu",
+  "bootOrder":[
+    {"priority":1,"type":"PASSPORT","path":"/divisions/amu/passport.json","required":true},
+    {"priority":2,"type":"CANON_REGISTRY","path":"/canon-registry.json","required":true},
+    {"priority":3,"type":"CURRENT_STATE","path":"/divisions/amu/current-state.json","required":true},
+    {"priority":4,"type":"EPISODE_REGISTRY","path":"/reader-assets.json","required":true},
+    {"priority":5,"type":"CATALOG","path":"/catalog.json","required":true}
+  ],
+  "divisionLocalOnly":true,
+  "crossDivisionImports":[],
+  "blockedImports":["other_division_character_bible","other_division_current_state","other_division_visual_bible","other_division_production_state"],
+  "missingMemoryPolicy":"STOP_OR_REQUEST_OWNER_SOURCE_NEVER_INVENT_CANON",
+  "handoffTarget":"AM_STUDIO_CORE"
+}

@@ -1,5 +1,6 @@
 import base from './order-repair-runtime.js';
 import {derivePipelineState,nextReleaseAt,validateEpisode} from './pipeline-core.js';
+import {loadDivisionRegistry} from './division-loader.js';
 
 const API_PREFIX='/api/pipeline/';
 const META_KEY=/^comics\/([a-z0-9-]+)\/ep(\d{3})\/meta\.json$/i;
@@ -12,6 +13,15 @@ const cleanSeries=value=>{const x=String(value||'').trim().toLowerCase();return 
 function adminOK(request,env){const key=request.headers.get('x-am-studio-admin-key')||'';return Boolean(env?.AM_STUDIO_ADMIN_KEY&&key===env.AM_STUDIO_ADMIN_KEY)}
 function deny(){return Response.json({ok:false,error:'ADMIN_AUTH_REQUIRED'},{status:401,headers:{'cache-control':'no-store'}})}
 async function jsonBody(request){try{return await request.json()}catch{return{}}}
+
+async function canonHold(env,seriesId,requestUrl='https://am-studio.local/'){
+  try{
+    const registry=await loadDivisionRegistry(env,requestUrl);
+    const division=(registry.divisions||[]).find(x=>x.seriesId===seriesId);
+    return division&&String(division.status||'').includes('CANON_RECOVERY_HOLD')?division:null;
+  }catch{return null}
+}
+function canonHoldResponse(division){return Response.json({ok:false,error:'CANON_RECOVERY_HOLD',divisionId:division?.divisionId||null,status:division?.status||null},{status:423,headers:{'cache-control':'no-store','x-am-canon-firewall':'active'}})}
 
 async function listAll(env,prefix='comics/'){
   const objects=[];let cursor;
@@ -57,7 +67,7 @@ async function writeMeta(env,seriesId,episode,patch){
 async function statusApi(request,env){
   if(!adminOK(request,env))return deny();
   const inventory=await buildInventory(env),episodes=inventory.episodes.map(g=>recordOf(g,inventory.covers));
-  return Response.json({ok:true,engine:{name:'AM STUDIO Auto Episode Pipeline',version:1,timezone:'Asia/Makassar',releaseTime:'19:00',policy:'ASSET_COMPLETE+QC_PASS+OWNER_APPROVED'},episodes},{headers:{'cache-control':'no-store'}});
+  return Response.json({ok:true,engine:{name:'AM STUDIO Auto Episode Pipeline',version:1,timezone:'Asia/Makassar',releaseTime:'19:00',policy:'ASSET_COMPLETE+QC_PASS+OWNER_APPROVED+CANON_GATE'},episodes},{headers:{'cache-control':'no-store'}});
 }
 
 function target(body){const seriesId=cleanSeries(body.seriesId),episode=Number(body.episode);return seriesId&&Number.isInteger(episode)&&episode>=1&&episode<=999?{seriesId,episode}:null}
@@ -72,6 +82,7 @@ async function validateApi(request,env){
 
 async function approveApi(request,env){
   if(!adminOK(request,env))return deny();const body=await jsonBody(request),t=target(body);if(!t)return Response.json({ok:false,error:'INVALID_EPISODE_TARGET'},{status:400});
+  const held=await canonHold(env,t.seriesId,request.url);if(held)return canonHoldResponse(held);
   const {inventory,group}=await episodeGroup(env,t.seriesId,t.episode),record=recordOf(group,inventory.covers);if(!record.validation.ok)return Response.json({ok:false,error:'ASSET_VALIDATION_FAILED',record},{status:409});
   const requestedMs=body.scheduledAt?Date.parse(body.scheduledAt):null;if(body.scheduledAt&&Number.isNaN(requestedMs))return Response.json({ok:false,error:'INVALID_SCHEDULE_TIME'},{status:400});
   const scheduledAt=body.scheduledAt?new Date(requestedMs).toISOString():nextReleaseAt(Date.now(),RELEASE_HOUR_WITA,480);
@@ -85,7 +96,8 @@ async function holdApi(request,env){
   return Response.json({ok:true,state:'HOLD',meta},{headers:{'cache-control':'no-store'}});
 }
 
-async function publishOne(env,t,source='OWNER_PUBLISH_NOW'){
+async function publishOne(env,t,source='OWNER_PUBLISH_NOW',requestUrl='https://am-studio.local/'){
+  const held=await canonHold(env,t.seriesId,requestUrl);if(held)return {ok:false,status:423,error:'CANON_RECOVERY_HOLD',divisionId:held.divisionId};
   const {inventory,group}=await episodeGroup(env,t.seriesId,t.episode),record=recordOf(group,inventory.covers);
   if(!record.validation.ok)return {ok:false,status:409,error:'ASSET_VALIDATION_FAILED',record};
   if(!record.ownerApproved)return {ok:false,status:409,error:'OWNER_APPROVAL_REQUIRED',record};
@@ -95,7 +107,7 @@ async function publishOne(env,t,source='OWNER_PUBLISH_NOW'){
 
 async function publishApi(request,env){
   if(!adminOK(request,env))return deny();const body=await jsonBody(request),t=target(body);if(!t)return Response.json({ok:false,error:'INVALID_EPISODE_TARGET'},{status:400});
-  const result=await publishOne(env,t);return Response.json(result,{status:result.status,headers:{'cache-control':'no-store'}});
+  const result=await publishOne(env,t,'OWNER_PUBLISH_NOW',request.url);return Response.json(result,{status:result.status,headers:{'cache-control':'no-store'}});
 }
 
 async function releaseDue(env,nowMs=Date.now()){

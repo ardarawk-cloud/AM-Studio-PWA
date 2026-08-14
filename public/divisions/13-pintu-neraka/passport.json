@@ -1,0 +1,76 @@
+{
+  "protocolVersion":"1.0",
+  "divisionNumber":"003",
+  "divisionId":"13-pintu-neraka",
+  "seriesId":"13",
+  "identity":{
+    "name":"13 Pintu Neraka",
+    "code":"13",
+    "type":"standalone_universe",
+    "status":"ACTIVE_PARTIAL_CANON",
+    "studio":"AM STUDIO",
+    "setting":"Indonesia + Alam Bayang",
+    "protagonist":"Raka Ardana"
+  },
+  "brain":{
+    "mode":"ISOLATED_DIVISION_BRAIN",
+    "contextPolicy":"LOAD_THIS_DIVISION_ONLY",
+    "authorityOrder":[
+      "OWNER_APPROVED_LOCK",
+      "MASTER_STORY",
+      "OFFICIAL_CHARACTER_SHEETS",
+      "WORLD_VISUAL_POWER_BIBLES",
+      "VISUAL_SOURCE_LEDGER",
+      "CURRENT_STATE_AND_CONTINUITY",
+      "EPISODE_REGISTRY",
+      "PRODUCTION_DRAFT"
+    ],
+    "sharedUniverseContract":null,
+    "rule":"MISSING_CANON_MUST_NOT_BE_INVENTED"
+  },
+  "memory":{
+    "passport":"/divisions/13-pintu-neraka/passport.json",
+    "currentState":"/divisions/13-pintu-neraka/current-state.json",
+    "contextManifest":"/divisions/13-pintu-neraka/context-manifest.json",
+    "visualSourceLedger":"/divisions/13-pintu-neraka/visual-source-ledger.json",
+    "masterStory":null,
+    "characterBible":null,
+    "worldBible":null,
+    "visualBible":null,
+    "powerCombatBible":null,
+    "canonRegistry":"/canon-registry.json",
+    "episodeRegistry":"/reader-assets.json",
+    "migrationNote":"Full 13 Pintu Neraka bibles and character sheets remain authoritative studio assets and must be migrated without redesigning characters."
+  },
+  "canonAnchors":{
+    "protagonist":{"name":"Raka Ardana","role":"investigative journalist"},
+    "coreCast":["Nara Prameswari","Dr. Sinta Wirawan","Damar Wicaksana","Mahesa Adinata","Wening Jatmika"],
+    "world":"Indonesia + Alam Bayang",
+    "mythology":"13 Segel/Pintu Neraka",
+    "visualAuthority":"Official Character Sheets + owner-approved sequential pages"
+  },
+  "production":{
+    "currentTarget":{"episode":1,"title":"Ritual yang Salah","state":"CONTINUE_FROM_PAGE_002"},
+    "ownerApprovalRequired":true,
+    "pageCountPolicy":"STORY_DRIVEN_NO_FIXED_PAGE_COUNT",
+    "visualPriority":["STORY_FIRST","CONTINUITY_SECOND","VISUAL_THIRD","EFFECTS_LAST"],
+    "language":"id-ID"
+  },
+  "release":{
+    "mode":"FREE_BETA",
+    "pipeline":"AM_STUDIO_AUTO_EPISODE_PIPELINE_V1",
+    "defaultSlot":"19:00 WITA",
+    "monetization":{"inheritGlobal":true,"status":"OFF"}
+  },
+  "isolation":{
+    "character":"13PN_ONLY_NO_CROSS_DIVISION_SUBSTITUTION",
+    "canon":"13PN_ONLY",
+    "currentState":"13PN_DIVISION_WRITE_ONLY",
+    "visual":"OFFICIAL_CHARACTER_SHEETS_AND_LOCKED_13PN_REFERENCES_ONLY_UNLESS_OWNER_OVERRIDE"
+  },
+  "handoff":{
+    "target":"AM_STUDIO_CORE",
+    "schema":"/divisions/schema/release-package.schema.json",
+    "requiredGates":["ASSET_COMPLETE","DIVISION_QC_PASS","OWNER_APPROVED"]
+  }
+}

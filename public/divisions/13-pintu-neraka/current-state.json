@@ -1,0 +1,47 @@
+{
+  "protocolVersion":"1.0",
+  "divisionId":"13-pintu-neraka",
+  "seriesId":"13",
+  "workingMemoryStatus":"AUTHORITATIVE_AFTER_PAGE_002",
+  "currentEpisode":{
+    "number":1,
+    "title":"Ritual yang Salah",
+    "pageCountProduced":2,
+    "production":"IN_PROGRESS",
+    "canon":"PAGE_001_AND_PAGE_002_OWNER_LOCKED",
+    "qc":"CONTINUITY_SOURCE_LOCKED"
+  },
+  "lastCompletedPage":{
+    "number":2,
+    "title":"Bangunan yang Kosong"
+  },
+  "nextProductionTarget":{
+    "episode":1,
+    "nextPage":3,
+    "state":"CONTINUE_CHRONOLOGICALLY_FROM_PAGE_002"
+  },
+  "continuity":{
+    "location":"Bangunan tua Watu Kembar",
+    "time":"Malam",
+    "charactersPresent":["Raka Ardana","Nara Prameswari"],
+    "rakaState":"Masuk lebih dalam bersama Nara; membawa senter dan perlengkapan investigasi; menyadari ada sesuatu yang tidak beres.",
+    "naraState":"Mendokumentasikan bangunan dengan kamera; kamera belum menangkap anomali yang jelas.",
+    "discovery":"Mereka menemukan simbol pada dinding yang bukan simbol kuli biasa.",
+    "movement":"Raka dan Nara memutuskan melanjutkan lebih dalam untuk mencari pegangan atau petunjuk lain.",
+    "hardRule":"Page berikutnya harus melanjutkan langsung dari kondisi akhir Page 2. Jangan ulang kedatangan di Watu Kembar, jangan ulang masuk bangunan, dan jangan redesign Raka/Nara."
+  },
+  "productionPolicy":{
+    "fixedPageCount":false,
+    "fullEpisodeBeforeRelease":true,
+    "ownerImageRevisionOnlyOnExplicitRequest":true,
+    "language":"Indonesian",
+    "visualAuthority":"Official Character Sheets + locked Page 1/Page 2 references"
+  },
+  "releaseState":{
+    "episode1":"IN_PRODUCTION",
+    "releaseMode":"FREE_BETA",
+    "monetization":"OFF"
+  },
+  "updatedBy":"OWNER_SUPPLIED_PAGE_001_AND_PAGE_002",
+  "updatedAt":"2026-08-14T19:45:00+08:00"
+}

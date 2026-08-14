@@ -1,0 +1,31 @@
+name: AM STUDIO Comic Division Validation
+
+on:
+  push:
+    branches:
+      - feature/comic-division-brain-v1
+  pull_request:
+    branches:
+      - feature/auto-episode-pipeline-v1
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+      - name: Syntax check division runtime
+        run: |
+          node --check src/division-core.js
+          node --check src/division-loader.js
+          node --check src/division-runtime.js
+      - run: npx wrangler deploy --dry-run

@@ -1,0 +1,33 @@
+{
+  "protocolVersion":"1.0",
+  "divisionId":"blackjack",
+  "lockState":"WAITING_MASTER_STORY_RECOVERY",
+  "owner":"ARDA",
+  "masterStory":{
+    "path":null,
+    "version":null,
+    "sha256":null,
+    "ownerApproved":false
+  },
+  "bootAllowed":true,
+  "generationAllowed":false,
+  "stateAdvanceAllowed":false,
+  "releaseAllowed":false,
+  "rules":[
+    "MASTER_STORY_HASH_MUST_MATCH_APPROVED_LOCK_BEFORE_GENERATION",
+    "MISSING_MASTER_STORY_STOPS_GENERATION",
+    "CONFLICTING_CANON_STOPS_GENERATION",
+    "UNKNOWN_CANON_IS_NOT_FILLED_BY_AI",
+    "CURRENT_STATE_CANNOT_OVERRIDE_MASTER_STORY",
+    "AI_OUTPUT_CANNOT_REWRITE_LOCKED_CANON",
+    "OWNER_APPROVAL_REQUIRED_TO_CHANGE_LOCK"
+  ],
+  "recoveryExitCriteria":[
+    "MASTER_STORY_SOURCE_RECOVERED",
+    "MASTER_STORY_OWNER_APPROVED",
+    "MASTER_STORY_SHA256_RECORDED",
+    "CHARACTER_DECK_POWER_CANON_RESOLVED",
+    "CURRENT_STATE_REBUILT_FROM_APPROVED_CANON",
+    "CONFLICT_LEDGER_EMPTY_OR_OWNER_RESOLVED"
+  ]
+}
