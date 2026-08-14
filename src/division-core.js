@@ -30,15 +30,7 @@ export function detectCrossDivisionTitleCollisions({divisionId,currentState={},s
   for(const claim of target){
     for(const foreign of foreignTrusted){
       if(claim.normalizedTitle&&claim.normalizedTitle===foreign.normalizedTitle){
-        collisions.push({
-          type:'EXACT_TITLE_COLLISION',
-          title:claim.title,
-          targetDivisionId:divisionId,
-          targetScope:claim.scope,
-          authoritativeDivisionId:foreign.divisionId,
-          authoritativeScope:foreign.scope,
-          authoritativeTitle:foreign.title
-        });
+        collisions.push({type:'EXACT_TITLE_COLLISION',title:claim.title,targetDivisionId:divisionId,targetScope:claim.scope,authoritativeDivisionId:foreign.divisionId,authoritativeScope:foreign.scope,authoritativeTitle:foreign.title});
       }
     }
   }
@@ -72,13 +64,20 @@ export function evaluateProductionGate({passport={},contextManifest={},canonLock
   if(passport.production?.generationAllowed===false)errors.push('PASSPORT_GENERATION_BLOCKED');
   if(contextManifest.generationAllowed===false)errors.push('CONTEXT_GENERATION_BLOCKED');
   if(canonLock?.generationAllowed===false)errors.push('CANON_LOCK_GENERATION_BLOCKED');
-  if(canonLock?.releaseAllowed===false)errors.push('CANON_LOCK_RELEASE_BLOCKED');
-  if(sourceLedger?.safeToResolveByAI===false)errors.push('SOURCE_LEDGER_AI_RESOLUTION_BLOCKED');
+  if(sourceLedger?.safeToResolveByAI===false&&String(sourceLedger?.status||'').includes('UNRESOLVED'))errors.push('SOURCE_LEDGER_AI_RESOLUTION_BLOCKED');
   if(Array.isArray(sourceLedger?.conflicts)&&sourceLedger.conflicts.some(x=>String(x?.status||'').includes('UNRESOLVED')||String(x?.status||'')==='CONFLICT'))errors.push('UNRESOLVED_SOURCE_CONFLICT');
-  if(recoveryLedger?.safeToGenerate===false)errors.push('RECOVERY_LEDGER_NOT_SAFE_TO_GENERATE');
+  if(recoveryLedger?.safeToGenerate===false&&String(recoveryLedger?.mode||'').includes('CANON_RECOVERY'))errors.push('RECOVERY_LEDGER_NOT_SAFE_TO_GENERATE');
   if(Array.isArray(recoveryLedger?.conflicts)&&recoveryLedger.conflicts.some(x=>String(x?.status||'')==='CONFLICT'))errors.push('UNRESOLVED_CANON_CONFLICT');
   if(Array.isArray(crossDivisionConflicts)&&crossDivisionConflicts.length>0)errors.push('CROSS_DIVISION_CANON_COLLISION');
   if(String(passport.identity?.status||'').includes('CANON_RECOVERY_HOLD'))errors.push('CANON_RECOVERY_HOLD');
+  return {ok:errors.length===0,errors};
+}
+
+export function evaluateReleaseGate({canonLock={},contextManifest={},packageData={}}={}){
+  const errors=[];
+  if(canonLock.releaseAllowed!==true||contextManifest.releaseAllowed!==true)errors.push('CANON_RELEASE_GATE_CLOSED');
+  if(packageData.divisionQc!=='QC_PASS')errors.push('DIVISION_QC_NOT_PASS');
+  if(packageData.ownerApproved!==true)errors.push('OWNER_RELEASE_APPROVAL_REQUIRED');
   return {ok:errors.length===0,errors};
 }
 
@@ -92,22 +91,7 @@ export function buildReleasePackage({passport,currentState,episode,pageCount,div
   if(!Number.isInteger(pages)||pages<1)throw new Error('INVALID_PAGE_COUNT');
   const target=currentState?.nextProductionTarget;
   const title=target&&Number(target.number)===ep?String(target.title||`Episode ${ep}`):`Episode ${ep}`;
-  return {
-    protocolVersion:'1.0',
-    divisionId:passport.divisionId,
-    seriesId:passport.seriesId,
-    episode:ep,
-    title,
-    pageCount:pages,
-    divisionQc,
-    ownerApproved:Boolean(ownerApproved),
-    releaseMode:passport.release?.mode||'FREE_BETA',
-    pipelineState,
-    scheduledAt,
-    monetization:passport.release?.monetization?.status||'OFF',
-    assetRoot:`comics/${passport.seriesId}/ep${String(ep).padStart(3,'0')}/`,
-    currentStateAdvance:null
-  };
+  return {protocolVersion:'1.0',divisionId:passport.divisionId,seriesId:passport.seriesId,episode:ep,title,pageCount:pages,divisionQc,ownerApproved:Boolean(ownerApproved),releaseMode:passport.release?.mode||'FREE_BETA',pipelineState,scheduledAt,monetization:passport.release?.monetization?.status||'OFF',assetRoot:`comics/${passport.seriesId}/ep${String(ep).padStart(3,'0')}/`,currentStateAdvance:null};
 }
 
 export function canHandoffToCore(pkg={}){
