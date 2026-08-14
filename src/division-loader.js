@@ -57,8 +57,9 @@ export async function loadDivisionContext(env,requestUrl,divisionId){
     [division.contextManifest]:manifest
   });
   const canonLock=bootMemory.CANON_LOCK||null;
+  const sourceLedger=bootMemory.SOURCE_LEDGER||null;
   const recoveryLedger=bootMemory.RECOVERY_LEDGER||null;
-  const productionGate=evaluateProductionGate({passport,contextManifest:manifest,canonLock,recoveryLedger});
+  const productionGate=evaluateProductionGate({passport,contextManifest:manifest,canonLock,sourceLedger,recoveryLedger});
 
   return {
     protocolVersion:registry.protocolVersion,
