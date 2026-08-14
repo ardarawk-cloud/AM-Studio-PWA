@@ -1,0 +1,66 @@
+{
+  "protocolVersion":"1.0",
+  "divisionNumber":"002",
+  "divisionId":"hikayat-pohon-ganja",
+  "seriesId":"hikayat-pohon-ganja",
+  "identity":{
+    "name":"Hikayat Pohon Ganja",
+    "code":"HPG",
+    "type":"research_driven_comic",
+    "status":"MIGRATION_PENDING",
+    "studio":"AM STUDIO"
+  },
+  "brain":{
+    "mode":"ISOLATED_DIVISION_BRAIN",
+    "contextPolicy":"LOAD_THIS_DIVISION_ONLY",
+    "authorityOrder":[
+      "OWNER_APPROVED_LOCK",
+      "MASTER_STORY",
+      "RESEARCH_DOSSIER_AND_SOURCE_LEDGER",
+      "CHARACTER_WORLD_VISUAL_BIBLES",
+      "CANON_REGISTRY",
+      "CURRENT_STATE_AND_CONTINUITY",
+      "EPISODE_REGISTRY",
+      "PRODUCTION_DRAFT"
+    ],
+    "sharedUniverseContract":null,
+    "rule":"MISSING_CANON_OR_UNVERIFIED_FACTS_MUST_NOT_BE_INVENTED"
+  },
+  "memory":{
+    "passport":"/divisions/hikayat-pohon-ganja/passport.json",
+    "currentState":"/divisions/hikayat-pohon-ganja/current-state.json",
+    "contextManifest":"/divisions/hikayat-pohon-ganja/context-manifest.json",
+    "masterStory":null,
+    "characterBible":null,
+    "worldBible":null,
+    "visualBible":null,
+    "powerCombatBible":null,
+    "canonRegistry":null,
+    "episodeRegistry":null,
+    "researchPolicy":"/divisions/hikayat-pohon-ganja/research-policy.json",
+    "migrationNote":"Reserved Division 002. Existing approved project canon and research assets must be migrated without reinterpretation before automated production is enabled."
+  },
+  "production":{
+    "currentTarget":{"episode":1,"title":null,"state":"BLOCKED_UNTIL_CANON_MIGRATION"},
+    "ownerApprovalRequired":true,
+    "pageCountPolicy":"STORY_DRIVEN_NO_FIXED_PAGE_COUNT",
+    "language":"id-ID"
+  },
+  "release":{
+    "mode":"HOLD",
+    "pipeline":"AM_STUDIO_AUTO_EPISODE_PIPELINE_V1",
+    "defaultSlot":"19:00 WITA",
+    "monetization":{"inheritGlobal":true,"status":"OFF"}
+  },
+  "isolation":{
+    "character":"HPG_ONLY_NO_CROSS_DIVISION_SUBSTITUTION",
+    "canon":"HPG_ONLY",
+    "currentState":"HPG_DIVISION_WRITE_ONLY",
+    "visual":"HPG_BIBLE_ONLY_UNLESS_OWNER_OVERRIDE"
+  },
+  "handoff":{
+    "target":"AM_STUDIO_CORE",
+    "schema":"/divisions/schema/release-package.schema.json",
+    "requiredGates":["CANON_MIGRATION_COMPLETE","RESEARCH_DOSSIER_READY","ASSET_COMPLETE","DIVISION_QC_PASS","OWNER_APPROVED"]
+  }
+}
