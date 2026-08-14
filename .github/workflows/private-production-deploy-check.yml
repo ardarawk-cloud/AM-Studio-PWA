@@ -29,7 +29,7 @@ jobs:
           has CLOUDFLARE_ACCOUNT_ID
           has OPENAI_API_KEY
 
-      - name: Probe production Worker
+      - name: Assert Private Owner UI is live and protected
         shell: bash
         run: |
           set -euo pipefail
@@ -37,11 +37,14 @@ jobs:
           root_code=$(curl -sS -L -o /tmp/root.html -w '%{http_code}' "$HOST/")
           js_code=$(curl -sS -L -o /tmp/private-production.js -w '%{http_code}' "$HOST/private-production.js")
           api_code=$(curl -sS -L -o /tmp/api.json -w '%{http_code}' "$HOST/api/production/blackjack/status")
-          echo "ROOT_HTTP=$root_code"
-          echo "PRIVATE_PRODUCTION_JS_HTTP=$js_code"
-          echo "OWNER_API_WITHOUT_KEY_HTTP=$api_code"
-          if grep -q 'private-production.js' /tmp/root.html; then echo 'ROOT_INJECTS_PRIVATE_PRODUCTION=YES'; else echo 'ROOT_INJECTS_PRIVATE_PRODUCTION=NO'; fi
-          if grep -q 'AUTO PRODUCE EPISODE' /tmp/private-production.js; then echo 'PRIVATE_OWNER_UI_ASSET=NEW'; else echo 'PRIVATE_OWNER_UI_ASSET=OLD_OR_MISSING'; fi
+          test "$root_code" = '200'
+          test "$js_code" = '200'
+          test "$api_code" = '401'
+          grep -q 'private-production.js' /tmp/root.html
+          grep -q 'AUTO PRODUCE EPISODE' /tmp/private-production.js
+          grep -q 'ADMIN_AUTH_REQUIRED' /tmp/api.json
+          echo 'PRIVATE_OWNER_PRODUCTION_LIVE=PASS'
+          echo 'OWNER_API_FIREWALL=PASS'
 
       - name: Validate deploy command prerequisites
         shell: bash
