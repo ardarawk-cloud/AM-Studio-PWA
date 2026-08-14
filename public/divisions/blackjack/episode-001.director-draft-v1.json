@@ -1,0 +1,75 @@
+{
+  "document": "BLACKJACK_EPISODE_001_DIRECTOR_DRAFT",
+  "version": "1.0",
+  "status": "DIRECTOR_CANON_DRAFT_OWNER_AUTHORIZED_DEVELOPMENT",
+  "series": "The Legendary Decks",
+  "chapter": "The Man with the Black Deck",
+  "episodeNumber": 1,
+  "episodeTitle": "The Ace in the Rain",
+  "setting": "House Vale estate and Crownhaven, Astracrown",
+  "time": "night into pre-dawn during a severe storm",
+  "heroStateAtStart": "Adrian Lucien Vale has not publicly become Blackjack and has not yet awakened the Black Deck.",
+  "heroStateAtEnd": "Adrian is the chosen bearer of the Black Deck and Guardian of Choice, but has not yet publicly adopted the name Blackjack.",
+  "storyPurpose": [
+    "Introduce Adrian as a strategist defined by responsibility rather than luck",
+    "Show House Vale as custodian of Black Deck records rather than owner of the Deck",
+    "Establish The House as the hidden force behind the attack",
+    "Awaken the Black Deck through Adrian's consequential choice",
+    "Introduce The Dealer without turning him into Adrian's mentor",
+    "End with Adrian losing his inherited life but gaining responsibility for his own path"
+  ],
+  "pagePlan": [
+    {
+      "page": 1,
+      "beat": "Crownhaven storm. House Vale prepares for a formal gathering while Adrian quietly resists being told what his future must be. A sealed black card case is moved through a restricted corridor.",
+      "panels": "3-5"
+    },
+    {
+      "page": 2,
+      "beat": "The estate is breached. Attackers move with knowledge of the building and head for the sealed records rather than the treasury. Adrian realizes this is targeted.",
+      "panels": "3-5"
+    },
+    {
+      "page": 3,
+      "beat": "Senior Vale figures order Adrian to secure the black case even as servants and guests become trapped by fire. He is told the family legacy must survive at any cost.",
+      "panels": "3-5"
+    },
+    {
+      "page": 4,
+      "beat": "Adrian rejects the prescribed choice. Using strategy, fencing skill and the Royal Cane only as a physical weapon, he redirects attackers and opens an escape route for civilians. He abandons the case to save people.",
+      "panels": "3-5"
+    },
+    {
+      "page": 5,
+      "beat": "The burning structure collapses around the abandoned case. In the rain outside, the case opens by itself. A black-and-gold Ace of Spades manifests because Adrian committed to a meaningful choice and accepted the cost.",
+      "panels": "3-5"
+    },
+    {
+      "page": 6,
+      "beat": "Adrian instinctively channels the first Volition charge. He uses one controlled Black Deck release to stop an attacker threatening survivors. The scene demonstrates energy cards without revealing the full Power Bible.",
+      "panels": "3-5"
+    },
+    {
+      "page": 7,
+      "beat": "The Dealer appears at a distance beneath a black top hat. He does not train Adrian or order him. He confirms only that the Deck answered Adrian's choice and that responsibility for the next choice remains Adrian's.",
+      "panels": "3-5"
+    },
+    {
+      "page": 8,
+      "beat": "Pre-dawn. House Vale is ruined. One House operative escapes after confirming that the Guardian of Choice has awakened. Adrian leaves the estate with the Black Deck and Royal Cane. Final image: the Ace of Spades darkens back into the Deck as Crownhaven waits beyond the rain.",
+      "panels": "3-5"
+    }
+  ],
+  "dealerDialogueRule": "The Dealer may state a rule or consequence, but may not give Adrian tactical training, a mission order or the correct choice.",
+  "powerRevealRule": "Episode 1 shows only basic card-energy activation and one controlled release. Ace techniques, seven-card charge ceiling and advanced suit/rank mechanics are revealed later through story pressure rather than exposition dump.",
+  "canonExclusions": [
+    "Arthur Kingsley",
+    "Probability Engine",
+    "Deck Dimension",
+    "Royal Deck",
+    "The Last Normal Day",
+    "probability manipulation"
+  ],
+  "completedPages": 0,
+  "productionState": "READY_FOR_OWNER_PROMOTION_NOT_YET_GENERATED"
+}
