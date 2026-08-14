@@ -37,10 +37,10 @@ async function buildInventory(env){
 }
 
 function recordOf(g,covers){
-  const meta=g.meta||{},pages=[...g.pages].sort((a,b)=>a-b),pageCount=Number(meta.pageCount||0);
+  const rawMeta=g.meta||{},legacyPublished=!rawMeta.releaseState&&rawMeta.ownerApproved===true,meta=legacyPublished?{...rawMeta,releaseState:'PUBLISHED',technicalQc:rawMeta.technicalQc||'QC_PASS'}:rawMeta,pages=[...g.pages].sort((a,b)=>a-b),pageCount=Number(meta.pageCount||0);
   const input={seriesId:g.seriesId,episode:g.episode,pageCount,pages,hasCover:covers.has(g.seriesId),meta};
   const validation=validateEpisode(input),state=derivePipelineState(input);
-  return {seriesId:g.seriesId,episode:g.episode,title:meta.title||`Episode ${pad(g.episode)}`,pageCount,availablePageCount:pages.length,pages,hasCover:covers.has(g.seriesId),missingPages:validation.missingPages,validation,state,ownerApproved:Boolean(meta.ownerApproved),technicalQc:meta.technicalQc||null,releaseState:meta.releaseState||null,scheduledAt:meta.scheduledAt||null,publishedAt:meta.publishedAt||null,updatedAt:meta.updatedAt||null};
+  return {seriesId:g.seriesId,episode:g.episode,title:meta.title||`Episode ${pad(g.episode)}`,pageCount,availablePageCount:pages.length,pages,hasCover:covers.has(g.seriesId),missingPages:validation.missingPages,validation,state,ownerApproved:Boolean(meta.ownerApproved),technicalQc:meta.technicalQc||null,releaseState:meta.releaseState||null,scheduledAt:meta.scheduledAt||null,publishedAt:meta.publishedAt||null,updatedAt:meta.updatedAt||null,legacyPublished};
 }
 
 async function episodeGroup(env,seriesId,episode){
@@ -73,8 +73,8 @@ async function validateApi(request,env){
 async function approveApi(request,env){
   if(!adminOK(request,env))return deny();const body=await jsonBody(request),t=target(body);if(!t)return Response.json({ok:false,error:'INVALID_EPISODE_TARGET'},{status:400});
   const {inventory,group}=await episodeGroup(env,t.seriesId,t.episode),record=recordOf(group,inventory.covers);if(!record.validation.ok)return Response.json({ok:false,error:'ASSET_VALIDATION_FAILED',record},{status:409});
-  let scheduledAt=body.scheduledAt?new Date(body.scheduledAt).toISOString():nextReleaseAt(Date.now(),RELEASE_HOUR_WITA,480);
-  if(Number.isNaN(Date.parse(scheduledAt)))return Response.json({ok:false,error:'INVALID_SCHEDULE_TIME'},{status:400});
+  const requestedMs=body.scheduledAt?Date.parse(body.scheduledAt):null;if(body.scheduledAt&&Number.isNaN(requestedMs))return Response.json({ok:false,error:'INVALID_SCHEDULE_TIME'},{status:400});
+  const scheduledAt=body.scheduledAt?new Date(requestedMs).toISOString():nextReleaseAt(Date.now(),RELEASE_HOUR_WITA,480);
   const meta=await writeMeta(env,t.seriesId,t.episode,{technicalQc:'QC_PASS',technicalQcAt:new Date().toISOString(),ownerApproved:true,ownerApprovedAt:new Date().toISOString(),releaseState:'SCHEDULED',scheduledAt});
   return Response.json({ok:true,state:'SCHEDULED',scheduledAt,meta},{headers:{'cache-control':'no-store'}});
 }
@@ -124,7 +124,7 @@ async function filterPublicationJson(request,response,env,kind){
 
 async function stageAssetMeta(request,response,env,body,previous){
   if(!response.ok)return response;const t=target(body);if(!t)return response;
-  const preservePublished=previous?.releaseState==='PUBLISHED',preserveHold=previous?.releaseState==='HOLD';
+  const preservePublished=previous?.releaseState==='PUBLISHED'||(!previous?.releaseState&&previous?.ownerApproved===true),preserveHold=previous?.releaseState==='HOLD';
   await writeMeta(env,t.seriesId,t.episode,{ownerApproved:preservePublished?Boolean(previous.ownerApproved):false,releaseState:preservePublished?'PUBLISHED':preserveHold?'HOLD':'ASSET_WAIT',technicalQc:preservePublished?previous.technicalQc||'QC_PASS':null,scheduledAt:preservePublished?previous.scheduledAt||null:null,publishedAt:preservePublished?previous.publishedAt||null:null});
   return response;
 }
