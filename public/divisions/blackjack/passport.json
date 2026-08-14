@@ -1,5 +1,6 @@
 {
-  "protocolVersion": "1.2",
+  "protocolVersion": "1.0",
+  "recoveryVersion": "1.2",
   "divisionNumber": "004",
   "divisionId": "blackjack",
   "seriesId": "ld",
