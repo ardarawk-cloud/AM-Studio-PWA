@@ -1,0 +1,31 @@
+name: AM STUDIO Canon Brain Validation
+
+on:
+  push:
+    branches:
+      - feature/canon-brain-integration-v1
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+      - name: Syntax check Canon Brain runtime
+        run: |
+          node --check src/division-core.js
+          node --check src/division-loader.js
+          node --check src/canon-brain-runtime.js
+          node --check src/canon-hold-runtime.js
+      - run: npx wrangler deploy --dry-run

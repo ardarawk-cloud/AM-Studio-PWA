@@ -1,0 +1,21 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"/divisions/schema/passport.schema.json",
+  "title":"AM STUDIO Universal Comic Passport v1",
+  "type":"object",
+  "required":["protocolVersion","divisionNumber","divisionId","seriesId","identity","brain","memory","production","release","isolation","handoff"],
+  "properties":{
+    "protocolVersion":{"const":"1.0"},
+    "divisionNumber":{"type":"string","pattern":"^[0-9]{3}$"},
+    "divisionId":{"type":"string","pattern":"^[a-z0-9-]+$"},
+    "seriesId":{"type":"string","pattern":"^[a-z0-9-]+$"},
+    "identity":{"type":"object","required":["name","code","type","status"],"properties":{"name":{"type":"string"},"code":{"type":"string"},"type":{"type":"string"},"status":{"type":"string"}}},
+    "brain":{"type":"object","required":["mode","authorityOrder","contextPolicy"],"properties":{"mode":{"const":"ISOLATED_DIVISION_BRAIN"},"authorityOrder":{"type":"array","minItems":1,"items":{"type":"string"}},"contextPolicy":{"const":"LOAD_THIS_DIVISION_ONLY"},"sharedUniverseContract":{"type":["object","null"]}}},
+    "memory":{"type":"object","required":["passport","currentState","contextManifest"],"properties":{"passport":{"type":"string"},"currentState":{"type":"string"},"contextManifest":{"type":"string"},"masterStory":{"type":["string","null"]},"characterBible":{"type":["string","null"]},"worldBible":{"type":["string","null"]},"visualBible":{"type":["string","null"]},"powerCombatBible":{"type":["string","null"]},"canonRegistry":{"type":["string","null"]},"episodeRegistry":{"type":["string","null"]},"researchPolicy":{"type":["string","null"]}}},
+    "production":{"type":"object","required":["currentTarget","ownerApprovalRequired"],"properties":{"currentTarget":{"type":"object","required":["episode","state"],"properties":{"episode":{"type":"integer","minimum":1},"title":{"type":["string","null"]},"state":{"type":"string"}}},"ownerApprovalRequired":{"type":"boolean"},"pageCountPolicy":{"type":"string"}}},
+    "release":{"type":"object","required":["mode","pipeline","monetization"],"properties":{"mode":{"type":"string"},"pipeline":{"type":"string"},"monetization":{"type":"object","required":["inheritGlobal","status"],"properties":{"inheritGlobal":{"type":"boolean"},"status":{"type":"string"}}}}},
+    "isolation":{"type":"object","required":["character","canon","currentState","visual"],"properties":{"character":{"type":"string"},"canon":{"type":"string"},"currentState":{"type":"string"},"visual":{"type":"string"}}},
+    "handoff":{"type":"object","required":["target","schema","requiredGates"],"properties":{"target":{"const":"AM_STUDIO_CORE"},"schema":{"type":"string"},"requiredGates":{"type":"array","minItems":1,"items":{"type":"string"}}}}
+  },
+  "additionalProperties":true
+}

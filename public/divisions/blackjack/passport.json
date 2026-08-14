@@ -1,0 +1,74 @@
+{
+  "protocolVersion":"1.0",
+  "divisionNumber":"004",
+  "divisionId":"blackjack",
+  "seriesId":"ld",
+  "identity":{
+    "name":"The Legendary Decks — Blackjack",
+    "code":"LD-BJ",
+    "type":"canon_recovery_comic",
+    "status":"CANON_RECOVERY_HOLD",
+    "studio":"AM STUDIO"
+  },
+  "brain":{
+    "mode":"ISOLATED_DIVISION_BRAIN",
+    "contextPolicy":"LOAD_THIS_DIVISION_ONLY",
+    "authorityOrder":[
+      "OWNER_APPROVED_LOCK",
+      "MASTER_STORY",
+      "MASTER_CANON_UNIVERSE_BIBLE",
+      "CHARACTER_DECK_POWER_BIBLES",
+      "OFFICIAL_OWNER_SUPPLIED_VISUAL_SOURCES",
+      "CANON_REGISTRY",
+      "CURRENT_STATE_AND_CONTINUITY",
+      "OWNER_APPROVED_EPISODE_PAGE_LOCKS",
+      "RECOVERY_EVIDENCE",
+      "AI_DRAFT_NEVER_CANON"
+    ],
+    "sharedUniverseContract":null,
+    "rule":"MISSING_OR_CONFLICTING_CANON_MUST_STOP_PRODUCTION_NEVER_INVENT"
+  },
+  "memory":{
+    "passport":"/divisions/blackjack/passport.json",
+    "currentState":"/divisions/blackjack/current-state.json",
+    "contextManifest":"/divisions/blackjack/context-manifest.json",
+    "canonLock":"/divisions/blackjack/canon-lock.json",
+    "sourceLedger":"/divisions/blackjack/source-ledger.json",
+    "recoveryLedger":"/divisions/blackjack/recovery-ledger.json",
+    "masterStory":null,
+    "masterCanon":null,
+    "characterBible":null,
+    "worldBible":null,
+    "visualBible":null,
+    "powerCombatBible":null,
+    "canonRegistry":null,
+    "episodeRegistry":null,
+    "migrationNote":"Blackjack is under canon recovery. Do not import Royal Gambler story mechanics automatically. Restore only owner-approved or source-verified Blackjack canon. Source chronology never overrides owner lock."
+  },
+  "production":{
+    "currentTarget":{"episode":1,"title":"The Last Normal Day","state":"BLOCKED_UNTIL_MASTER_STORY_RECOVERED"},
+    "ownerApprovalRequired":true,
+    "pageCountPolicy":"STORY_DRIVEN_NO_FIXED_PAGE_COUNT",
+    "language":"id-ID",
+    "generationAllowed":false,
+    "reason":"CANON_RECOVERY_HOLD"
+  },
+  "release":{
+    "mode":"HOLD",
+    "pipeline":"AM_STUDIO_AUTO_EPISODE_PIPELINE_V1",
+    "defaultSlot":"19:00 WITA",
+    "monetization":{"inheritGlobal":true,"status":"OFF"}
+  },
+  "isolation":{
+    "character":"BLACKJACK_DIVISION_ONLY_NO_CROSS_DIVISION_SUBSTITUTION",
+    "canon":"BLACKJACK_ONLY",
+    "currentState":"BLACKJACK_DIVISION_WRITE_ONLY",
+    "visual":"BLACKJACK_SOURCE_LOCK_ONLY",
+    "royalGambler":"LEGACY_PROJECT_NOT_IMPORTED_AS_BLACKJACK_STORY_WITHOUT_EXPLICIT_OWNER_APPROVAL"
+  },
+  "handoff":{
+    "target":"AM_STUDIO_CORE",
+    "schema":"/divisions/schema/release-package.schema.json",
+    "requiredGates":["MASTER_STORY_RECOVERED","CANON_CONFLICTS_RESOLVED","CANON_LOCK_ACTIVE","ASSET_COMPLETE","DIVISION_QC_PASS","OWNER_APPROVED"]
+  }
+}

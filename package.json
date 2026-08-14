@@ -2,13 +2,15 @@
   "name": "am-studio-pwa",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "packageManager": "npm@10.9.2",
   "engines": {
     "node": ">=20 <23"
   },
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "test": "node --test tests/division-*.test.mjs"
   },
   "devDependencies": {
     "wrangler": "4.28.1"
