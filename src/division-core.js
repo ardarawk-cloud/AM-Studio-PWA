@@ -22,9 +22,21 @@ export function validateIsolation(passport={},contextManifest={}){
   return {ok:errors.length===0,errors};
 }
 
+export function evaluateProductionGate({passport={},contextManifest={},canonLock=null,recoveryLedger=null}={}){
+  const errors=[];
+  if(passport.production?.generationAllowed===false)errors.push('PASSPORT_GENERATION_BLOCKED');
+  if(contextManifest.generationAllowed===false)errors.push('CONTEXT_GENERATION_BLOCKED');
+  if(canonLock?.generationAllowed===false)errors.push('CANON_LOCK_GENERATION_BLOCKED');
+  if(canonLock?.releaseAllowed===false)errors.push('CANON_LOCK_RELEASE_BLOCKED');
+  if(recoveryLedger?.safeToGenerate===false)errors.push('RECOVERY_LEDGER_NOT_SAFE_TO_GENERATE');
+  if(String(passport.identity?.status||'').includes('CANON_RECOVERY_HOLD'))errors.push('CANON_RECOVERY_HOLD');
+  return {ok:errors.length===0,errors};
+}
+
 export function buildReleasePackage({passport,currentState,episode,pageCount,divisionQc='QC_WAIT',ownerApproved=false,pipelineState='ASSET_WAIT',scheduledAt=null}={}){
   const pv=validatePassport(passport||{});
   if(!pv.ok)throw new Error(`INVALID_PASSPORT:${pv.errors.join(',')}`);
+  if(passport?.production?.generationAllowed===false||String(passport?.identity?.status||'').includes('CANON_RECOVERY_HOLD'))throw new Error('DIVISION_CANON_HOLD_GENERATION_BLOCKED');
   const ep=Number(episode);
   const pages=Number(pageCount);
   if(!Number.isInteger(ep)||ep<1)throw new Error('INVALID_EPISODE');
