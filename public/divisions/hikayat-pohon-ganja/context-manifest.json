@@ -1,0 +1,15 @@
+{
+  "protocolVersion":"1.0",
+  "divisionId":"hikayat-pohon-ganja",
+  "bootOrder":[
+    {"priority":1,"type":"PASSPORT","path":"/divisions/hikayat-pohon-ganja/passport.json","required":true},
+    {"priority":2,"type":"RESEARCH_POLICY","path":"/divisions/hikayat-pohon-ganja/research-policy.json","required":true},
+    {"priority":3,"type":"CURRENT_STATE","path":"/divisions/hikayat-pohon-ganja/current-state.json","required":true}
+  ],
+  "divisionLocalOnly":true,
+  "crossDivisionImports":[],
+  "blockedImports":["other_division_character_bible","other_division_current_state","other_division_visual_bible","other_division_production_state","unverified_external_fact_as_canon"],
+  "missingMemoryPolicy":"STOP_OR_REQUEST_OWNER_SOURCE_NEVER_INVENT_CANON_OR_FACTS",
+  "handoffTarget":"AM_STUDIO_CORE",
+  "bootState":"MIGRATION_PENDING"
+}
