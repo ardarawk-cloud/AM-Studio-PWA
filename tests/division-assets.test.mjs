@@ -48,7 +48,9 @@ test('Blackjack is Division 004 and remains hard-blocked during canon recovery',
   assert.equal(gate.ok,false);
   assert.ok(gate.errors.includes('UNRESOLVED_SOURCE_CONFLICT'));
   assert.ok(gate.errors.includes('UNRESOLVED_CANON_CONFLICT'));
-  assert.equal(state.currentEpisode.title,'The Last Normal Day');
+  assert.equal(state.currentEpisode.title,null);
+  assert.equal(state.currentEpisode.titleStatus,'UNKNOWN_CROSS_IP_COLLISION');
+  assert.ok(sourceLedger.conflicts.some(x=>x.conflictId==='EPISODE_1_TITLE_CROSS_IP_COLLISION'));
   assert.equal(lock.masterStory.ownerApproved,false);
   assert.equal(sourceLedger.safeToResolveByAI,false);
   assert.equal(ledger.safeToGenerate,false);
