@@ -1,0 +1,142 @@
+{
+  "document": "BLACKJACK_BLACK_DECK_POWER_BIBLE",
+  "version": "DIRECTOR_DRAFT_V1",
+  "status": "DIRECTOR_CANON_DRAFT_OWNER_AUTHORIZED_DEVELOPMENT",
+  "hero": "Blackjack",
+  "civilianIdentity": "Adrian Lucien Vale",
+  "deck": "Black Deck",
+  "coreValue": "CHOICE",
+  "energyName": "VOLITION_ENERGY",
+  "coreRule": "The Black Deck converts Adrian's conscious commitment to consequential choices into controlled card-energy. It does not manipulate luck, probability, fate, timelines or other people's decisions.",
+  "deckStructure": {
+    "cards": 52,
+    "suits": ["SPADES", "HEARTS", "DIAMONDS", "CLUBS"],
+    "visual": "matte black cards with restrained gold linework; energized cards show black-gold edge light; Ace of Spades is the signature card",
+    "ownership": "The Deck answers only to its chosen Guardian. A stolen card becomes inert outside the Guardian's active energy field.",
+    "recoveryRule": "A released or destroyed manifested card dissolves into black-gold energy and returns to the Deck only after its stored Volition Energy has fully discharged. Cards cannot be duplicated permanently."
+  },
+  "energyGeneration": {
+    "source": "Adrian making and committing to a real choice whose outcome matters to him or others",
+    "strongChargeConditions": [
+      "the choice has meaningful consequences",
+      "Adrian understands that at least one alternative must be abandoned",
+      "Adrian accepts responsibility for the result"
+    ],
+    "weakOrNoChargeConditions": [
+      "trivial decisions",
+      "random guessing without commitment",
+      "actions performed under total coercion with no meaningful agency",
+      "attempts to fake conviction only to charge the Deck"
+    ],
+    "storedChargeLimit": 7,
+    "rule": "No more than seven cards may hold combat-ready Volition charge simultaneously. Charging an eighth before releasing one causes feedback."
+  },
+  "suitFunctions": {
+    "SPADES": {
+      "domain": "PRECISION_AND_SEVERANCE",
+      "effect": "focused cutting or piercing energy projected through thrown cards or the Royal Cane",
+      "combatRole": "precision offense, armor breach, cutting bindings or hostile energy constructs"
+    },
+    "HEARTS": {
+      "domain": "PROTECTION_AND_COMMITMENT",
+      "effect": "creates compact black-gold wards that absorb or redirect incoming force",
+      "combatRole": "defense, protecting civilians, holding a line",
+      "restriction": "Hearts do not heal wounds or resurrect anyone"
+    },
+    "DIAMONDS": {
+      "domain": "VECTOR_AND_CONTROL",
+      "effect": "changes the path of released card-energy, enabling ricochet geometry, temporary footholds or directional barriers",
+      "combatRole": "mobility, battlefield positioning, trick shots, controlled redirection"
+    },
+    "CLUBS": {
+      "domain": "IMPACT_AND_DISRUPTION",
+      "effect": "releases concussive force rather than cutting force",
+      "combatRole": "knockback, breaking mechanisms, disarming and crowd control"
+    }
+  },
+  "rankFunctions": {
+    "2_TO_10": "Standard combat cards. Rank represents safe energy capacity; higher ranks can carry more Volition Energy but require stronger commitment and greater physical control.",
+    "JACK": "FEINT. After release, a Jack can create one false continuation of the card's trajectory for a fraction of a second, forcing an opponent to read the wrong line. It does not create a physical clone.",
+    "QUEEN": "WARD. Converts its stored charge into a larger defensive lattice. Best defensive face card; movement is limited while maintaining it.",
+    "KING": "COMMAND LINE. Links the Black Deck to the Royal Cane, allowing Adrian to control the direction and timing of up to three already-charged cards within his immediate combat field.",
+    "ACE": "DECISIVE RELEASE. Each Ace is the maximum expression of its suit and consumes all currently stored Volition charge when activated."
+  },
+  "aceTechniques": {
+    "ACE_OF_SPADES": {
+      "name": "FINAL CUT",
+      "effect": "A single black-gold line of extreme precision that can pierce or sever one chosen target, barrier, weapon or hostile energy structure along a committed trajectory.",
+      "signature": true,
+      "restriction": "Adrian must choose one target line before release; the attack cannot branch or be redirected after commitment."
+    },
+    "ACE_OF_HEARTS": {
+      "name": "LAST STAND",
+      "effect": "A dome-like ward centered on a chosen person or position that absorbs a short burst of overwhelming force.",
+      "restriction": "Adrian cannot attack with charged cards while maintaining Last Stand."
+    },
+    "ACE_OF_DIAMONDS": {
+      "name": "ONE PATH",
+      "effect": "Creates a short sequence of rigid directional planes that lets Adrian cross open space, redirect a fall or force one released attack through a precisely chosen route.",
+      "restriction": "The route is fixed the moment the Ace is committed and cannot be changed midway."
+    },
+    "ACE_OF_CLUBS": {
+      "name": "HOUSEBREAKER",
+      "effect": "A concentrated concussive discharge delivered by card or Royal Cane that can break a heavy mechanism, gate or armored formation without the cutting effect of Spades.",
+      "restriction": "Large recoil; unsafe to use in confined civilian spaces without preparation."
+    }
+  },
+  "royalCane": {
+    "status": "SIGNATURE_ITEM",
+    "functions": [
+      "physical gentleman's cane and close-combat weapon",
+      "focus for Black Deck energy",
+      "allows controlled parries and directional release",
+      "required for full King card Command Line technique"
+    ],
+    "restriction": "The cane has no independent supernatural power without Blackjack and the Black Deck."
+  },
+  "topHat": {
+    "status": "SIGNATURE_VISUAL_AND_UTILITY_ITEM",
+    "functions": [
+      "conceals inert physical cards and tools",
+      "supports misdirection and gentleman-casino combat presentation"
+    ],
+    "restriction": "The Top Hat is not a dimensional storage artifact and does not grant supernatural powers."
+  },
+  "limitations": {
+    "noProbabilityControl": true,
+    "noFateRewrite": true,
+    "noTimeManipulation": true,
+    "noMindControl": true,
+    "noForcedChoicePower": true,
+    "maximumSimultaneouslyChargedCards": 7,
+    "feedbackCondition": "Attempting to hold an eighth combat-ready charge causes Choice Burn and forces charge loss.",
+    "choiceBurn": {
+      "symptoms": ["hand tremor", "forearm pain", "visual narrowing", "slower judgment", "temporary numbness in fingers"],
+      "cause": "overcharging, repeated high-rank releases or using strong Volition while emotionally conflicted"
+    },
+    "aceLock": "Releasing any Ace empties all stored Volition charge and places the Black Deck in a minimum 20-minute inert recovery state. During this state Adrian can use the cane physically but cannot charge or activate cards.",
+    "commitmentRule": "Once a high-tier card is released, Adrian cannot cancel the chosen effect to reclaim the charge. Choice has consequence.",
+    "ethicalRule": "The Deck becomes unstable when Adrian repeatedly refuses responsibility for outcomes or uses Choice as an excuse for selfish indecision."
+  },
+  "combatIdentity": {
+    "style": "elegant strategist, mobile mid-range card fighter, precision duelist and battlefield controller",
+    "not": [
+      "brute-force tank",
+      "random gambler powered by luck",
+      "probability manipulator",
+      "omniscient tactician"
+    ],
+    "signatureSequence": "misdirection with inert cards -> charge through a consequential decision -> controlled suit technique -> Royal Cane reposition -> decisive single-target finish"
+  },
+  "canonFirewall": {
+    "quarantinedLegacyMechanics": [
+      "Probability Engine",
+      "Deck Dimension",
+      "Probability Manipulation",
+      "Royal Vision",
+      "Deck Armor",
+      "Ace Mode as defined in Royal Gambler legacy"
+    ],
+    "rule": "Legacy Royal Gambler mechanics remain outside Blackjack canon unless Arda explicitly reimports them."
+  }
+}
