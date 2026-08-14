@@ -1,4 +1,4 @@
-import {validatePassport,validateIsolation} from './division-core.js';
+import {validatePassport,validateIsolation,evaluateProductionGate} from './division-core.js';
 
 async function readJsonAsset(env,requestUrl,path){
   if(!env?.ASSETS)throw new Error('ASSETS_BINDING_REQUIRED');
@@ -22,6 +22,20 @@ export async function loadDivisionStates(env,requestUrl){
   return {registry,states};
 }
 
+async function loadBootMemory(env,requestUrl,manifest,preloaded={}){
+  const memory={};
+  for(const item of [...(manifest.bootOrder||[])].sort((a,b)=>Number(a.priority||0)-Number(b.priority||0))){
+    if(!item?.type||!item?.path)continue;
+    try{
+      memory[item.type]=preloaded[item.path]||await readJsonAsset(env,requestUrl,item.path);
+    }catch(error){
+      if(item.required===true)throw new Error(`REQUIRED_BOOT_MEMORY_FAILED:${item.type}:${String(error?.message||error)}`);
+      memory[item.type]={unavailable:true,error:String(error?.message||error)};
+    }
+  }
+  return memory;
+}
+
 export async function loadDivisionContext(env,requestUrl,divisionId){
   const registry=await loadDivisionRegistry(env,requestUrl);
   const division=(registry.divisions||[]).find(x=>x.divisionId===divisionId);
@@ -36,6 +50,16 @@ export async function loadDivisionContext(env,requestUrl,divisionId){
   const isolationCheck=validateIsolation(passport,manifest);
   if(!isolationCheck.ok)throw new Error(`DIVISION_ISOLATION_FAILED:${isolationCheck.errors.join(',')}`);
   if(currentState.divisionId!==divisionId)throw new Error('CURRENT_STATE_DIVISION_MISMATCH');
+
+  const bootMemory=await loadBootMemory(env,requestUrl,manifest,{
+    [division.passport]:passport,
+    [division.currentState]:currentState,
+    [division.contextManifest]:manifest
+  });
+  const canonLock=bootMemory.CANON_LOCK||null;
+  const recoveryLedger=bootMemory.RECOVERY_LEDGER||null;
+  const productionGate=evaluateProductionGate({passport,contextManifest:manifest,canonLock,recoveryLedger});
+
   return {
     protocolVersion:registry.protocolVersion,
     architecture:registry.architecture,
@@ -43,6 +67,8 @@ export async function loadDivisionContext(env,requestUrl,divisionId){
     passport,
     currentState,
     contextManifest:manifest,
+    bootMemory,
+    productionGate:{safeToProduce:productionGate.ok,errors:productionGate.errors},
     loadedDivisionOnly:divisionId
   };
 }
