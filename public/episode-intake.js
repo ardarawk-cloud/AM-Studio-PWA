@@ -15,6 +15,15 @@
     const el=document.querySelector('#amaStatus');if(!el)return;
     const line=document.createElement('div');line.style.marginTop='8px';line.style.color=ok?'#72e7ad':'#f1c56b';line.textContent=message;el.appendChild(line);
   }
+  function focusPipeline(t){
+    document.querySelector('#am-pipeline-launch')?.click();
+    let tries=0;const timer=setInterval(()=>{
+      const s=document.querySelector('#ampSeries'),e=document.querySelector('#ampEpisode');tries++;
+      if(s&&e&&[...s.options].some(o=>o.value===t.seriesId)){
+        s.value=t.seriesId;e.value=String(t.episode);s.dispatchEvent(new Event('change'));e.dispatchEvent(new Event('change'));clearInterval(timer);
+      }else if(tries>=30)clearInterval(timer);
+    },100);
+  }
   function install(){
     const upload=document.querySelector('#amaUpload'),status=document.querySelector('#amaStatus');
     if(!upload||!status)return false;
@@ -27,6 +36,7 @@
       const result=await validate(t);
       appendStatus(result.ok?'✓ TECHNICAL QC PASS — menunggu Owner Approval.':`QC belum lolos — ${result.error}. Episode tetap HOLD/STAGING.`,result.ok);
       window.dispatchEvent(new CustomEvent(EVENT,{detail:{...t,validated:result.ok,result}}));
+      focusPipeline(t);
     }).observe(status,{childList:true,subtree:true,characterData:true});
     return true;
   }
