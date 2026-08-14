@@ -1,32 +1,60 @@
 {
-  "protocolVersion":"1.0",
-  "divisionId":"blackjack",
-  "lockState":"WAITING_MASTER_STORY_RECOVERY",
-  "owner":"ARDA",
-  "masterStory":{
-    "path":null,
-    "version":null,
-    "sha256":null,
-    "ownerApproved":false
+  "protocolVersion": "1.1",
+  "divisionId": "blackjack",
+  "lockState": "PARTIAL_OWNER_CANON_RECOVERED_WAITING_MASTER_STORY",
+  "owner": "ARDA",
+  "recoveredOwnerLocks": {
+    "heroName": "Blackjack",
+    "civilianIdentity": "Adrian Lucien Vale",
+    "honorificTitle": "Royal Gambler",
+    "honorificRule": "TITLE_ONLY_NOT_CURRENT_HERO_NAME",
+    "chapter1Title": "The Man with the Black Deck",
+    "chapter1TitleScope": "CHAPTER_TITLE_NOT_EPISODE_TITLE",
+    "lockDates": [
+      "2026-07-31T15:04:40Z",
+      "2026-07-31T15:05:03Z",
+      "2026-07-31T15:08:54Z"
+    ]
   },
-  "bootAllowed":true,
-  "generationAllowed":false,
-  "stateAdvanceAllowed":false,
-  "releaseAllowed":false,
-  "rules":[
+  "masterStory": {
+    "path": null,
+    "version": null,
+    "sha256": null,
+    "ownerApproved": false
+  },
+  "bootAllowed": true,
+  "generationAllowed": false,
+  "stateAdvanceAllowed": false,
+  "releaseAllowed": false,
+  "rules": [
+    "RECOVERED_OWNER_LOCKS_ARE_IMMUTABLE_UNLESS_OWNER_EXPLICITLY_CHANGES_THEM",
+    "ROYAL_GAMBLER_IS_HONORIFIC_ONLY_FOR_BLACKJACK_IDENTITY",
+    "CHAPTER_1_TITLE_IS_THE_MAN_WITH_THE_BLACK_DECK",
+    "EPISODE_1_TITLE_REMAINS_UNKNOWN_AND_MUST_NOT_BE_INFERRED_FROM_CHAPTER_TITLE",
     "MASTER_STORY_HASH_MUST_MATCH_APPROVED_LOCK_BEFORE_GENERATION",
     "MISSING_MASTER_STORY_STOPS_GENERATION",
-    "CONFLICTING_CANON_STOPS_GENERATION",
+    "CONFLICTING_REMAINING_CANON_STOPS_GENERATION",
     "UNKNOWN_CANON_IS_NOT_FILLED_BY_AI",
-    "CURRENT_STATE_CANNOT_OVERRIDE_MASTER_STORY",
+    "CURRENT_STATE_CANNOT_OVERRIDE_MASTER_STORY_OR_OWNER_LOCK",
     "AI_OUTPUT_CANNOT_REWRITE_LOCKED_CANON",
     "OWNER_APPROVAL_REQUIRED_TO_CHANGE_LOCK"
   ],
-  "recoveryExitCriteria":[
+  "remainingRecovery": [
+    "COMPLETE_MASTER_STORY",
+    "EPISODE_1_IDENTITY",
+    "CARD_ENERGY_POWER_BIBLE",
+    "THE_DEALER_IDENTITY_AND_MOTIVATION",
+    "FINAL_SEVEN_DECK_NAMING_AND_BEARER_MAPPING",
+    "FINAL_WORLD_VALUE_MAPPING",
+    "EPISODE_PAGE_STATE"
+  ],
+  "recoveryExitCriteria": [
     "MASTER_STORY_SOURCE_RECOVERED",
     "MASTER_STORY_OWNER_APPROVED",
     "MASTER_STORY_SHA256_RECORDED",
     "CHARACTER_DECK_POWER_CANON_RESOLVED",
+    "DEALER_CANON_RESOLVED",
+    "EPISODE_1_IDENTITY_RESOLVED",
     "CURRENT_STATE_REBUILT_FROM_APPROVED_CANON",
     "CONFLICT_LEDGER_EMPTY_OR_OWNER_RESOLVED"
   ]
