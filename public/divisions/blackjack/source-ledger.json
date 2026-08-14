@@ -1,9 +1,31 @@
 {
-  "protocolVersion": "1.2",
+  "protocolVersion": "1.3",
   "divisionId": "blackjack",
   "purpose": "Track source provenance without letting AI silently choose between conflicting Blackjack canon revisions.",
   "policy": "OWNER_LOCK_WINS_SOURCE_DATE_DOES_NOT_EQUAL_CANON_PRIORITY_CURRENT_APP_OUTPUT_CANNOT_SELF_VALIDATE",
   "sources": [
+    {
+      "sourceId": "SRC-OWNER-CANON-20260730-DEALER",
+      "date": "2026-07-30T03:39:09Z",
+      "type": "RECOVERED_OWNER_CONVERSATION_CANON",
+      "authority": "OWNER_CANON_LOCK",
+      "facts": [
+        "The Dealer is one unique immortal balance-keeper",
+        "Height 195 cm; silver shoulder-length hair; glowing gold eyes",
+        "Black top hat and black tailcoat with gold; ivory vest; burgundy tie; white gloves",
+        "Ebony staff with Ace of Spades crystal",
+        "Neutral: neither hero nor villain",
+        "Guards balance and free will",
+        "Cannot force Guardians",
+        "Cannot personally use Legendary Decks",
+        "Cannot alter history for pity",
+        "Cannot favor Guardians or The House",
+        "Does not directly train Adrian Vale",
+        "Appears only when balance is critically threatened",
+        "Adrian views The Dealer as neither ally nor enemy but guardian of the rules"
+      ],
+      "status": "VERIFIED_OWNER_CANON"
+    },
     {
       "sourceId": "SRC-OWNER-LOCK-20260731-HERO",
       "date": "2026-07-31T15:04:40Z",
@@ -136,7 +158,8 @@
   "resolvedConflicts": [
     {"conflictId": "CHAPTER_1_STORY_REVISION", "resolution": "The Man with the Black Deck", "status": "RESOLVED_BY_OWNER_LOCK"},
     {"conflictId": "HERO_IDENTITY_REVISION", "resolution": "Blackjack / Adrian Lucien Vale; Royal Gambler honorific only; Guardian of Choice", "status": "RESOLVED_BY_OWNER_LOCK"},
-    {"conflictId": "BLACKJACK_OWN_DECK_REVISION", "resolution": "Black Deck", "basis": "Owner-approved 2026-08-03 direction", "status": "RESOLVED_BY_OWNER_LOCK"}
+    {"conflictId": "BLACKJACK_OWN_DECK_REVISION", "resolution": "Black Deck", "basis": "Owner-approved 2026-08-03 direction", "status": "RESOLVED_BY_OWNER_LOCK"},
+    {"conflictId": "DEALER_ROLE_IDENTITY", "resolution": "Unique immortal neutral balance-keeper with strict free-will/non-intervention rules", "basis": "Owner canon 2026-07-30", "status": "RESOLVED_BY_OWNER_CANON"}
   ],
   "conflicts": [
     {"conflictId": "EPISODE_1_TITLE_CROSS_IP_COLLISION", "impact": "Blackjack Episode 1 title remains UNKNOWN.", "status": "UNRESOLVED_OWNER_SOURCE_REQUIRED"},
@@ -152,14 +175,15 @@
     "Top Hat and Royal Cane are signature items",
     "Blackjack is an elegant strategist Guardian",
     "Chapter 1 is The Man with the Black Deck",
+    "The Dealer is the unique immortal neutral balance-keeper and rule guardian",
     "Seven-deck structure exists",
     "Asterion and seven realms are historical owner canon anchors",
     "The separate Royal Gambler project remains unchanged"
   ],
   "recoverySearchAudit": {
     "date": "2026-08-14",
-    "result": "File Library searches did not surface a standalone final Blackjack Master Story or final Power Bible. Conversation recovery resolved hero identity, Chapter 1 title, Black Deck and signature character direction."
+    "result": "Conversation recovery resolved The Dealer canon in addition to hero identity, Chapter 1 title, Black Deck and signature character direction. File Library still does not expose a standalone final Master Story or exact Black Deck Power Bible."
   },
-  "nextAction": "Recover complete Master Story, exact Black Deck card-energy Power Bible, Dealer identity, Episode 1 identity, other-six deck mapping and exact page state. CANON_HOLD remains active.",
+  "nextAction": "Recover complete Master Story, exact Black Deck card-energy Power Bible, Episode 1 identity, other-six deck mapping and exact page state. CANON_HOLD remains active.",
   "safeToResolveRemainingByAI": false
 }
