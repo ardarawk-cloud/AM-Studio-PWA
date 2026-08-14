@@ -1,0 +1,26 @@
+name: Blackjack Auto Pipeline Experiment
+
+on:
+  push:
+    branches:
+      - experiment/blackjack-auto-pipeline-v1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  blackjack-auto-trial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Canon brain baseline tests
+        run: node --test tests/division-*.test.mjs
+      - name: Blackjack automatic pipeline trial
+        run: node --test tests/blackjack-auto-pipeline.test.mjs
+      - name: Syntax check experimental pipeline core
+        run: node --check src/pipeline-core.js
