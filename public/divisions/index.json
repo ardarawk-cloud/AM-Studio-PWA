@@ -1,0 +1,18 @@
+{
+  "protocolVersion":"1.0",
+  "architecture":"1_COMIC_1_DIVISION_1_BRAIN_1_PASSPORT",
+  "coreRole":"STUDIO_ORCHESTRATOR",
+  "divisions":[
+    {
+      "divisionNumber":"001",
+      "divisionId":"amu",
+      "seriesId":"amu",
+      "code":"AMU",
+      "name":"Arda Moron Universe",
+      "status":"ACTIVE_REFERENCE_IMPLEMENTATION",
+      "passport":"/divisions/amu/passport.json",
+      "currentState":"/divisions/amu/current-state.json",
+      "contextManifest":"/divisions/amu/context-manifest.json"
+    }
+  ]
+}
