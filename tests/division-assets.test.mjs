@@ -38,14 +38,18 @@ test('Blackjack is Division 004 and remains hard-blocked during canon recovery',
   const passport=await json('../public/divisions/blackjack/passport.json');
   const manifest=await json('../public/divisions/blackjack/context-manifest.json');
   const lock=await json('../public/divisions/blackjack/canon-lock.json');
+  const sourceLedger=await json('../public/divisions/blackjack/source-ledger.json');
   const ledger=await json('../public/divisions/blackjack/recovery-ledger.json');
   const state=await json('../public/divisions/blackjack/current-state.json');
 
   assert.deepEqual(validatePassport(passport),{ok:true,errors:[]});
   assert.deepEqual(validateIsolation(passport,manifest),{ok:true,errors:[]});
-  const gate=evaluateProductionGate({passport,contextManifest:manifest,canonLock:lock,recoveryLedger:ledger});
+  const gate=evaluateProductionGate({passport,contextManifest:manifest,canonLock:lock,sourceLedger,recoveryLedger:ledger});
   assert.equal(gate.ok,false);
+  assert.ok(gate.errors.includes('UNRESOLVED_SOURCE_CONFLICT'));
+  assert.ok(gate.errors.includes('UNRESOLVED_CANON_CONFLICT'));
   assert.equal(state.currentEpisode.title,'The Last Normal Day');
   assert.equal(lock.masterStory.ownerApproved,false);
+  assert.equal(sourceLedger.safeToResolveByAI,false);
   assert.equal(ledger.safeToGenerate,false);
 });
