@@ -4,7 +4,7 @@ async function injectReaderHotfix(response){
   const ct=response.headers.get('content-type')||'';
   if(!response.ok||!ct.includes('text/html'))return response;
   const html=await response.text();
-  const src='/reader-hotfix.js?v=20260813f';
+  const src='/reader-hotfix.js?v=20260814hpg1';
   const marker=`<script src="${src}" defer></script>`;
   let out=html.replace(/<script src="\/reader-hotfix\.js\?v=[^"]+" defer><\/script>/g,'');
   out=out.includes('</body>')?out.replace('</body>',`${marker}</body>`):`${out}${marker}`;
