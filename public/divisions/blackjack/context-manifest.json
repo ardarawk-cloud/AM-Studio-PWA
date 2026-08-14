@@ -4,8 +4,9 @@
   "bootOrder":[
     {"priority":1,"type":"PASSPORT","path":"/divisions/blackjack/passport.json","required":true},
     {"priority":2,"type":"CANON_LOCK","path":"/divisions/blackjack/canon-lock.json","required":true},
-    {"priority":3,"type":"RECOVERY_LEDGER","path":"/divisions/blackjack/recovery-ledger.json","required":true},
-    {"priority":4,"type":"CURRENT_STATE","path":"/divisions/blackjack/current-state.json","required":true}
+    {"priority":3,"type":"SOURCE_LEDGER","path":"/divisions/blackjack/source-ledger.json","required":true},
+    {"priority":4,"type":"RECOVERY_LEDGER","path":"/divisions/blackjack/recovery-ledger.json","required":true},
+    {"priority":5,"type":"CURRENT_STATE","path":"/divisions/blackjack/current-state.json","required":true}
   ],
   "divisionLocalOnly":true,
   "crossDivisionImports":[],
@@ -16,10 +17,13 @@
     "other_division_current_state",
     "royal_gambler_plot_mechanics_without_explicit_owner_source",
     "ai_memory_as_canon",
-    "unverified_story_fill"
+    "unverified_story_fill",
+    "newer_source_automatically_overrides_older_source",
+    "older_source_automatically_overrides_newer_source"
   ],
   "missingMemoryPolicy":"STOP_CANON_FIREWALL_NEVER_INVENT",
   "conflictPolicy":"STOP_AND_REQUIRE_OWNER_RESOLUTION",
+  "sourcePriorityPolicy":"OWNER_LOCK_NOT_FILE_DATE",
   "handoffTarget":"AM_STUDIO_CORE",
   "bootState":"CANON_RECOVERY_HOLD",
   "generationAllowed":false
