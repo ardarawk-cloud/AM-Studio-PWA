@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validatePassport,validateIsolation,buildReleasePackage,canHandoffToCore} from '../src/division-core.js';
+import {validatePassport,validateIsolation,evaluateProductionGate,buildReleasePackage,canHandoffToCore} from '../src/division-core.js';
 
 const passport={
   protocolVersion:'1.0',divisionNumber:'001',divisionId:'amu',seriesId:'amu',
@@ -33,4 +33,22 @@ test('core handoff is blocked before owner approval',()=>{
   const result=canHandoffToCore(pkg);
   assert.equal(result.ok,false);
   assert.ok(result.errors.includes('OWNER_APPROVAL_REQUIRED'));
+});
+
+test('canon recovery division cannot generate or build a release package',()=>{
+  const held={
+    ...passport,
+    divisionNumber:'004',divisionId:'blackjack',seriesId:'ld',
+    identity:{status:'CANON_RECOVERY_HOLD'},
+    production:{ownerApprovalRequired:true,generationAllowed:false}
+  };
+  const gate=evaluateProductionGate({
+    passport:held,
+    contextManifest:{generationAllowed:false},
+    canonLock:{generationAllowed:false,releaseAllowed:false},
+    recoveryLedger:{safeToGenerate:false}
+  });
+  assert.equal(gate.ok,false);
+  assert.ok(gate.errors.includes('CANON_RECOVERY_HOLD'));
+  assert.throws(()=>buildReleasePackage({passport:held,currentState:{nextProductionTarget:{number:1,title:'The Last Normal Day'}},episode:1,pageCount:1}),/DIVISION_CANON_HOLD_GENERATION_BLOCKED/);
 });
