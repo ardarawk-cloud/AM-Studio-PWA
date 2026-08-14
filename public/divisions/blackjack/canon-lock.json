@@ -1,9 +1,12 @@
 {
   "protocolVersion": "1.0",
-  "recoveryVersion": "1.3",
+  "canonVersion": "1.0",
+  "recoveryVersion": "1.4",
   "divisionId": "blackjack",
-  "lockState": "PARTIAL_OWNER_CANON_RECOVERED_WAITING_MASTER_STORY",
+  "lockState": "MASTER_CANON_OWNER_APPROVED",
   "owner": "ARDA",
+  "ownerApprovedAt": "2026-08-15T00:30:00+08:00",
+  "promotionManifest": "/divisions/blackjack/canon-promotion-v1.json",
   "recoveredOwnerLocks": {
     "heroName": "Blackjack",
     "civilianIdentity": "Adrian Lucien Vale",
@@ -11,7 +14,7 @@
     "honorificRule": "TITLE_ONLY_NOT_CURRENT_HERO_NAME",
     "role": "Guardian of Choice",
     "chapter1Title": "The Man with the Black Deck",
-    "chapter1TitleScope": "CHAPTER_TITLE_NOT_EPISODE_TITLE",
+    "episode1Title": "The Ace in the Rain",
     "genreDirection": "EPIC_FANTASY_PLUS_STEAMPUNK_GOTHIC",
     "signatureItems": ["TOP_HAT", "BLACK_DECK", "ROYAL_CANE"],
     "characterPerformance": "ELEGANT_STRATEGIST_GUARDIAN",
@@ -23,62 +26,61 @@
       "appearance": "195cm; silver shoulder-length hair; glowing gold eyes; black top hat and tailcoat with gold; ivory vest; burgundy tie; white gloves; ebony staff with Ace of Spades crystal",
       "cannot": ["FORCE_GUARDIANS", "PERSONALLY_USE_LEGENDARY_DECKS", "ALTER_HISTORY_FOR_PITY", "FAVOR_GUARDIANS", "FAVOR_THE_HOUSE"],
       "adrianRelationship": "DOES_NOT_DIRECTLY_TRAIN_ADRIAN_APPEARS_ONLY_AT_CRUCIAL_BALANCE_THREATS_NEITHER_ALLY_NOR_ENEMY_RULE_GUARDIAN"
-    },
-    "lockDates": [
-      "2026-07-30T03:39:09Z",
-      "2026-07-31T15:04:40Z",
-      "2026-07-31T15:05:03Z",
-      "2026-07-31T15:08:54Z",
-      "2026-08-03T22:14:57Z"
-    ]
+    }
   },
   "masterStory": {
-    "path": null,
-    "version": null,
-    "sha256": null,
-    "ownerApproved": false
+    "path": "/divisions/blackjack/master-story.director-draft-v1.md",
+    "version": "MASTER_STORY_V1",
+    "gitBlobSha": "92f2e6be5d2f0c068869ebc839ca692b029b99e7",
+    "sha256": "e723778a3d5260ba2ede2b1a277c6bcc0be908ff086ce64bc96f15cc40f76060",
+    "ownerApproved": true,
+    "immutable": true
+  },
+  "powerBible": {
+    "path": "/divisions/blackjack/power-bible.black-deck.director-draft-v1.json",
+    "version": "BLACK_DECK_POWER_BIBLE_V1",
+    "ownerApproved": true,
+    "coreEnergy": "VOLITION_ENERGY"
+  },
+  "sevenDecks": {
+    "path": "/divisions/blackjack/seven-decks.director-draft-v1.json",
+    "version": "SEVEN_DECKS_MAP_V1",
+    "ownerApproved": true
+  },
+  "episode001": {
+    "path": "/divisions/blackjack/episode-001.director-draft-v1.json",
+    "title": "The Ace in the Rain",
+    "completedPages": 0,
+    "ownerApproved": true
   },
   "bootAllowed": true,
-  "generationAllowed": false,
-  "stateAdvanceAllowed": false,
+  "generationAllowed": true,
+  "stateAdvanceAllowed": true,
   "releaseAllowed": false,
+  "monetization": "OFF",
   "rules": [
-    "RECOVERED_OWNER_LOCKS_ARE_IMMUTABLE_UNLESS_OWNER_EXPLICITLY_CHANGES_THEM",
+    "MASTER_STORY_V1_IS_IMMUTABLE_UNLESS_OWNER_EXPLICITLY_REVISES_IT",
+    "OWNER_LOCK_WINS_OVER_APP_OUTPUT_FILE_DATE_AND_AI_DRAFT",
     "HERO_NAME_IS_BLACKJACK",
-    "CIVILIAN_IDENTITY_IS_ADRIAN_LUCIEN_VALE",
-    "ROYAL_GAMBLER_IS_HONORIFIC_ONLY_FOR_BLACKJACK_IDENTITY",
-    "BLACKJACK_SIGNATURE_DECK_IS_BLACK_DECK_UNLESS_A_LATER_EXPLICIT_OWNER_LOCK_PROVES_REPLACEMENT",
-    "BLACKJACK_SIGNATURE_VISUALS_INCLUDE_TOP_HAT_AND_ROYAL_CANE",
-    "BLACKJACK_IS_AN_ELEGANT_STRATEGIST_GUARDIAN",
-    "THE_DEALER_IS_UNIQUE_IMMORTAL_NEUTRAL_BALANCE_KEEPER",
-    "THE_DEALER_GUARDS_BALANCE_FREE_WILL_AND_RULES",
-    "THE_DEALER_CANNOT_FORCE_GUARDIANS_USE_DECKS_PERSONALLY_ALTER_HISTORY_FOR_PITY_OR_FAVOR_EITHER_SIDE",
-    "THE_DEALER_DOES_NOT_DIRECTLY_TRAIN_ADRIAN",
-    "CHAPTER_1_TITLE_IS_THE_MAN_WITH_THE_BLACK_DECK",
-    "EPISODE_1_TITLE_REMAINS_UNKNOWN_AND_MUST_NOT_BE_INFERRED_FROM_CHAPTER_TITLE",
-    "MASTER_STORY_HASH_MUST_MATCH_APPROVED_LOCK_BEFORE_GENERATION",
-    "MISSING_MASTER_STORY_STOPS_GENERATION",
-    "CONFLICTING_REMAINING_CANON_STOPS_GENERATION",
-    "UNKNOWN_CANON_IS_NOT_FILLED_BY_AI",
-    "CURRENT_STATE_CANNOT_OVERRIDE_MASTER_STORY_OR_OWNER_LOCK",
-    "AI_OUTPUT_CANNOT_REWRITE_LOCKED_CANON",
-    "OWNER_APPROVAL_REQUIRED_TO_CHANGE_LOCK"
+    "ROYAL_GAMBLER_IS_HONORIFIC_ONLY",
+    "BLACKJACK_SIGNATURE_DECK_IS_BLACK_DECK",
+    "BLACK_DECK_USES_VOLITION_ENERGY_NOT_PROBABILITY_CONTROL",
+    "BLACKJACK_CANNOT_MANIPULATE_PROBABILITY_FATE_TIME_OR_OTHER_PEOPLES_CHOICES",
+    "THE_DEALER_REMAINS_NEUTRAL_AND_CANNOT_DIRECTLY_TRAIN_ADRIAN",
+    "ROYAL_GAMBLER_LEGACY_MECHANICS_REMAIN_QUARANTINED",
+    "EPISODE_001_IS_THE_ACE_IN_THE_RAIN",
+    "PRODUCTION_STARTS_AT_EPISODE_001_PAGE_1",
+    "RELEASE_REQUIRES_EPISODE_COMPLETE_QC_AND_OWNER_RELEASE_APPROVAL",
+    "AI_CANNOT_RETCON_LOCKED_CANON"
   ],
-  "remainingRecovery": [
-    "COMPLETE_MASTER_STORY",
-    "EPISODE_1_IDENTITY",
-    "CARD_ENERGY_POWER_BIBLE",
-    "FINAL_OTHER_SIX_DECK_NAMES_AND_BEARER_MAPPING",
-    "FINAL_WORLD_VALUE_MAPPING",
-    "EPISODE_PAGE_STATE"
-  ],
-  "recoveryExitCriteria": [
-    "MASTER_STORY_SOURCE_RECOVERED",
-    "MASTER_STORY_OWNER_APPROVED",
-    "MASTER_STORY_SHA256_RECORDED",
-    "CHARACTER_DECK_POWER_CANON_RESOLVED",
-    "EPISODE_1_IDENTITY_RESOLVED",
-    "CURRENT_STATE_REBUILT_FROM_APPROVED_CANON",
-    "CONFLICT_LEDGER_EMPTY_OR_OWNER_RESOLVED"
-  ]
+  "remainingRecovery": [],
+  "recoveryExitCriteria": {
+    "masterStorySourceRecovered": true,
+    "masterStoryOwnerApproved": true,
+    "masterStorySha256Recorded": true,
+    "characterDeckPowerCanonResolved": true,
+    "episode1IdentityResolved": true,
+    "currentStateRebuildRequired": true,
+    "conflictLedgerResolvedByOwnerPromotion": true
+  }
 }
