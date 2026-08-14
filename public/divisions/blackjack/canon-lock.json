@@ -1,9 +1,9 @@
 {
   "protocolVersion": "1.0",
   "canonVersion": "1.0",
-  "recoveryVersion": "1.4",
+  "recoveryVersion": "1.5",
   "divisionId": "blackjack",
-  "lockState": "MASTER_CANON_OWNER_APPROVED",
+  "lockState": "MASTER_CANON_LOCKED_READY_FOR_PRODUCTION",
   "owner": "ARDA",
   "ownerApprovedAt": "2026-08-15T00:30:00+08:00",
   "promotionManifest": "/divisions/blackjack/canon-promotion-v1.json",
@@ -80,7 +80,7 @@
     "masterStorySha256Recorded": true,
     "characterDeckPowerCanonResolved": true,
     "episode1IdentityResolved": true,
-    "currentStateRebuildRequired": true,
+    "currentStateRebuiltFromApprovedCanon": true,
     "conflictLedgerResolvedByOwnerPromotion": true
   }
 }
