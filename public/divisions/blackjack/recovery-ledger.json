@@ -8,6 +8,7 @@
     "royalGambler":"LEAVE_EXISTING_ROYAL_GAMBLER_PROJECT_UNCHANGED",
     "rule":"DO_NOT_REQUIRE_OWNER_TO_REMEMBER_STORY_FROM_SCRATCH"
   },
+  "sourceLedger":"/divisions/blackjack/source-ledger.json",
   "verified":[
     {
       "fact":"Series identity is The Legendary Decks Universe.",
@@ -35,10 +36,10 @@
       "source":"Owner-supplied original Blackjack character sheet shown 2026-08-14"
     },
     {
-      "fact":"Seven deck labels visible in the owner-supplied character set are Equilibrium Deck, Reaper Deck, Diamond Deck, Spade Deck, Clover Deck, Heart Deck and Royal Deck.",
-      "status":"VISUAL_VERIFIED_LABELS",
+      "fact":"A newer owner-supplied character set visibly uses deck labels Equilibrium, Reaper, Diamond, Spade, Clover, Heart and Royal.",
+      "status":"VISUAL_VERIFIED_SOURCE_B_NOT_FINALIZED",
       "source":"Owner-supplied original character set shown 2026-08-14",
-      "note":"Character names and detailed mechanics are not inferred from this evidence."
+      "note":"This conflicts with older individual character-sheet deck names and must not silently replace them."
     },
     {
       "fact":"Original owner intent included a superhero concept using card/energy powers comparable in feel to Gambit.",
@@ -68,12 +69,29 @@
     "Exact card/energy power mechanics",
     "Rules and limitations of the Royal Deck",
     "The Dealer identity and motivation",
-    "Names and biographies of all seven deck bearers",
-    "Full world history of Crownhaven",
+    "Final owner-approved names and biographies of all seven deck bearers",
+    "Final owner-approved seven-deck naming revision",
+    "Final owner-approved seven-value/world-domain revision",
+    "Full world history of Crownhaven and its relationship, if any, to Asterion",
     "Episode 1 page count and exact completed page state",
     "Locked arc structure and final story direction"
   ],
-  "conflicts":[],
+  "conflicts":[
+    {
+      "conflictId":"DECK-NAMING-REVISION",
+      "status":"CONFLICT",
+      "sourceA":"2026-07-30 individual Legendary Decks character sheets: Golden Deck, Azure Deck, Emerald Deck, Crimson Deck and related named identities.",
+      "sourceB":"2026-08-14 owner-supplied character set: Equilibrium Deck, Reaper Deck, Diamond Deck, Spade Deck, Clover Deck, Heart Deck and Royal Deck.",
+      "impact":"AI cannot decide whether these are replacements, aliases or separate revisions."
+    },
+    {
+      "conflictId":"SEVEN-VALUES-WORLD-REVISION",
+      "status":"CONFLICT",
+      "sourceA":"2026-07-30 ensemble source: Choice, Courage, Wisdom, Freedom, Justice, Sacrifice, Truth across Astracrown, Vermillion Dominion, Sylvanor, Skyhaven, Solaria, Noctis and Nullhaven; references Asterion.",
+      "sourceB":"2026-08-14 owner-supplied set visibly emphasizes Balance, Death & Renewal, Justice, Freedom, Wisdom, Courage and Choice.",
+      "impact":"Core value/domain system may have been revised and cannot be merged by AI."
+    }
+  ],
   "safeToGenerate":false,
-  "nextRecoveryTarget":"RECOVER_OWNER_APPROVED_MASTER_STORY_AND_CHARACTER_DECK_POWER_BIBLES"
+  "nextRecoveryTarget":"FIND_FINAL_MASTER_STORY_OR_OWNER_APPROVED_REVISION_THAT_RESOLVES_SOURCE_A_VS_SOURCE_B"
 }
