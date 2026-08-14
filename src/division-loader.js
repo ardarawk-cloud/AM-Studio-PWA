@@ -9,8 +9,17 @@ async function readJsonAsset(env,requestUrl,path){
 }
 
 export async function loadDivisionRegistry(env,requestUrl){
-  const registry=await readJsonAsset(env,requestUrl,'/divisions/index.json');
-  return registry;
+  return readJsonAsset(env,requestUrl,'/divisions/index.json');
+}
+
+export async function loadDivisionStates(env,requestUrl){
+  const registry=await loadDivisionRegistry(env,requestUrl);
+  const states=await Promise.all((registry.divisions||[]).map(async division=>{
+    const currentState=await readJsonAsset(env,requestUrl,division.currentState);
+    if(currentState.divisionId!==division.divisionId)throw new Error(`CURRENT_STATE_DIVISION_MISMATCH:${division.divisionId}`);
+    return {division,currentState};
+  }));
+  return {registry,states};
 }
 
 export async function loadDivisionContext(env,requestUrl,divisionId){
