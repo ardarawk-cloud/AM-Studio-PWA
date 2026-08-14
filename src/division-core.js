@@ -22,13 +22,16 @@ export function validateIsolation(passport={},contextManifest={}){
   return {ok:errors.length===0,errors};
 }
 
-export function evaluateProductionGate({passport={},contextManifest={},canonLock=null,recoveryLedger=null}={}){
+export function evaluateProductionGate({passport={},contextManifest={},canonLock=null,sourceLedger=null,recoveryLedger=null}={}){
   const errors=[];
   if(passport.production?.generationAllowed===false)errors.push('PASSPORT_GENERATION_BLOCKED');
   if(contextManifest.generationAllowed===false)errors.push('CONTEXT_GENERATION_BLOCKED');
   if(canonLock?.generationAllowed===false)errors.push('CANON_LOCK_GENERATION_BLOCKED');
   if(canonLock?.releaseAllowed===false)errors.push('CANON_LOCK_RELEASE_BLOCKED');
+  if(sourceLedger?.safeToResolveByAI===false)errors.push('SOURCE_LEDGER_AI_RESOLUTION_BLOCKED');
+  if(Array.isArray(sourceLedger?.conflicts)&&sourceLedger.conflicts.some(x=>String(x?.status||'').includes('UNRESOLVED')||String(x?.status||'')==='CONFLICT'))errors.push('UNRESOLVED_SOURCE_CONFLICT');
   if(recoveryLedger?.safeToGenerate===false)errors.push('RECOVERY_LEDGER_NOT_SAFE_TO_GENERATE');
+  if(Array.isArray(recoveryLedger?.conflicts)&&recoveryLedger.conflicts.some(x=>String(x?.status||'')==='CONFLICT'))errors.push('UNRESOLVED_CANON_CONFLICT');
   if(String(passport.identity?.status||'').includes('CANON_RECOVERY_HOLD'))errors.push('CANON_RECOVERY_HOLD');
   return {ok:errors.length===0,errors};
 }
