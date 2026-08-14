@@ -119,6 +119,11 @@ public class AmStudioActivity extends Activity {
         webView.setDownloadListener(new AmStudioDownloadBridge(this, settings.getUserAgentString()));
     }
 
+    private void applyPublicNativeMode(WebView view) {
+        String script = "(()=>{const hide=()=>['am-admin-launch','am-page-control-launch','am-admin-panel','am-page-control'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.setProperty('display','none','important')});hide();if(!window.__amNativeReaderObserver){window.__amNativeReaderObserver=new MutationObserver(hide);window.__amNativeReaderObserver.observe(document.documentElement,{childList:true,subtree:true});}document.documentElement.dataset.amNative='android';})();";
+        view.evaluateJavascript(script, null);
+    }
+
     private void retryLastPage() {
         hideError();
         webView.loadUrl(lastInternalUrl);
@@ -163,6 +168,7 @@ public class AmStudioActivity extends Activity {
         @Override
         public void onPageFinished(WebView view, String url) {
             if (!loadFailed) errorPanel.setVisibility(View.GONE);
+            applyPublicNativeMode(view);
         }
 
         @Override
