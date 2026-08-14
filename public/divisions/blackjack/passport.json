@@ -73,6 +73,7 @@
       "chapterContext": "The Man with the Black Deck",
       "state": "READY_FOR_PAGE_PRODUCTION"
     },
+    "ownerApprovalRequired": true,
     "ownerApprovalRequiredForCanonRevision": true,
     "pageCountPolicy": "STORY_DRIVEN_NO_FIXED_PAGE_COUNT",
     "language": "id-ID",
