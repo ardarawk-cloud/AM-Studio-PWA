@@ -35,6 +35,17 @@
       "passport":"/divisions/13-pintu-neraka/passport.json",
       "currentState":"/divisions/13-pintu-neraka/current-state.json",
       "contextManifest":"/divisions/13-pintu-neraka/context-manifest.json"
+    },
+    {
+      "divisionNumber":"004",
+      "divisionId":"blackjack",
+      "seriesId":"ld",
+      "code":"LD-BJ",
+      "name":"The Legendary Decks — Blackjack",
+      "status":"CANON_RECOVERY_HOLD",
+      "passport":"/divisions/blackjack/passport.json",
+      "currentState":"/divisions/blackjack/current-state.json",
+      "contextManifest":"/divisions/blackjack/context-manifest.json"
     }
   ]
 }
