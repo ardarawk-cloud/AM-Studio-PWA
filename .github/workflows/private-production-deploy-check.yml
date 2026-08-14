@@ -1,0 +1,62 @@
+name: Private Production Deploy Check
+
+on:
+  push:
+    branches:
+      - ops/private-production-deploy-check
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Report secret availability safely
+        shell: bash
+        run: |
+          set -euo pipefail
+          has(){ if [ -n "${!1:-}" ]; then echo "$1=AVAILABLE"; else echo "$1=MISSING"; fi; }
+          has CLOUDFLARE_API_TOKEN
+          has CLOUDFLARE_ACCOUNT_ID
+          has OPENAI_API_KEY
+
+      - name: Probe production Worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          HOST='https://am-studio-pwa.ardarawk.workers.dev'
+          root_code=$(curl -sS -L -o /tmp/root.html -w '%{http_code}' "$HOST/")
+          js_code=$(curl -sS -L -o /tmp/private-production.js -w '%{http_code}' "$HOST/private-production.js")
+          api_code=$(curl -sS -L -o /tmp/api.json -w '%{http_code}' "$HOST/api/production/blackjack/status")
+          echo "ROOT_HTTP=$root_code"
+          echo "PRIVATE_PRODUCTION_JS_HTTP=$js_code"
+          echo "OWNER_API_WITHOUT_KEY_HTTP=$api_code"
+          if grep -q 'private-production.js' /tmp/root.html; then echo 'ROOT_INJECTS_PRIVATE_PRODUCTION=YES'; else echo 'ROOT_INJECTS_PRIVATE_PRODUCTION=NO'; fi
+          if grep -q 'AUTO PRODUCE EPISODE' /tmp/private-production.js; then echo 'PRIVATE_OWNER_UI_ASSET=NEW'; else echo 'PRIVATE_OWNER_UI_ASSET=OLD_OR_MISSING'; fi
+
+      - name: Validate deploy command prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund
+          npx wrangler deploy --dry-run >/tmp/wrangler-dry-run.txt
+          echo 'WRANGLER_DRY_RUN=PASS'
+          if [ -n "${CLOUDFLARE_API_TOKEN:-}" ] && [ -n "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
+            echo 'CLOUDFLARE_DEPLOY_CREDENTIALS=READY'
+          else
+            echo 'CLOUDFLARE_DEPLOY_CREDENTIALS=NOT_READY'
+          fi
+          if [ -n "${OPENAI_API_KEY:-}" ]; then
+            echo 'OPENAI_SECRET_SYNC_SOURCE=READY'
+          else
+            echo 'OPENAI_SECRET_SYNC_SOURCE=NOT_READY'
+          fi
