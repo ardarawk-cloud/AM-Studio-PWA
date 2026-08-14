@@ -1,0 +1,24 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"/divisions/schema/release-package.schema.json",
+  "title":"AM STUDIO Division Release Package v1",
+  "type":"object",
+  "required":["protocolVersion","divisionId","seriesId","episode","title","pageCount","divisionQc","ownerApproved","releaseMode","pipelineState"],
+  "properties":{
+    "protocolVersion":{"const":"1.0"},
+    "divisionId":{"type":"string"},
+    "seriesId":{"type":"string"},
+    "episode":{"type":"integer","minimum":1},
+    "title":{"type":"string"},
+    "pageCount":{"type":"integer","minimum":1},
+    "divisionQc":{"enum":["QC_PASS","QC_FAIL","QC_WAIT"]},
+    "ownerApproved":{"type":"boolean"},
+    "releaseMode":{"type":"string"},
+    "pipelineState":{"type":"string"},
+    "scheduledAt":{"type":["string","null"]},
+    "monetization":{"type":"string"},
+    "assetRoot":{"type":"string"},
+    "currentStateAdvance":{"type":["object","null"]}
+  },
+  "additionalProperties":false
+}
