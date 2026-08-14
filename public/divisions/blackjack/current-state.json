@@ -5,24 +5,25 @@
   "workingMemoryStatus":"CANON_RECOVERY_HOLD",
   "currentEpisode":{
     "number":1,
-    "title":"The Last Normal Day",
+    "title":null,
+    "titleStatus":"UNKNOWN_CROSS_IP_COLLISION",
     "production":"QUARANTINED_PENDING_CANON_RECOVERY",
-    "canon":"TITLE_VISUALLY_VERIFIED_OTHER_DETAILS_UNKNOWN",
+    "canon":"EPISODE_EXISTS_IN_CURRENT_APP_EVIDENCE_TITLE_NOT_TRUSTED",
     "qc":"CANON_RECOVERY_REQUIRED"
   },
   "lastCompletedEpisode":null,
   "lastCompletedPage":null,
   "nextProductionTarget":{
     "number":1,
-    "title":"The Last Normal Day",
-    "state":"RECOVER_MASTER_STORY_BEFORE_ANY_NEW_PAGE"
+    "title":null,
+    "state":"RECOVER_MASTER_STORY_AND_EPISODE_IDENTITY_BEFORE_ANY_NEW_PAGE"
   },
   "continuity":{
     "setting":"Crownhaven",
     "hero":"Blackjack",
     "knownPremise":"The Dealer, seven legendary decks and hero Blackjack in Crownhaven.",
     "knownVisualIdentity":"American comic, gentleman casino aura, steampunk gothic.",
-    "hardRule":"Do not continue story, invent powers, rename Episode 1, or import Royal Gambler plot mechanics until source-verified Blackjack Master Story is restored."
+    "hardRule":"Do not continue story, invent powers, assign an Episode 1 title, or import Royal Gambler plot mechanics until source-verified Blackjack Master Story is restored."
   },
   "productionPolicy":{
     "fixedPageCount":false,
