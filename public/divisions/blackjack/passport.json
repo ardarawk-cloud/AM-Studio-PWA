@@ -43,10 +43,10 @@
     "powerCombatBible":null,
     "canonRegistry":null,
     "episodeRegistry":null,
-    "migrationNote":"Blackjack is under canon recovery. Do not import Royal Gambler story mechanics automatically. Restore only owner-approved or source-verified Blackjack canon. Source chronology never overrides owner lock."
+    "migrationNote":"Blackjack is under canon recovery. Do not import Royal Gambler story mechanics automatically. Restore only owner-approved or source-verified Blackjack canon. Source chronology and current app output never override owner lock."
   },
   "production":{
-    "currentTarget":{"episode":1,"title":"The Last Normal Day","state":"BLOCKED_UNTIL_MASTER_STORY_RECOVERED"},
+    "currentTarget":{"episode":1,"title":null,"state":"BLOCKED_UNTIL_MASTER_STORY_AND_EPISODE_IDENTITY_RECOVERED"},
     "ownerApprovalRequired":true,
     "pageCountPolicy":"STORY_DRIVEN_NO_FIXED_PAGE_COUNT",
     "language":"id-ID",
