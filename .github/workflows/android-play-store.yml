@@ -1,0 +1,192 @@
+name: AM STUDIO Play Store Candidate
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: 'Public Play versionName'
+        required: true
+        default: '1.0.0'
+        type: string
+      version_code:
+        description: 'Public Play versionCode (must increase every upload)'
+        required: true
+        default: '10000'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  play-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      AM_STUDIO_APPLICATION_ID: com.ardacore.amstudio
+      AM_STUDIO_PLAY_MODE: 'true'
+      AM_STUDIO_VERSION_NAME: ${{ inputs.version_name }}
+      AM_STUDIO_VERSION_CODE: ${{ inputs.version_code }}
+      AM_STUDIO_ANDROID_KEYSTORE_B64: ${{ secrets.AM_STUDIO_ANDROID_KEYSTORE_B64 }}
+      AM_STUDIO_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.AM_STUDIO_ANDROID_KEYSTORE_PASSWORD }}
+      AM_STUDIO_ANDROID_KEY_ALIAS: ${{ secrets.AM_STUDIO_ANDROID_KEY_ALIAS }}
+      AM_STUDIO_ANDROID_KEY_PASSWORD: ${{ secrets.AM_STUDIO_ANDROID_KEY_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle 9.5
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.5.0'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK 36
+        shell: bash
+        run: |
+          set -euo pipefail
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager 'platform-tools' 'platforms;android-36' 'build-tools;36.0.0'
+
+      - name: Require explicit owner Play release gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs=require('fs');
+          const gate=JSON.parse(fs.readFileSync('public/play-release.json','utf8'));
+          if(gate.applicationId!=='com.ardacore.amstudio') throw new Error('PLAY_APPLICATION_ID_NOT_LOCKED');
+          if(gate.mode!=='PUBLIC_READER_ONLY') throw new Error('PLAY_READER_MODE_NOT_LOCKED');
+          if(gate.playReady!==true) throw new Error('PLAY_RELEASE_GATE_CLOSED: playReady must be true');
+          if(gate.ownerReleaseApproval!==true) throw new Error('OWNER_RELEASE_APPROVAL_REQUIRED');
+          NODE
+
+      - name: Validate version input
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$AM_STUDIO_VERSION_CODE" in
+            ''|*[!0-9]*) echo '::error::version_code must be numeric'; exit 1 ;;
+          esac
+          if [ "$AM_STUDIO_VERSION_CODE" -lt 5 ]; then
+            echo '::error::Play versionCode must remain above the beta lineage versionCode.'
+            exit 1
+          fi
+          if [ -z "$AM_STUDIO_VERSION_NAME" ]; then
+            echo '::error::version_name is required'
+            exit 1
+          fi
+
+      - name: Validate Play compliance assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f public/privacy-policy.html
+          test -f public/native-reader.js
+          test -f public/play-release.json
+          test -f play-store/STORE-LISTING-ID.md
+          test -f play-store/DATA-SAFETY-DRAFT.md
+          test -f play-store/RELEASE-CHECKLIST.md
+          grep -q 'Official Comics Reader' public/privacy-policy.html
+          grep -q 'PRIVASI\|Privasi' public/native-reader.js
+          grep -q 'CANON FINAL' public/native-reader.js
+          grep -q 'PLAY_STORE_MODE' android/app/src/main/java/com/ardacore/amstudio/AmStudioActivity.java
+          grep -q "compileSdk 36" android/app/build.gradle
+          grep -q "targetSdk 36" android/app/build.gradle
+
+      - name: Validate protected Play upload key
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in AM_STUDIO_ANDROID_KEYSTORE_B64 AM_STUDIO_ANDROID_KEYSTORE_PASSWORD AM_STUDIO_ANDROID_KEY_ALIAS AM_STUDIO_ANDROID_KEY_PASSWORD; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name is required. Play candidates are never built unsigned."
+              exit 1
+            fi
+          done
+
+      - name: Restore protected upload keystore
+        shell: bash
+        run: |
+          set -euo pipefail
+          KEYSTORE="$RUNNER_TEMP/am-studio-play-upload.jks"
+          printf '%s' "$AM_STUDIO_ANDROID_KEYSTORE_B64" | base64 --decode > "$KEYSTORE"
+          chmod 600 "$KEYSTORE"
+          keytool -list -keystore "$KEYSTORE" -storepass "$AM_STUDIO_ANDROID_KEYSTORE_PASSWORD" -alias "$AM_STUDIO_ANDROID_KEY_ALIAS" >/dev/null
+          echo "AM_STUDIO_ANDROID_KEYSTORE_PATH=$KEYSTORE" >> "$GITHUB_ENV"
+
+      - name: Build signed Play AAB and verification APK
+        working-directory: android
+        run: gradle --no-daemon clean bundleRelease assembleRelease lintRelease
+
+      - name: Verify Play identity and public mode
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK='android/app/build/outputs/apk/release/app-release.apk'
+          AAB='android/app/build/outputs/bundle/release/app-release.aab'
+          test -f "$APK"
+          test -f "$AAB"
+
+          BADGING=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | head -n1)
+          echo "$BADGING"
+          echo "$BADGING" | grep -q "name='com.ardacore.amstudio'"
+          echo "$BADGING" | grep -q "versionCode='${AM_STUDIO_VERSION_CODE}'"
+          echo "$BADGING" | grep -q "versionName='${AM_STUDIO_VERSION_NAME}'"
+
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
+          jarsigner -verify -strict "$AAB" >/dev/null
+
+          BUILD_CONFIG='android/app/build/generated/source/buildConfig/release/com/ardacore/amstudio/BuildConfig.java'
+          test -f "$BUILD_CONFIG"
+          grep -q 'PLAY_STORE_MODE = true' "$BUILD_CONFIG"
+          grep -q "VERSION_NAME = \"${AM_STUDIO_VERSION_NAME}\"" "$BUILD_CONFIG"
+
+          PERMS=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump permissions "$APK")
+          printf '%s\n' "$PERMS"
+          printf '%s\n' "$PERMS" | grep -q 'android.permission.INTERNET'
+          ! printf '%s\n' "$PERMS" | grep -Eq 'ACCESS_FINE_LOCATION|ACCESS_COARSE_LOCATION|READ_CONTACTS|WRITE_CONTACTS|RECORD_AUDIO|CAMERA|READ_SMS|SEND_SMS|READ_MEDIA_IMAGES|READ_EXTERNAL_STORAGE'
+
+      - name: Package Play candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p play-out
+          cp android/app/build/outputs/bundle/release/app-release.aab "play-out/AM-STUDIO-v${AM_STUDIO_VERSION_NAME}-${AM_STUDIO_VERSION_CODE}.aab"
+          cp android/app/build/outputs/apk/release/app-release.apk "play-out/AM-STUDIO-v${AM_STUDIO_VERSION_NAME}-${AM_STUDIO_VERSION_CODE}-verification.apk"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs "play-out/AM-STUDIO-v${AM_STUDIO_VERSION_NAME}-${AM_STUDIO_VERSION_CODE}-verification.apk" > play-out/signing-certificate.txt
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "play-out/AM-STUDIO-v${AM_STUDIO_VERSION_NAME}-${AM_STUDIO_VERSION_CODE}-verification.apk" | head -n1 > play-out/package-identity.txt
+          {
+            echo 'AM STUDIO GOOGLE PLAY CANDIDATE'
+            echo "versionName=${AM_STUDIO_VERSION_NAME}"
+            echo "versionCode=${AM_STUDIO_VERSION_CODE}"
+            echo 'applicationId=com.ardacore.amstudio'
+            echo 'channel=PUBLIC_READER_ONLY'
+            echo 'targetSdk=36'
+            echo 'artifact=AAB'
+            echo 'adminTools=BLOCKED'
+            echo "commit=${GITHUB_SHA}"
+            echo 'privacyPolicy=https://am-studio-pwa.ardarawk.workers.dev/privacy-policy.html'
+          } > play-out/PLAY-CANDIDATE.txt
+          sha256sum play-out/*.aab play-out/*.apk > play-out/SHA256SUMS.txt
+
+      - name: Remove upload key from runner
+        if: always()
+        shell: bash
+        run: rm -f "${AM_STUDIO_ANDROID_KEYSTORE_PATH:-$RUNNER_TEMP/am-studio-play-upload.jks}"
+
+      - name: Upload Play candidate artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: AM-STUDIO-Play-v${{ inputs.version_name }}-${{ inputs.version_code }}
+          path: play-out/
+          if-no-files-found: error
+          retention-days: 30
