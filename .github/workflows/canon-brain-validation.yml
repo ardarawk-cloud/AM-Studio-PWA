@@ -23,10 +23,16 @@ jobs:
           node-version: '22'
       - run: npm install --no-audit --no-fund
       - run: npm test
-      - name: Syntax check Canon Brain runtime
+      - name: Run private production tests
+        run: |
+          node --test tests/private-production.test.mjs
+          node --test tests/blackjack-auto-pipeline.test.mjs
+      - name: Syntax check Canon Brain and production runtimes
         run: |
           node --check src/division-core.js
           node --check src/division-loader.js
           node --check src/canon-brain-runtime.js
           node --check src/canon-hold-runtime.js
+          node --check src/private-production-runtime.js
+          node --check src/workers-ai-production-runtime.js
       - run: npx wrangler deploy --dry-run
