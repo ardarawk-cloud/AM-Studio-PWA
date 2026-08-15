@@ -8,16 +8,27 @@ def releaseSigningReady = [releaseKeystorePath, releaseStorePassword, releaseKey
         .every { value -> value != null && !value.trim().isEmpty() }
 def stableDebugKeystore = file(System.getProperty('user.home') + '/.android/debug.keystore')
 
+def amApplicationId = System.getenv('AM_STUDIO_APPLICATION_ID') ?: 'com.ardacore.amstudio.v2'
+def amVersionName = System.getenv('AM_STUDIO_VERSION_NAME') ?: '0.2.3'
+def amVersionCodeRaw = System.getenv('AM_STUDIO_VERSION_CODE')
+def amVersionCode = amVersionCodeRaw ? Integer.parseInt(amVersionCodeRaw) : 4
+def amPlayStoreMode = (System.getenv('AM_STUDIO_PLAY_MODE') ?: 'false').toBoolean()
+
 android {
     namespace 'com.ardacore.amstudio'
     compileSdk 36
 
     defaultConfig {
-        applicationId 'com.ardacore.amstudio.v2'
+        applicationId amApplicationId
         minSdk 26
         targetSdk 36
-        versionCode 4
-        versionName '0.2.3'
+        versionCode amVersionCode
+        versionName amVersionName
+        buildConfigField 'boolean', 'PLAY_STORE_MODE', amPlayStoreMode.toString()
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 
     signingConfigs {
@@ -51,6 +62,11 @@ android {
             }
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    lint {
+        abortOnError true
+        checkReleaseBuilds true
     }
 
     compileOptions {
