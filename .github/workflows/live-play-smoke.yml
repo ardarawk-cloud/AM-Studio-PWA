@@ -25,7 +25,7 @@ jobs:
           grep -q 'am-play-reader-server' play.html
           ! grep -Eq '/(admin-panel|page-control|asset-upload|private-production|private-production-qc-v2|admin-upload-queue-fix)\.js' play.html
 
-      - name: Verify live Play catalog and registry are filtered
+      - name: Verify live Play catalog and registry are public-safe
         shell: bash
         run: |
           set -euo pipefail
@@ -37,7 +37,11 @@ jobs:
           const reader=JSON.parse(fs.readFileSync('reader.json','utf8'));
           if(catalog?.studio?.playFirewall!==true)throw new Error('LIVE_CATALOG_PLAY_FIREWALL_NOT_ACTIVE');
           if(reader?.registry?.playFirewall!==true)throw new Error('LIVE_READER_PLAY_FIREWALL_NOT_ACTIVE');
-          for(const s of catalog.series||[])if(s.publicReaderState!=='READY')throw new Error(`NON_READY_SERIES_VISIBLE:${s.id}`);
+          for(const s of catalog.series||[]){
+            if(s.publicReaderState!=='READY')throw new Error(`NON_READY_SERIES_VISIBLE:${s.id}`);
+            if(s.status!=='PUBLISHED')throw new Error(`INTERNAL_STATUS_VISIBLE:${s.id}:${s.status}`);
+            if(s.qc!=='PUBLIC_READER_READY')throw new Error(`INTERNAL_QC_VISIBLE:${s.id}:${s.qc}`);
+          }
           for(const a of reader.episodes||[]){
             if(a.canonState!=='CANON_FINAL'||a.qc!=='QC_PASS')throw new Error(`NON_FINAL_EPISODE_VISIBLE:${a.seriesId}:${a.episode}`);
             if(a.replacementPending===true||String(a.readerState||'').includes('PARTIAL'))throw new Error(`PARTIAL_EPISODE_VISIBLE:${a.seriesId}:${a.episode}`);
@@ -47,5 +51,5 @@ jobs:
             const readerAsset=typeof a.readerAsset==='string'&&a.readerAsset.trim();
             if(!readerAsset&&!(total>0&&pages.length>=total&&available>=total&&missing.length===0))throw new Error(`INCOMPLETE_EPISODE_VISIBLE:${a.seriesId}:${a.episode}`);
           }
-          console.log('LIVE_PLAY_FIREWALL_OK',catalog.series?.map(s=>s.id),reader.episodes?.map(a=>`${a.seriesId}:${a.episode}`));
+          console.log('LIVE_PLAY_PUBLIC_SAFE',catalog.series?.map(s=>`${s.id}:${s.status}`),reader.episodes?.map(a=>`${a.seriesId}:${a.episode}`));
           NODE
