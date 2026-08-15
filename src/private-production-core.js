@@ -30,9 +30,10 @@ export function episodePlanFromContext(context={}){
   return plan;
 }
 
-export function producedPageNumbers(objects=[],seriesId,episode){
-  const prefix=`comics/${seriesId}/ep${String(episode).padStart(3,'0')}/`;
-  return objects.map(o=>String(o?.key||'')).filter(k=>k.startsWith(prefix)).map(k=>Number((k.match(/page-(\d{2,3})\.(?:png|jpg|jpeg|webp|avif)$/i)||[])[1])).filter(Number.isInteger).sort((a,b)=>a-b);
+export function producedPageNumbers(objects=[],seriesId,episode,root='comics'){
+  const normalizedRoot=String(root||'comics').replace(/\/+$/,'');
+  const prefix=`${normalizedRoot}/${seriesId}/ep${String(episode).padStart(3,'0')}/`;
+  return [...new Set(objects.map(o=>String(o?.key||'')).filter(k=>k.startsWith(prefix)).map(k=>Number((k.match(/page-(\d{2,3})\.(?:png|jpg|jpeg|webp|avif)$/i)||[])[1])).filter(Number.isInteger))].sort((a,b)=>a-b);
 }
 
 export function nextMissingPage(totalPages,produced=[]){
@@ -45,7 +46,6 @@ export function buildBlackjackPagePrompt({context,pageNumber}={}){
   const plan=episodePlanFromContext(context);
   const page=plan?.pagePlan?.find(x=>Number(x.page)===Number(pageNumber));
   if(!plan||!page)throw new Error('EPISODE_PAGE_PLAN_NOT_FOUND');
-  const continuity=context.currentState?.continuity||{};
   const page1=Number(pageNumber)===1;
   return [
     'Create one finished vertical comic page for AM STUDIO.',
