@@ -1,5 +1,6 @@
 package com.ardacore.amstudio;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
@@ -25,6 +26,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -40,6 +43,7 @@ public class AmStudioActivity extends Activity {
     private ValueCallback<Uri[]> filePathCallback;
     private String lastInternalUrl;
     private boolean loadFailed;
+    private OnBackInvokedCallback predictiveBackCallback;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -47,6 +51,7 @@ public class AmStudioActivity extends Activity {
         lastInternalUrl = homeUrl();
         buildUi();
         configureWebView();
+        registerBackNavigation();
         webView.loadUrl(resolveInitialUrl(getIntent()));
     }
 
@@ -140,6 +145,23 @@ public class AmStudioActivity extends Activity {
         webView.setWebViewClient(new AmStudioWebViewClient());
         webView.setWebChromeClient(new AmStudioChromeClient());
         webView.setDownloadListener(new AmStudioDownloadBridge(this, settings.getUserAgentString()));
+    }
+
+    private void registerBackNavigation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            predictiveBackCallback = this::handleBackNavigation;
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    predictiveBackCallback);
+        }
+    }
+
+    private void handleBackNavigation() {
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            finish();
+        }
     }
 
     private void applyPublicNativeMode(WebView view) {
@@ -298,14 +320,22 @@ public class AmStudioActivity extends Activity {
         if (webView != null) webView.loadUrl(resolveInitialUrl(intent));
     }
 
+    @SuppressLint("GestureBackNavigation")
     @Override
     public void onBackPressed() {
-        if (webView != null && webView.canGoBack()) webView.goBack();
-        else super.onBackPressed();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            handleBackNavigation();
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
     protected void onDestroy() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && predictiveBackCallback != null) {
+            getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(predictiveBackCallback);
+            predictiveBackCallback = null;
+        }
         if (filePathCallback != null) {
             filePathCallback.onReceiveValue(null);
             filePathCallback = null;
