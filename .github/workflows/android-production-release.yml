@@ -1,4 +1,4 @@
-name: AM STUDIO Android Production Release
+name: AM STUDIO Owner Beta Android Release
 
 on:
   workflow_dispatch:
@@ -14,6 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
+      AM_STUDIO_APPLICATION_ID: com.ardacore.amstudio.v2
+      AM_STUDIO_PLAY_MODE: 'false'
+      AM_STUDIO_VERSION_NAME: '0.2.3'
+      AM_STUDIO_VERSION_CODE: '4'
       AM_STUDIO_ANDROID_KEYSTORE_B64: ${{ secrets.AM_STUDIO_ANDROID_KEYSTORE_B64 }}
       AM_STUDIO_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.AM_STUDIO_ANDROID_KEYSTORE_PASSWORD }}
       AM_STUDIO_ANDROID_KEY_ALIAS: ${{ secrets.AM_STUDIO_ANDROID_KEY_ALIAS }}
@@ -40,40 +44,49 @@ jobs:
       - name: Install Android SDK 36
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
 
-      - name: Validate production signing secrets
+      - name: Validate protected Owner Beta signing secrets
         shell: bash
         run: |
           set -euo pipefail
           for name in AM_STUDIO_ANDROID_KEYSTORE_B64 AM_STUDIO_ANDROID_KEYSTORE_PASSWORD AM_STUDIO_ANDROID_KEY_ALIAS AM_STUDIO_ANDROID_KEY_PASSWORD; do
             if [ -z "${!name:-}" ]; then
-              echo "::error::$name is required for production signing"
+              echo "::error::$name is required for protected Owner Beta signing"
               exit 1
             fi
           done
 
-      - name: Restore production keystore
+      - name: Restore protected keystore
         shell: bash
         run: |
           set -euo pipefail
-          KEYSTORE="$RUNNER_TEMP/am-studio-production.jks"
+          KEYSTORE="$RUNNER_TEMP/am-studio-owner-beta.jks"
           printf '%s' "$AM_STUDIO_ANDROID_KEYSTORE_B64" | base64 --decode > "$KEYSTORE"
           chmod 600 "$KEYSTORE"
           echo "AM_STUDIO_ANDROID_KEYSTORE_PATH=$KEYSTORE" >> "$GITHUB_ENV"
 
-      - name: Build signed production APK
+      - name: Build signed Owner Beta APK
         working-directory: android
         run: gradle --no-daemon clean assembleRelease
 
-      - name: Verify APK signature
+      - name: Verify Owner Beta identity and signature
         shell: bash
         run: |
           set -euo pipefail
-          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs android/app/build/outputs/apk/release/app-release.apk
+          APK='android/app/build/outputs/apk/release/app-release.apk'
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
+          BADGING=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | head -n1)
+          echo "$BADGING"
+          echo "$BADGING" | grep -q "name='com.ardacore.amstudio.v2'"
+          echo "$BADGING" | grep -q "versionCode='4'"
+          echo "$BADGING" | grep -q "versionName='0.2.3'"
+          CONFIG='android/app/build/generated/source/buildConfig/release/com/ardacore/amstudio/BuildConfig.java'
+          test -f "$CONFIG"
+          grep -q 'PLAY_STORE_MODE = false' "$CONFIG"
 
-      - name: Upload production APK
+      - name: Upload Owner Beta APK
         uses: actions/upload-artifact@v4
         with:
-          name: AM-STUDIO-Android-Production
+          name: AM-STUDIO-Owner-Beta-v0.2.3
           path: android/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
           retention-days: 30
