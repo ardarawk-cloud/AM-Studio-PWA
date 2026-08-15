@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,7 +118,7 @@ public class AmStudioActivity extends Activity {
         settings.setJavaScriptCanOpenWindowsAutomatically(false);
         settings.setSupportMultipleWindows(false);
         settings.setSafeBrowsingEnabled(true);
-        settings.setUserAgentString(settings.getUserAgentString() + " AMStudioAndroid/0.2.0");
+        settings.setUserAgentString(settings.getUserAgentString() + " AMStudioAndroid/0.2.1");
 
         boolean debuggable = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         WebView.setWebContentsDebuggingEnabled(debuggable);
@@ -188,23 +190,38 @@ public class AmStudioActivity extends Activity {
         }
     }
 
+    private Intent buildImagePicker(boolean multiple) {
+        Intent picker;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            picker = new Intent(MediaStore.ACTION_PICK_IMAGES);
+            picker.setType("image/*");
+            picker.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+            if (multiple) {
+                picker.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, MediaStore.getPickImagesMaxLimit());
+            }
+        } else {
+            picker = new Intent(Intent.ACTION_GET_CONTENT);
+            picker.addCategory(Intent.CATEGORY_OPENABLE);
+            picker.setType("image/*");
+            picker.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multiple);
+            picker.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        }
+        picker.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        return picker;
+    }
+
     private final class AmStudioChromeClient extends WebChromeClient {
         @Override
         public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
             if (filePathCallback != null) filePathCallback.onReceiveValue(null);
             filePathCallback = callback;
             try {
-                Intent picker = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                picker.addCategory(Intent.CATEGORY_OPENABLE);
-                picker.setType("image/*");
-                picker.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,
-                        params.getMode() == FileChooserParams.MODE_OPEN_MULTIPLE);
-                picker.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivityForResult(picker, FILE_CHOOSER_REQUEST);
+                boolean multiple = params.getMode() == FileChooserParams.MODE_OPEN_MULTIPLE;
+                startActivityForResult(buildImagePicker(multiple), FILE_CHOOSER_REQUEST);
                 return true;
             } catch (Exception error) {
                 filePathCallback = null;
-                Toast.makeText(AmStudioActivity.this, "File picker tidak tersedia.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AmStudioActivity.this, "Galeri tidak tersedia.", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
