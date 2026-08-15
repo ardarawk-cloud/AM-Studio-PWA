@@ -1,0 +1,45 @@
+name: AM STUDIO Play Reader Policy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'public/native-reader.js'
+      - 'public/play-release.json'
+      - 'public/reader-assets.json'
+      - 'tests/division-play-reader.test.mjs'
+      - '.github/workflows/play-reader-policy.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'public/native-reader.js'
+      - 'public/play-release.json'
+      - 'public/reader-assets.json'
+      - 'tests/division-play-reader.test.mjs'
+      - '.github/workflows/play-reader-policy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          package-manager-cache: false
+
+      - name: Validate Play Reader script syntax
+        run: node --check public/native-reader.js
+
+      - name: Run Play Reader release policy tests
+        run: node --test tests/division-play-reader.test.mjs

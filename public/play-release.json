@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "app": "AM STUDIO",
   "owner": "Arda Core Corporation",
   "channel": "GOOGLE_PLAY",
@@ -18,7 +18,10 @@
     "publicReaderOnly": true,
     "adminToolsBlocked": true,
     "publishedAssetsMustBeCanonFinalQcPass": true,
+    "completeReaderAssetsRequired": true,
+    "partialAssetRecoveryBlocked": true,
+    "missingReaderPagesBlocked": true,
     "contentReadinessReviewRequired": true
   },
-  "note": "Keep playReady and ownerReleaseApproval false until Arda explicitly approves Google Play submission after content, policy, signing, and store assets pass final QC."
+  "note": "Keep playReady and ownerReleaseApproval false until Arda explicitly approves Google Play submission after content, policy, signing, store assets, and complete reader-asset QC pass final review."
 }
