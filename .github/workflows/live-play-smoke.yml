@@ -1,0 +1,51 @@
+name: AM STUDIO Live Play Smoke
+
+on:
+  push:
+    branches:
+      - fix/amstudio-play-device-apk
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-play-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify live Play HTML firewall
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://am-studio-pwa.ardarawk.workers.dev/?native=android&channel=play'
+          curl --fail --silent --show-error --location --max-time 30 -D headers.txt "$URL" -o play.html
+          grep -qi '^x-am-play-firewall: active' headers.txt
+          grep -q 'am-play-firewall-bootstrap' play.html
+          grep -q 'am-play-reader-server' play.html
+          ! grep -Eq '/(admin-panel|page-control|asset-upload|private-production|private-production-qc-v2|admin-upload-queue-fix)\.js' play.html
+
+      - name: Verify live Play catalog and registry are filtered
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 30 'https://am-studio-pwa.ardarawk.workers.dev/catalog.json?channel=play' -o catalog.json
+          curl --fail --silent --show-error --location --max-time 30 'https://am-studio-pwa.ardarawk.workers.dev/reader-assets.json?channel=play' -o reader.json
+          node <<'NODE'
+          const fs=require('fs');
+          const catalog=JSON.parse(fs.readFileSync('catalog.json','utf8'));
+          const reader=JSON.parse(fs.readFileSync('reader.json','utf8'));
+          if(catalog?.studio?.playFirewall!==true)throw new Error('LIVE_CATALOG_PLAY_FIREWALL_NOT_ACTIVE');
+          if(reader?.registry?.playFirewall!==true)throw new Error('LIVE_READER_PLAY_FIREWALL_NOT_ACTIVE');
+          for(const s of catalog.series||[])if(s.publicReaderState!=='READY')throw new Error(`NON_READY_SERIES_VISIBLE:${s.id}`);
+          for(const a of reader.episodes||[]){
+            if(a.canonState!=='CANON_FINAL'||a.qc!=='QC_PASS')throw new Error(`NON_FINAL_EPISODE_VISIBLE:${a.seriesId}:${a.episode}`);
+            if(a.replacementPending===true||String(a.readerState||'').includes('PARTIAL'))throw new Error(`PARTIAL_EPISODE_VISIBLE:${a.seriesId}:${a.episode}`);
+            const pages=Array.isArray(a.pages)?a.pages.filter(Boolean):[];
+            const total=Number(a.pageCount||0),available=Number(a.availablePageCount||pages.length||0);
+            const missing=Array.isArray(a.missingReaderPages)?a.missingReaderPages.filter(Boolean):[];
+            const readerAsset=typeof a.readerAsset==='string'&&a.readerAsset.trim();
+            if(!readerAsset&&!(total>0&&pages.length>=total&&available>=total&&missing.length===0))throw new Error(`INCOMPLETE_EPISODE_VISIBLE:${a.seriesId}:${a.episode}`);
+          }
+          console.log('LIVE_PLAY_FIREWALL_OK',catalog.series?.map(s=>s.id),reader.episodes?.map(a=>`${a.seriesId}:${a.episode}`));
+          NODE
