@@ -116,7 +116,7 @@ public class AmStudioActivity extends Activity {
         settings.setJavaScriptCanOpenWindowsAutomatically(false);
         settings.setSupportMultipleWindows(false);
         settings.setSafeBrowsingEnabled(true);
-        settings.setUserAgentString(settings.getUserAgentString() + " AMStudioAndroid/0.1.0");
+        settings.setUserAgentString(settings.getUserAgentString() + " AMStudioAndroid/0.2.0");
 
         boolean debuggable = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         WebView.setWebContentsDebuggingEnabled(debuggable);
@@ -194,11 +194,12 @@ public class AmStudioActivity extends Activity {
             if (filePathCallback != null) filePathCallback.onReceiveValue(null);
             filePathCallback = callback;
             try {
-                Intent picker = params.createIntent();
-                if (params.getMode() == FileChooserParams.MODE_OPEN_MULTIPLE) {
-                    picker.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                    picker.addCategory(Intent.CATEGORY_OPENABLE);
-                }
+                Intent picker = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                picker.addCategory(Intent.CATEGORY_OPENABLE);
+                picker.setType("image/*");
+                picker.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,
+                        params.getMode() == FileChooserParams.MODE_OPEN_MULTIPLE);
+                picker.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 startActivityForResult(picker, FILE_CHOOSER_REQUEST);
                 return true;
             } catch (Exception error) {
