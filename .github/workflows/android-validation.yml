@@ -62,6 +62,10 @@ jobs:
       - name: Install Android SDK 36
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
 
+      - name: Show actual Gradle signing source
+        working-directory: android
+        run: gradle --no-daemon :app:signingReport
+
       - name: Validate debug and release builds
         working-directory: android
         run: gradle --no-daemon clean assembleDebug assembleRelease
