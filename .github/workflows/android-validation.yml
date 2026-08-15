@@ -7,15 +7,25 @@ on:
       - feature/am-studio-android-v1
     paths:
       - 'android/**'
+      - 'public/native-reader.js'
+      - 'public/privacy-policy.html'
+      - 'public/play-release.json'
+      - 'play-store/**'
       - '.github/workflows/android-validation.yml'
       - '.github/workflows/android-production-release.yml'
+      - '.github/workflows/android-play-store.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'android/**'
+      - 'public/native-reader.js'
+      - 'public/privacy-policy.html'
+      - 'public/play-release.json'
+      - 'play-store/**'
       - '.github/workflows/android-validation.yml'
       - '.github/workflows/android-production-release.yml'
+      - '.github/workflows/android-play-store.yml'
   workflow_dispatch:
 
 permissions:
@@ -24,7 +34,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
@@ -36,13 +46,18 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Restore stable AM STUDIO signing key
+      - name: Set up Node 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Restore stable AM STUDIO beta signing key
         uses: actions/cache@v4
         with:
           path: ~/.android/debug.keystore
           key: am-studio-android-debug-key-v1
 
-      - name: Ensure stable AM STUDIO signing key
+      - name: Ensure stable AM STUDIO beta signing key
         shell: bash
         run: |
           set -euo pipefail
@@ -62,45 +77,89 @@ jobs:
       - name: Install Android SDK 36
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
 
-      - name: Show actual Gradle signing source
-        working-directory: android
-        run: gradle --no-daemon :app:signingReport
-
-      - name: Validate debug and release builds
-        working-directory: android
-        run: gradle --no-daemon clean assembleDebug assembleRelease
-
-      - name: Verify APK identity and stable signature
+      - name: Validate public reader assets
         shell: bash
         run: |
           set -euo pipefail
+          node --check public/native-reader.js
+          test -f public/privacy-policy.html
+          test -f public/play-release.json
+          node -e "const g=require('./public/play-release.json');if(g.applicationId!=='com.ardacore.amstudio'||g.mode!=='PUBLIC_READER_ONLY')process.exit(1)"
+          grep -q 'Official Comics Reader' public/privacy-policy.html
+          grep -q 'CANON FINAL' public/native-reader.js
+          grep -q 'ownerReleaseApproval' public/play-release.json
+
+      - name: Show actual beta Gradle signing source
+        working-directory: android
+        run: gradle --no-daemon :app:signingReport
+
+      - name: Validate Owner Beta debug and release builds
+        working-directory: android
+        run: gradle --no-daemon clean assembleDebug assembleRelease
+
+      - name: Verify beta identity and stable signature
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p validation-out
           APK="android/app/build/outputs/apk/debug/app-debug.apk"
-          REPORT="android/app/build/outputs/apk/debug/AM-STUDIO-build-identity.txt"
+          REPORT="validation-out/AM-STUDIO-beta-build-identity.txt"
           EXPECTED="2a0cd247bd605f428008982350db67d30b86e2fc4b6e7bc6f3d76f448b108cd2"
           : > "$REPORT"
-          echo "AM STUDIO Android build identity" | tee -a "$REPORT"
+          echo "AM STUDIO Owner Beta build identity" | tee -a "$REPORT"
           echo "commit=$GITHUB_SHA" | tee -a "$REPORT"
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | head -n 1 | tee -a "$REPORT"
           CERTS=$("$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK")
           printf '%s\n' "$CERTS" | tee -a "$REPORT"
           ACTUAL=$(printf '%s\n' "$CERTS" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p' | head -n1 | tr '[:upper:]' '[:lower:]')
           if [ "$ACTUAL" != "$EXPECTED" ]; then
-            echo "::error::Unexpected APK signer SHA-256: $ACTUAL" | tee -a "$REPORT"
+            echo "::error::Unexpected beta APK signer SHA-256: $ACTUAL" | tee -a "$REPORT"
             exit 1
           fi
           PACKAGE_LINE=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | head -n 1)
           echo "$PACKAGE_LINE" | grep -q "name='com.ardacore.amstudio.v2'"
           echo "$PACKAGE_LINE" | grep -q "versionCode='4'"
           echo "$PACKAGE_LINE" | grep -q "versionName='0.2.3'"
-          echo "Stable signer verified: $ACTUAL" | tee -a "$REPORT"
-          keytool -list -v -keystore "$HOME/.android/debug.keystore" -storepass android -alias androiddebugkey | grep -E 'SHA256:|Owner:|Issuer:' | tee -a "$REPORT"
+          BETA_CONFIG='android/app/build/generated/source/buildConfig/debug/com/ardacore/amstudio/BuildConfig.java'
+          test -f "$BETA_CONFIG"
+          grep -q 'PLAY_STORE_MODE = false' "$BETA_CONFIG"
+          cp "$APK" validation-out/AM-STUDIO-Owner-Beta-v0.2.3.apk
 
-      - name: Upload validation APK
+      - name: Validate unsigned Play Reader variant
+        working-directory: android
+        env:
+          AM_STUDIO_APPLICATION_ID: com.ardacore.amstudio
+          AM_STUDIO_PLAY_MODE: 'true'
+          AM_STUDIO_VERSION_NAME: '1.0.0'
+          AM_STUDIO_VERSION_CODE: '10000'
+        run: gradle --no-daemon clean assembleRelease bundleRelease lintRelease
+
+      - name: Verify Play Reader compile identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK='android/app/build/outputs/apk/release/app-release-unsigned.apk'
+          AAB='android/app/build/outputs/bundle/release/app-release.aab'
+          test -f "$APK"
+          test -f "$AAB"
+          BADGING=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | head -n1)
+          echo "$BADGING" | tee validation-out/AM-STUDIO-play-build-identity.txt
+          echo "$BADGING" | grep -q "name='com.ardacore.amstudio'"
+          echo "$BADGING" | grep -q "versionCode='10000'"
+          echo "$BADGING" | grep -q "versionName='1.0.0'"
+          PLAY_CONFIG='android/app/build/generated/source/buildConfig/release/com/ardacore/amstudio/BuildConfig.java'
+          test -f "$PLAY_CONFIG"
+          grep -q 'PLAY_STORE_MODE = true' "$PLAY_CONFIG"
+          PERMS=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump permissions "$APK")
+          printf '%s\n' "$PERMS" | tee -a validation-out/AM-STUDIO-play-build-identity.txt
+          printf '%s\n' "$PERMS" | grep -q 'android.permission.INTERNET'
+          ! printf '%s\n' "$PERMS" | grep -Eq 'ACCESS_FINE_LOCATION|ACCESS_COARSE_LOCATION|READ_CONTACTS|WRITE_CONTACTS|RECORD_AUDIO|CAMERA|READ_SMS|SEND_SMS|READ_MEDIA_IMAGES|READ_EXTERNAL_STORAGE'
+          cp "$AAB" validation-out/AM-STUDIO-Play-unsigned-validation.aab
+
+      - name: Upload Android validation artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: AM-STUDIO-Android-Stable-v0.2.3
-          path: |
-            android/app/build/outputs/apk/debug/app-debug.apk
-            android/app/build/outputs/apk/debug/AM-STUDIO-build-identity.txt
+          name: AM-STUDIO-Android-Dual-Channel-Validation
+          path: validation-out/
           if-no-files-found: error
           retention-days: 30
