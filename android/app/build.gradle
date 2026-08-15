@@ -6,6 +6,7 @@ def releaseKeyAlias = System.getenv('AM_STUDIO_ANDROID_KEY_ALIAS')
 def releaseKeyPassword = System.getenv('AM_STUDIO_ANDROID_KEY_PASSWORD')
 def releaseSigningReady = [releaseKeystorePath, releaseStorePassword, releaseKeyAlias, releaseKeyPassword]
         .every { value -> value != null && !value.trim().isEmpty() }
+def stableDebugKeystore = file(System.getProperty('user.home') + '/.android/debug.keystore')
 
 android {
     namespace 'com.ardacore.amstudio'
@@ -15,11 +16,17 @@ android {
         applicationId 'com.ardacore.amstudio.v2'
         minSdk 26
         targetSdk 36
-        versionCode 3
-        versionName '0.2.2'
+        versionCode 4
+        versionName '0.2.3'
     }
 
     signingConfigs {
+        stableDebug {
+            storeFile stableDebugKeystore
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
         release {
             if (releaseSigningReady) {
                 storeFile file(releaseKeystorePath)
@@ -33,6 +40,7 @@ android {
     buildTypes {
         debug {
             debuggable true
+            signingConfig signingConfigs.stableDebug
         }
         release {
             debuggable false
