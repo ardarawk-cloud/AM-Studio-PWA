@@ -43,12 +43,16 @@ test('static Play registry exposes only complete CANON_FINAL QC_PASS episodes',(
   assert.equal(filtered.registry.playFirewall,true);
 });
 
-test('static Play catalog exposes only series with complete public reader assets',()=>{
+test('static Play catalog exposes only public-ready series with public-facing status',()=>{
   const registry=filterReaderRegistry(readerRegistry);
   const filtered=filterCatalog(catalog,registry);
   assert.deepEqual(filtered.series.map(x=>x.id),['amu']);
   assert.equal(filtered.series[0].publicReaderState,'READY');
+  assert.equal(filtered.series[0].status,'PUBLISHED');
+  assert.equal(filtered.series[0].qc,'PUBLIC_READER_READY');
   assert.equal(filtered.series[0].episodes,1);
+  assert.ok(filtered.series.every(x=>!String(x.status||'').includes('AUDIT_PENDING')));
+  assert.ok(filtered.series.every(x=>!String(x.status||'').includes('CANON_HOLD')));
   assert.equal(filtered.studio.mode,'PUBLIC_READER_ONLY');
   assert.equal(filtered.studio.playFirewall,true);
 });

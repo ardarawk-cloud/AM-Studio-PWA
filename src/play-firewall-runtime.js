@@ -61,6 +61,8 @@ function filterCatalog(catalog,registry){
       episodeCountVerified:contiguous,
       verifiedEpisodes:episodes,
       freeEpisodes:Math.max(Number(series.freeEpisodes||0),contiguous?max:0),
+      status:'PUBLISHED',
+      qc:'PUBLIC_READER_READY',
       publicReaderState:'READY'
     };
   });
