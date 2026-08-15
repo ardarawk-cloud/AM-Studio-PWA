@@ -1,3 +1,4 @@
+(()=>{if(!document.querySelector('script[data-am-admin-bootstrap]')){const s=document.createElement('script');s.src='/admin-panel.js?v=20260815b';s.defer=true;s.dataset.amAdminBootstrap='1';document.head.appendChild(s)}})();
 (()=>{
   let installed=false,auto=false,paused=false,currentPage=null,currentBlobUrl='';
   const key=()=>sessionStorage.getItem('am_admin_key')||'';
