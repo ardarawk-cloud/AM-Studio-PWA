@@ -4,6 +4,8 @@ const LT_MARKER='migrations/lt-ep001-order-fix-20260813-v1.json';
 const LT_PREFIX='comics/lt/ep001/';
 const RG_MARKER='migrations/royal-gambler-ep001-swap-page-03-04-20260814-v1.json';
 const RG_PREFIX='comics/royal-gambler/ep001/';
+const BJ_RESET_MARKER='migrations/blackjack-ep001-canon-reset-20260815-v1.json';
+const BJ_PREFIX='comics/ld/ep001/';
 let repairPromise;
 
 async function readPage(env,prefix,n){
@@ -42,9 +44,25 @@ async function repairRoyalGambler(env){
   return {ok:true,repaired:true};
 }
 
+async function resetBlackjackEpisode1(env){
+  if(await env.COMIC_ASSETS.head(BJ_RESET_MARKER))return {ok:true,alreadyDone:true};
+  let cursor;const deleted=[];
+  do{
+    const list=await env.COMIC_ASSETS.list({prefix:BJ_PREFIX,limit:1000,cursor});
+    for(const item of list.objects||[]){
+      await env.COMIC_ASSETS.delete(item.key);
+      deleted.push(item.key);
+    }
+    cursor=list.truncated?list.cursor:undefined;
+  }while(cursor);
+  await env.COMIC_ASSETS.put(BJ_RESET_MARKER,JSON.stringify({ok:true,seriesId:'ld',divisionId:'blackjack',episode:1,action:'CANON_RESTART_FROM_ZERO',deletedCount:deleted.length,completedAt:new Date().toISOString()}),{httpMetadata:{contentType:'application/json',cacheControl:'no-store'},customMetadata:{source:'OWNER_APPROVED_BLACKJACK_CANON_RESET'}});
+  return {ok:true,reset:true,deletedCount:deleted.length};
+}
+
 async function repair(env){
   if(!env?.COMIC_ASSETS)return {ok:false,skipped:true};
   const results={};
+  try{results.blackjack=await resetBlackjackEpisode1(env)}catch(e){results.blackjack={ok:false,error:String(e?.message||e)}}
   try{results.lingTian=await repairLingTian(env)}catch(e){results.lingTian={ok:false,error:String(e?.message||e)}}
   try{results.royalGambler=await repairRoyalGambler(env)}catch(e){results.royalGambler={ok:false,error:String(e?.message||e)}}
   return {ok:true,results};
