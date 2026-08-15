@@ -36,13 +36,13 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Restore validation signing key
+      - name: Restore stable AM STUDIO signing key
         uses: actions/cache@v4
         with:
           path: ~/.android/debug.keystore
           key: am-studio-android-debug-key-v1
 
-      - name: Ensure validation signing key
+      - name: Ensure stable AM STUDIO signing key
         shell: bash
         run: |
           set -euo pipefail
@@ -70,26 +70,37 @@ jobs:
         working-directory: android
         run: gradle --no-daemon clean assembleDebug assembleRelease
 
-      - name: Verify APK identity and signature
+      - name: Verify APK identity and stable signature
         shell: bash
         run: |
           set -euo pipefail
           APK="android/app/build/outputs/apk/debug/app-debug.apk"
           REPORT="android/app/build/outputs/apk/debug/AM-STUDIO-build-identity.txt"
+          EXPECTED="2a0cd247bd605f428008982350db67d30b86e2fc4b6e7bc6f3d76f448b108cd2"
           : > "$REPORT"
           echo "AM STUDIO Android build identity" | tee -a "$REPORT"
           echo "commit=$GITHUB_SHA" | tee -a "$REPORT"
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | head -n 1 | tee -a "$REPORT"
-          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK" | tee -a "$REPORT"
-          echo "Validation keystore fingerprint:" | tee -a "$REPORT"
+          CERTS=$("$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK")
+          printf '%s\n' "$CERTS" | tee -a "$REPORT"
+          ACTUAL=$(printf '%s\n' "$CERTS" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p' | head -n1 | tr '[:upper:]' '[:lower:]')
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "::error::Unexpected APK signer SHA-256: $ACTUAL" | tee -a "$REPORT"
+            exit 1
+          fi
+          PACKAGE_LINE=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | head -n 1)
+          echo "$PACKAGE_LINE" | grep -q "name='com.ardacore.amstudio.v2'"
+          echo "$PACKAGE_LINE" | grep -q "versionCode='4'"
+          echo "$PACKAGE_LINE" | grep -q "versionName='0.2.3'"
+          echo "Stable signer verified: $ACTUAL" | tee -a "$REPORT"
           keytool -list -v -keystore "$HOME/.android/debug.keystore" -storepass android -alias androiddebugkey | grep -E 'SHA256:|Owner:|Issuer:' | tee -a "$REPORT"
 
       - name: Upload validation APK
         uses: actions/upload-artifact@v4
         with:
-          name: AM-STUDIO-Android-RC
+          name: AM-STUDIO-Android-Stable-v0.2.3
           path: |
             android/app/build/outputs/apk/debug/app-debug.apk
             android/app/build/outputs/apk/debug/AM-STUDIO-build-identity.txt
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 30
