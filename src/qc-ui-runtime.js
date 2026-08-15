@@ -6,7 +6,7 @@ async function injectQcUi(response){
   const html=await response.text();
   const scripts=[
     '/private-production-qc-v2.js?v=20260815c',
-    '/admin-upload-queue-fix.js?v=20260816a'
+    '/admin-upload-queue-fix.js?v=20260816b'
   ];
   let out=html;
   for(const src of scripts){
