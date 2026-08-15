@@ -8,11 +8,10 @@
   function adminKey(){return sessionStorage.getItem('am_admin_key')||''}
   function updateUi(message=''){
     const picked=$('amaPicked'),start=Number($('amaStart')?.value)||1;
-    if(picked){
-      picked.textContent=queued.length
-        ?`${queued.length} file di antrean • akan menjadi Page ${start}–${start+queued.length-1} • pilih 1 file lagi jika belum selesai`
-        :(message||'Belum ada page dipilih.');
-    }
+    if(!picked)return;
+    picked.textContent=queued.length
+      ?`${queued.length} page dipilih • akan menjadi Page ${start}–${start+queued.length-1} • MULTI-PAGE BATCH READY`
+      :(message||'Belum ada page dipilih. Pilih seluruh page episode sekaligus.');
   }
   function mergeFiles(newFiles){
     const map=new Map(queued.map(f=>[fingerprint(f),f]));
@@ -39,7 +38,7 @@
     const seriesId=series?.value||'',seriesTitle=series?.selectedOptions?.[0]?.textContent||seriesId,ep=Number(episode?.value),first=Number(start?.value)||1,pageCount=Number(total?.value)||0,episodeTitle=title?.value?.trim()||`Episode ${pad(ep,3)}`;
     if(!adminKey())return alert('Unlock Admin dulu.');
     if(!seriesId||!ep)return alert('Pilih series dan episode.');
-    if(!confirm(`Upload ${queued.length} page ke ${seriesTitle} • Episode ${ep}?`))return;
+    if(!confirm(`Upload ${queued.length} page sekaligus ke ${seriesTitle} • Episode ${ep}?`))return;
     busy=true;if(button)button.disabled=true;
     const coverFile=cover?.files?.[0]||null,totalSteps=queued.length+(coverFile?1:0)+1;let done=0;
     const tick=t=>{done++;if(bar)bar.style.width=Math.round(done/totalSteps*100)+'%';if(status)status.textContent=t};
@@ -52,25 +51,29 @@
       }
       const inferred=Math.max(pageCount,first+queued.length-1);
       await saveMeta({seriesId,episode:ep,title:episodeTitle,pageCount:inferred||undefined,ownerApproved:true});tick('✓ Metadata episode saved');
-      if(status)status.innerHTML=`<span class="ama-ok">✓ SELESAI</span>\n${seriesTitle} • Episode ${pad(ep,3)}\n${queued.length} page berhasil diupload dari antrean APK lama.`;
+      if(status)status.innerHTML=`<span class="ama-ok">✓ SELESAI</span>\n${seriesTitle} • Episode ${pad(ep,3)}\n${queued.length} page berhasil diupload sebagai satu batch.`;
       queued=[];if($('amaPages'))$('amaPages').value='';if(cover)cover.value='';updateUi();
     }catch(e){if(status)status.innerHTML=`<span class="ama-bad">GAGAL</span>\n${String(e.message||e)}`}
     finally{busy=false;if(button)button.disabled=false}
   }
   function attach(){
-    const input=$('amaPages');if(!input||input.dataset.amQueueFix==='2')return;
-    input.dataset.amQueueFix='2';
-    const label=input.closest('div')?.querySelector('.ama-label');if(label)label.textContent='FILE PAGE — APK lama: pilih 1 file tiap kali';
+    const input=$('amaPages');if(!input||input.dataset.amQueueFix==='3')return;
+    input.dataset.amQueueFix='3';
+    input.multiple=true;
+    const label=input.closest('div')?.querySelector('.ama-label');if(label)label.textContent='FILE PAGE — pilih seluruh page episode sekaligus';
     input.addEventListener('change',()=>{
       const selected=[...(input.files||[])];
-      if(!selected.length){updateUi('Picker APK lama tidak mengembalikan file. Coba pilih SATU gambar saja, bukan banyak sekaligus.');return;}
+      if(!selected.length){
+        updateUi('Picker APK tidak mengembalikan file ke Admin. Native file chooser APK perlu versi multi-page yang sudah diperbaiki.');
+        return;
+      }
       mergeFiles(selected);
-      input.value='';
     },true);
     const picked=$('amaPicked');
-    if(picked&&!$('amaQueueHint'))picked.insertAdjacentHTML('afterend','<div class="ama-note" id="amaQueueHint" style="margin-top:6px;color:#72e7ad">MODE APK LAMA: pilih SATU gambar → kembali → pilih lagi. Antrean akan naik 1, 2, 3… sampai selesai.</div><button class="ama-btn ghost" id="amaClearQueue" type="button" style="margin-top:8px">KOSONGKAN ANTREAN PAGE</button>');
+    if(picked&&!$('amaQueueHint'))picked.insertAdjacentHTML('afterend','<div class="ama-note" id="amaQueueHint" style="margin-top:6px;color:#72e7ad">MULTI-PAGE BATCH: pilih semua page episode dalam satu kali pemilihan. Jumlah mengikuti episode—10, 17, 24, dst.</div><button class="ama-btn ghost" id="amaClearQueue" type="button" style="margin-top:8px">KOSONGKAN PILIHAN PAGE</button>');
     $('amaClearQueue')?.addEventListener('click',()=>{queued=[];input.value='';updateUi()});
     $('amaUpload')?.addEventListener('click',uploadQueue,true);
+    updateUi();
   }
   new MutationObserver(attach).observe(document.documentElement,{childList:true,subtree:true});
   attach();
