@@ -118,7 +118,7 @@ public class AmStudioActivity extends Activity {
         settings.setJavaScriptCanOpenWindowsAutomatically(false);
         settings.setSupportMultipleWindows(false);
         settings.setSafeBrowsingEnabled(true);
-        settings.setUserAgentString(settings.getUserAgentString() + " AMStudioAndroid/0.2.1");
+        settings.setUserAgentString(settings.getUserAgentString() + " AMStudioAndroid/0.2.3");
 
         boolean debuggable = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         WebView.setWebContentsDebuggingEnabled(debuggable);
