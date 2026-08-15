@@ -4,11 +4,16 @@ on:
   push:
     branches:
       - main
+      - fix/amstudio-play-device-apk
     paths:
       - 'public/native-reader.js'
       - 'public/play-release.json'
       - 'public/reader-assets.json'
+      - 'public/index.html'
+      - 'src/play-firewall-runtime.js'
+      - 'wrangler.jsonc'
       - 'tests/division-play-reader.test.mjs'
+      - 'tests/division-play-firewall.test.mjs'
       - '.github/workflows/play-reader-policy.yml'
   pull_request:
     branches:
@@ -17,7 +22,11 @@ on:
       - 'public/native-reader.js'
       - 'public/play-release.json'
       - 'public/reader-assets.json'
+      - 'public/index.html'
+      - 'src/play-firewall-runtime.js'
+      - 'wrangler.jsonc'
       - 'tests/division-play-reader.test.mjs'
+      - 'tests/division-play-firewall.test.mjs'
       - '.github/workflows/play-reader-policy.yml'
   workflow_dispatch:
 
@@ -38,8 +47,10 @@ jobs:
           node-version: '24'
           package-manager-cache: false
 
-      - name: Validate Play Reader script syntax
-        run: node --check public/native-reader.js
+      - name: Validate Play Reader and firewall syntax
+        run: |
+          node --check public/native-reader.js
+          node --check src/play-firewall-runtime.js
 
       - name: Run Play Reader release policy tests
-        run: node --test tests/division-play-reader.test.mjs
+        run: node --test tests/division-play-reader.test.mjs tests/division-play-firewall.test.mjs
