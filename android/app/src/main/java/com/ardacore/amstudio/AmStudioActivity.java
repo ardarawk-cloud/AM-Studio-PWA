@@ -33,26 +33,39 @@ import java.util.Set;
 
 public class AmStudioActivity extends Activity {
     private static final int FILE_CHOOSER_REQUEST = 5101;
-    private static final String HOME_URL = "https://am-studio-pwa.ardarawk.workers.dev/?native=android";
+    private static final String BASE_URL = "https://am-studio-pwa.ardarawk.workers.dev/";
 
     private WebView webView;
     private LinearLayout errorPanel;
     private ValueCallback<Uri[]> filePathCallback;
-    private String lastInternalUrl = HOME_URL;
+    private String lastInternalUrl;
     private boolean loadFailed;
 
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
+        lastInternalUrl = homeUrl();
         buildUi();
         configureWebView();
         webView.loadUrl(resolveInitialUrl(getIntent()));
     }
 
+    private String distributionChannel() {
+        return BuildConfig.PLAY_STORE_MODE ? "play" : "beta";
+    }
+
+    private String homeUrl() {
+        return BASE_URL + "?native=android&channel=" + distributionChannel();
+    }
+
     private String resolveInitialUrl(Intent intent) {
         Uri data = intent == null ? null : intent.getData();
-        if (!AmStudioNavigationPolicy.isInternal(data)) return HOME_URL;
-        return data.buildUpon().appendQueryParameter("native", "android").build().toString();
+        if (!AmStudioNavigationPolicy.isInternal(data)) return homeUrl();
+        return data.buildUpon()
+                .appendQueryParameter("native", "android")
+                .appendQueryParameter("channel", distributionChannel())
+                .build()
+                .toString();
     }
 
     private void buildUi() {
@@ -118,7 +131,9 @@ public class AmStudioActivity extends Activity {
         settings.setJavaScriptCanOpenWindowsAutomatically(false);
         settings.setSupportMultipleWindows(false);
         settings.setSafeBrowsingEnabled(true);
-        settings.setUserAgentString(settings.getUserAgentString() + " AMStudioAndroid/0.2.3");
+        settings.setUserAgentString(settings.getUserAgentString()
+                + " AMStudioAndroid/" + BuildConfig.VERSION_NAME
+                + (BuildConfig.PLAY_STORE_MODE ? " PlayReader" : " OwnerBeta"));
 
         boolean debuggable = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         WebView.setWebContentsDebuggingEnabled(debuggable);
@@ -128,7 +143,14 @@ public class AmStudioActivity extends Activity {
     }
 
     private void applyPublicNativeMode(WebView view) {
-        String script = "(()=>{const hide=()=>['am-admin-launch','am-page-control-launch','am-admin-panel','am-page-control'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.setProperty('display','none','important')});hide();if(!window.__amNativeReaderObserver){window.__amNativeReaderObserver=new MutationObserver(hide);window.__amNativeReaderObserver.observe(document.documentElement,{childList:true,subtree:true});}document.documentElement.dataset.amNative='android';})();";
+        String script = "(()=>{"
+                + "document.documentElement.dataset.amNative='android';"
+                + "document.documentElement.dataset.amDistribution='play';"
+                + "const hide=()=>['am-admin-launch','am-page-control-launch','am-admin-panel','am-page-control'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.setProperty('display','none','important')});"
+                + "hide();"
+                + "if(!window.__amNativeReaderObserver){window.__amNativeReaderObserver=new MutationObserver(hide);window.__amNativeReaderObserver.observe(document.documentElement,{childList:true,subtree:true});}"
+                + "if(!document.getElementById('am-native-reader-script')){const s=document.createElement('script');s.id='am-native-reader-script';s.src='/native-reader.js?v=1';s.defer=true;document.documentElement.appendChild(s);}"
+                + "})();";
         view.evaluateJavascript(script, null);
     }
 
@@ -176,7 +198,7 @@ public class AmStudioActivity extends Activity {
         @Override
         public void onPageFinished(WebView view, String url) {
             if (!loadFailed) errorPanel.setVisibility(View.GONE);
-            applyPublicNativeMode(view);
+            if (BuildConfig.PLAY_STORE_MODE) applyPublicNativeMode(view);
         }
 
         @Override
@@ -213,6 +235,12 @@ public class AmStudioActivity extends Activity {
     private final class AmStudioChromeClient extends WebChromeClient {
         @Override
         public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
+            if (BuildConfig.PLAY_STORE_MODE) {
+                callback.onReceiveValue(null);
+                Toast.makeText(AmStudioActivity.this, "Upload hanya tersedia di AM STUDIO Owner Beta.", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
             if (filePathCallback != null) filePathCallback.onReceiveValue(null);
             filePathCallback = callback;
             try {
