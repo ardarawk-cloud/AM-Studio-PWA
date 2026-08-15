@@ -1,6 +1,7 @@
 package com.ardacore.amstudio;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
@@ -22,6 +23,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 public class AmStudioActivity extends Activity {
     private static final int FILE_CHOOSER_REQUEST = 5101;
@@ -188,7 +194,12 @@ public class AmStudioActivity extends Activity {
             if (filePathCallback != null) filePathCallback.onReceiveValue(null);
             filePathCallback = callback;
             try {
-                startActivityForResult(params.createIntent(), FILE_CHOOSER_REQUEST);
+                Intent picker = params.createIntent();
+                if (params.getMode() == FileChooserParams.MODE_OPEN_MULTIPLE) {
+                    picker.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                    picker.addCategory(Intent.CATEGORY_OPENABLE);
+                }
+                startActivityForResult(picker, FILE_CHOOSER_REQUEST);
                 return true;
             } catch (Exception error) {
                 filePathCallback = null;
@@ -198,11 +209,38 @@ public class AmStudioActivity extends Activity {
         }
     }
 
+    private Uri[] collectChooserResult(int resultCode, Intent data) {
+        if (resultCode != RESULT_OK || data == null) return null;
+
+        Set<Uri> unique = new LinkedHashSet<>();
+        ClipData clipData = data.getClipData();
+        if (clipData != null) {
+            for (int i = 0; i < clipData.getItemCount(); i++) {
+                Uri uri = clipData.getItemAt(i).getUri();
+                if (uri != null) unique.add(uri);
+            }
+        }
+
+        Uri single = data.getData();
+        if (single != null) unique.add(single);
+
+        if (unique.isEmpty()) {
+            Uri[] parsed = WebChromeClient.FileChooserParams.parseResult(resultCode, data);
+            if (parsed != null) {
+                for (Uri uri : parsed) if (uri != null) unique.add(uri);
+            }
+        }
+
+        if (unique.isEmpty()) return null;
+        List<Uri> ordered = new ArrayList<>(unique);
+        return ordered.toArray(new Uri[0]);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode != FILE_CHOOSER_REQUEST || filePathCallback == null) return;
-        Uri[] result = WebChromeClient.FileChooserParams.parseResult(resultCode, data);
+        Uri[] result = collectChooserResult(resultCode, data);
         filePathCallback.onReceiveValue(result);
         filePathCallback = null;
     }
