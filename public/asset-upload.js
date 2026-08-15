@@ -1,4 +1,5 @@
 (()=>{
+  const EXPECTED_PAGES=22;
   const css=`
   #am-asset-upload-launch{position:fixed;left:14px;bottom:82px;z-index:9997;border:1px solid #364154;background:#101722;color:#fff;border-radius:16px;padding:11px 13px;font:800 12px system-ui;box-shadow:0 12px 34px #0008}
   #am-asset-upload{position:fixed;inset:0;z-index:10001;background:#05070bf5;color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif;overflow:auto;display:none}
@@ -6,11 +7,11 @@
   `;
   const style=document.createElement('style');style.textContent=css;document.head.appendChild(style);
   const launch=document.createElement('button');launch.id='am-asset-upload-launch';launch.textContent='COMIC • ASSET UPLOAD';document.body.appendChild(launch);
-  const panel=document.createElement('section');panel.id='am-asset-upload';panel.innerHTML=`<div class="amau-shell"><div class="amau-top"><div><b>AMU Reader Asset Upload</b><div class="amau-muted">R2 • Original image pipeline</div></div><button class="amau-btn amau-close" id="amauClose">Tutup</button></div><div class="amau-card"><b>Episode 001 — The Last Normal Day</b><p class="amau-muted">Cover dipisahkan dari episode. Pilih Cover resmi di kolom pertama, lalu 16 Page di kolom kedua. Page akan diurutkan otomatis berdasarkan nama file.</p><label class="amau-label">COVER — gambar cover pilihan Arda</label><input class="amau-input" id="amauCover" type="file" accept="image/jpeg,image/png,image/webp,image/avif"><label class="amau-label">PAGE 1–16 — pilih semua 16 sekaligus</label><input class="amau-input" id="amauPages" type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif"><div class="amau-muted" id="amauPicked" style="margin-top:9px">Belum ada file dipilih.</div><button class="amau-btn" id="amauUpload" style="margin-top:14px">UPLOAD COVER + 16 PAGE KE READER</button></div><div class="amau-card" id="amauState"><div class="amau-muted">Belum mulai.</div></div></div>`;document.body.appendChild(panel);
+  const panel=document.createElement('section');panel.id='am-asset-upload';panel.innerHTML=`<div class="amau-shell"><div class="amau-top"><div><b>AMU Reader Asset Upload</b><div class="amau-muted">R2 • Original image pipeline</div></div><button class="amau-btn amau-close" id="amauClose">Tutup</button></div><div class="amau-card"><b>Episode 001 — The Last Normal Day</b><p class="amau-muted">Cover dipisahkan dari episode. Pilih Cover resmi di kolom pertama, lalu ${EXPECTED_PAGES} Page di kolom kedua. Page akan diurutkan otomatis berdasarkan nama file.</p><label class="amau-label">COVER — gambar cover pilihan Arda</label><input class="amau-input" id="amauCover" type="file" accept="image/jpeg,image/png,image/webp,image/avif"><label class="amau-label">PAGE 1–${EXPECTED_PAGES} — pilih semua ${EXPECTED_PAGES} sekaligus</label><input class="amau-input" id="amauPages" type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif"><div class="amau-muted" id="amauPicked" style="margin-top:9px">Belum ada file dipilih.</div><button class="amau-btn" id="amauUpload" style="margin-top:14px">UPLOAD COVER + ${EXPECTED_PAGES} PAGE KE READER</button></div><div class="amau-card" id="amauState"><div class="amau-muted">Belum mulai.</div></div></div>`;document.body.appendChild(panel);
   const $=s=>panel.querySelector(s),cover=$('#amauCover'),pages=$('#amauPages'),picked=$('#amauPicked'),state=$('#amauState'),upload=$('#amauUpload');
   $('#amauClose').onclick=()=>panel.classList.remove('open');launch.onclick=()=>panel.classList.add('open');
   function sortedPages(){return [...(pages.files||[])].sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true,sensitivity:'base'}))}
-  function refreshPicked(){const p=sortedPages();picked.textContent=`Cover: ${cover.files?.[0]?.name||'belum dipilih'} • Pages: ${p.length}/16${p.length?` • ${p[0].name} → ${p[p.length-1].name}`:''}`}
+  function refreshPicked(){const p=sortedPages();picked.textContent=`Cover: ${cover.files?.[0]?.name||'belum dipilih'} • Pages: ${p.length}/${EXPECTED_PAGES}${p.length?` • ${p[0].name} → ${p[p.length-1].name}`:''}`}
   cover.onchange=refreshPicked;pages.onchange=refreshPicked;
   async function send(file,key){
     const adminKey=sessionStorage.getItem('am_admin_key')||'';
@@ -27,24 +28,24 @@
   upload.onclick=async()=>{
     const c=cover.files?.[0],p=sortedPages();
     if(!c)return alert('Pilih COVER dulu.');
-    if(p.length!==16)return alert(`Page harus tepat 16 file. Sekarang terpilih ${p.length}.`);
-    if(!confirm('Upload Cover + Page 1–16 ke AM STUDIO Reader sekarang?'))return;
+    if(p.length!==EXPECTED_PAGES)return alert(`Page harus tepat ${EXPECTED_PAGES} file. Sekarang terpilih ${p.length}.`);
+    if(!confirm(`Upload Cover + Page 1–${EXPECTED_PAGES} ke AM STUDIO Reader sekarang?`))return;
     upload.disabled=true;cover.disabled=true;pages.disabled=true;
     state.innerHTML='<div class="amau-progress" id="amauLog">Menyiapkan upload…</div><div class="amau-bar"><i id="amauBar"></i></div>';
-    const log=$('#amauLog'),bar=$('#amauBar');let done=0;const total=17;
+    const log=$('#amauLog'),bar=$('#amauBar');let done=0;const total=EXPECTED_PAGES+1;
     const tick=(text)=>{done++;bar.style.width=`${Math.round(done/total*100)}%`;log.textContent=text};
     try{
-      await send(c,'comics/amu/cover.jpg');tick(`✓ Cover\n0/16 page`);
+      await send(c,'comics/amu/cover.jpg');tick(`✓ Cover\n0/${EXPECTED_PAGES} page`);
       for(let i=0;i<p.length;i++){
         const n=String(i+1).padStart(2,'0');
         await send(p[i],`comics/amu/ep001/page-${n}.jpg`);
-        tick(`✓ Cover\n✓ Page 1–${i+1}/16\nUploading ${i<15?'next page…':'verification…'}`);
+        tick(`✓ Cover\n✓ Page 1–${i+1}/${EXPECTED_PAGES}\nUploading ${i<EXPECTED_PAGES-1?'next page…':'verification…'}`);
       }
       const v=await verify();
-      const required=['comics/amu/cover.jpg',...Array.from({length:16},(_,i)=>`comics/amu/ep001/page-${String(i+1).padStart(2,'0')}.jpg`)];
+      const required=['comics/amu/cover.jpg',...Array.from({length:EXPECTED_PAGES},(_,i)=>`comics/amu/ep001/page-${String(i+1).padStart(2,'0')}.jpg`)];
       const have=new Set((v.objects||[]).map(x=>x.key)),missing=required.filter(k=>!have.has(k));
       if(missing.length)throw new Error(`UPLOAD_INCOMPLETE: ${missing.length} asset belum terdeteksi.`);
-      state.innerHTML=`<b class="amau-ok">✓ READER ASSET COMPLETE</b><p class="amau-muted">Cover + Page 1–16 sudah tersimpan di R2. Tutup panel lalu refresh Library → Arda Moron Universe → Episode 1.</p>`;
+      state.innerHTML=`<b class="amau-ok">✓ READER ASSET COMPLETE</b><p class="amau-muted">Cover + Page 1–${EXPECTED_PAGES} sudah tersimpan di R2. Tutup panel lalu refresh Library → Arda Moron Universe → Episode 1.</p>`;
     }catch(e){state.innerHTML=`<b class="amau-bad">UPLOAD GAGAL</b><p class="amau-progress">${String(e.message||e)}</p><p class="amau-muted">File yang sudah berhasil masuk tidak dihapus. Jalankan lagi setelah masalah diperbaiki.</p>`}
     finally{upload.disabled=false;cover.disabled=false;pages.disabled=false}
   };

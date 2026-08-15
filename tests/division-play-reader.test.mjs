@@ -5,6 +5,8 @@ import fs from 'node:fs';
 const nativeReader=fs.readFileSync(new URL('../public/native-reader.js',import.meta.url),'utf8');
 const releaseGate=JSON.parse(fs.readFileSync(new URL('../public/play-release.json',import.meta.url),'utf8'));
 const readerRegistry=JSON.parse(fs.readFileSync(new URL('../public/reader-assets.json',import.meta.url),'utf8'));
+const catalog=JSON.parse(fs.readFileSync(new URL('../public/catalog.json',import.meta.url),'utf8'));
+const assetUpload=fs.readFileSync(new URL('../public/asset-upload.js',import.meta.url),'utf8');
 
 function completeReaderAsset(asset){
   if(!asset||asset.canonState!=='CANON_FINAL'||asset.qc!=='QC_PASS')return false;
@@ -46,4 +48,28 @@ test('partial or missing-page reader assets can never qualify for Play publicati
       assert.equal(completeReaderAsset(asset),false,`${asset.seriesId} episode ${asset.episode} must remain blocked`);
     }
   }
+});
+
+test('AMU Episode 001 is synchronized as a complete 22-page Play Reader asset',()=>{
+  const asset=(readerRegistry.episodes||[]).find(x=>x.seriesId==='amu'&&Number(x.episode)===1);
+  assert.ok(asset,'AMU Episode 001 registry entry is required');
+  assert.equal(asset.pageCount,22);
+  assert.equal(asset.availablePageCount,22);
+  assert.equal(asset.pages.length,22);
+  assert.deepEqual(asset.missingReaderPages,[]);
+  assert.equal(asset.readerState,'COMPLETE');
+  assert.equal(asset.pages[0],'/media/comics/amu/ep001/page-01.jpg');
+  assert.equal(asset.pages[21],'/media/comics/amu/ep001/page-22.jpg');
+  assert.equal(completeReaderAsset(asset),true);
+});
+
+test('AMU catalog and owner upload tooling agree on the 22-page final state',()=>{
+  const amu=(catalog.series||[]).find(x=>x.id==='amu');
+  assert.ok(amu,'AMU catalog entry is required');
+  assert.equal(amu.currentEpisode?.number,1);
+  assert.equal(amu.currentEpisode?.publishedPages,22);
+  assert.equal(amu.currentEpisode?.status,'COMPLETE');
+  assert.equal(Object.hasOwn(amu.currentEpisode||{},'nextPage'),false);
+  assert.match(assetUpload,/const EXPECTED_PAGES=22;/);
+  assert.doesNotMatch(assetUpload,/Page 1–16/);
 });
