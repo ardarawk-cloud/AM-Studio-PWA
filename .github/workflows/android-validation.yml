@@ -45,6 +45,7 @@ jobs:
       - name: Ensure validation signing key
         shell: bash
         run: |
+          set -euo pipefail
           mkdir -p "$HOME/.android"
           if [ ! -f "$HOME/.android/debug.keystore" ]; then
             keytool -genkeypair -keystore "$HOME/.android/debug.keystore" -storepass android -alias androiddebugkey -keypass android -dname "CN=AM STUDIO Validation,O=Arda Core Corporation,C=ID" -keyalg RSA -keysize 2048 -validity 10000
@@ -65,10 +66,26 @@ jobs:
         working-directory: android
         run: gradle --no-daemon clean assembleDebug assembleRelease
 
+      - name: Verify APK identity and signature
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="android/app/build/outputs/apk/debug/app-debug.apk"
+          REPORT="android/app/build/outputs/apk/debug/AM-STUDIO-build-identity.txt"
+          : > "$REPORT"
+          echo "AM STUDIO Android build identity" | tee -a "$REPORT"
+          echo "commit=$GITHUB_SHA" | tee -a "$REPORT"
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | head -n 1 | tee -a "$REPORT"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK" | tee -a "$REPORT"
+          echo "Validation keystore fingerprint:" | tee -a "$REPORT"
+          keytool -list -v -keystore "$HOME/.android/debug.keystore" -storepass android -alias androiddebugkey | grep -E 'SHA256:|Owner:|Issuer:' | tee -a "$REPORT"
+
       - name: Upload validation APK
         uses: actions/upload-artifact@v4
         with:
           name: AM-STUDIO-Android-RC
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            android/app/build/outputs/apk/debug/app-debug.apk
+            android/app/build/outputs/apk/debug/AM-STUDIO-build-identity.txt
           if-no-files-found: error
           retention-days: 14
