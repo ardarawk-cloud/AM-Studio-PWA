@@ -30,7 +30,10 @@ test('Google Play release gate stays owner-controlled and completeness-locked',(
   assert.equal(releaseGate.requirements.missingReaderPagesBlocked,true);
 });
 
-test('Play reader guard targets the actual current UI selectors',()=>{
+test('Play reader guard targets both current production UI and compatibility selectors',()=>{
+  assert.match(nativeReader,/\.card\[data-open\]/);
+  assert.match(nativeReader,/\.ep\[data-ep\]/);
+  assert.match(nativeReader,/\[data-tab=\\?"profile\\?"\]/);
   assert.match(nativeReader,/\.card\[data-series\]/);
   assert.match(nativeReader,/\.episode\[data-episode\]/);
   assert.match(nativeReader,/missingReaderPages/);
@@ -38,7 +41,15 @@ test('Play reader guard targets the actual current UI selectors',()=>{
   assert.match(nativeReader,/CANON_FINAL/);
   assert.match(nativeReader,/QC_PASS/);
   assert.match(nativeReader,/PARTIAL/);
-  assert.doesNotMatch(nativeReader,/querySelectorAll\('\.ep'\)/);
+});
+
+test('Play reader aggressively removes every owner-only control family',()=>{
+  for(const marker of [
+    'am-admin-launch','am-admin-panel','am-page-control-launch','am-page-control',
+    'am-asset-upload-launch','am-asset-upload','am-private-production','am-qc-'
+  ]) assert.match(nativeReader,new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
+  assert.match(nativeReader,/\.remove\(\)/);
+  assert.match(nativeReader,/amDistribution='play'/);
 });
 
 test('partial or missing-page reader assets can never qualify for Play publication',()=>{

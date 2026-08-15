@@ -1,0 +1,108 @@
+name: AM STUDIO Play Reader Device APK
+
+on:
+  push:
+    branches:
+      - fix/amstudio-play-device-apk
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-device-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Restore stable AM STUDIO validation signing key
+        uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: am-studio-android-debug-key-v1
+
+      - name: Ensure stable AM STUDIO validation signing key
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.android"
+          if [ ! -f "$HOME/.android/debug.keystore" ]; then
+            keytool -genkeypair -keystore "$HOME/.android/debug.keystore" -storepass android -alias androiddebugkey -keypass android -dname "CN=AM STUDIO Validation,O=Arda Core Corporation,C=ID" -keyalg RSA -keysize 2048 -validity 10000
+          fi
+
+      - name: Set up Gradle 9.5
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.5.0'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK 36
+        shell: bash
+        run: |
+          set -euo pipefail
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager 'platform-tools' 'platforms;android-36' 'build-tools;36.0.0'
+
+      - name: Build public Play Reader APK
+        working-directory: android
+        env:
+          AM_STUDIO_APPLICATION_ID: com.ardacore.amstudio
+          AM_STUDIO_PLAY_MODE: 'true'
+          AM_STUDIO_VERSION_NAME: '1.0.0'
+          AM_STUDIO_VERSION_CODE: '10000'
+        run: gradle --no-daemon clean assembleRelease
+
+      - name: Sign installable device-test APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          UNSIGNED='android/app/build/outputs/apk/release/app-release-unsigned.apk'
+          OUT='AM-STUDIO-Play-Reader-v1.0.0-10000-DEVICE.apk'
+          test -f "$UNSIGNED"
+          "$ANDROID_HOME/build-tools/36.0.0/zipalign" -f -p 4 "$UNSIGNED" aligned.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" sign \
+            --ks "$HOME/.android/debug.keystore" \
+            --ks-key-alias androiddebugkey \
+            --ks-pass pass:android \
+            --key-pass pass:android \
+            --out "$OUT" aligned.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$OUT" > signing.txt
+
+          BADGING=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$OUT")
+          printf '%s\n' "$BADGING" > badging.txt
+          printf '%s\n' "$BADGING" | grep -q "package: name='com.ardacore.amstudio'"
+          printf '%s\n' "$BADGING" | grep -q "versionCode='10000'"
+          printf '%s\n' "$BADGING" | grep -q "versionName='1.0.0'"
+          printf '%s\n' "$BADGING" | grep -q "application-label:'AM STUDIO'"
+
+          PERMS=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump permissions "$OUT")
+          printf '%s\n' "$PERMS" > permissions.txt
+          printf '%s\n' "$PERMS" | grep -q 'android.permission.INTERNET'
+          ! printf '%s\n' "$PERMS" | grep -Eq 'ACCESS_FINE_LOCATION|ACCESS_COARSE_LOCATION|READ_CONTACTS|WRITE_CONTACTS|RECORD_AUDIO|CAMERA|READ_SMS|SEND_SMS|READ_MEDIA_IMAGES|READ_EXTERNAL_STORAGE'
+
+          unzip -l "$OUT" > apk-files.txt
+          grep -Eq 'res/.+\.xml|resources\.arsc' apk-files.txt
+
+      - name: Upload device-test APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: AM-STUDIO-Play-Reader-Device-v1.0.0-10000
+          path: |
+            AM-STUDIO-Play-Reader-v1.0.0-10000-DEVICE.apk
+            signing.txt
+            badging.txt
+            permissions.txt
+            apk-files.txt
+          if-no-files-found: error
+          retention-days: 30
