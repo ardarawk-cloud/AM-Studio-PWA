@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "app": "AM STUDIO",
+  "owner": "Arda Core Corporation",
+  "channel": "GOOGLE_PLAY",
+  "applicationId": "com.ardacore.amstudio",
+  "mode": "PUBLIC_READER_ONLY",
+  "playReady": false,
+  "ownerReleaseApproval": false,
+  "requirements": {
+    "targetSdk36": true,
+    "signedAabRequired": true,
+    "privacyPolicyRequired": true,
+    "dataSafetyAuditRequired": true,
+    "iarcRatingRequired": true,
+    "storeListingRequired": true,
+    "storeGraphicsRequired": true,
+    "publicReaderOnly": true,
+    "adminToolsBlocked": true,
+    "publishedAssetsMustBeCanonFinalQcPass": true,
+    "contentReadinessReviewRequired": true
+  },
+  "note": "Keep playReady and ownerReleaseApproval false until Arda explicitly approves Google Play submission after content, policy, signing, and store assets pass final QC."
+}
