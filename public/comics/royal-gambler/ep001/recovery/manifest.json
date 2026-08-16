@@ -1,0 +1,45 @@
+{
+  "seriesId": "royal-gambler",
+  "seriesTitle": "Royal Gambler",
+  "episode": 1,
+  "episodeTitle": "The House Always Wins",
+  "publicationState": "OWNER_VERIFIED_PUBLISHED",
+  "publishedPageCount": 12,
+  "lastPage": {
+    "number": 12,
+    "title": "Pesan Terakhir",
+    "closing": "END OF ISSUE #1"
+  },
+  "readerAssetState": "RECOVERY_SOURCE_IDENTIFIED_PARTIAL",
+  "recoveredSourceCount": 4,
+  "recoveredSources": [
+    {
+      "filename": "Royal Gambler: Takdir di Kota Steampunk.png",
+      "fileId": "file_00000000173c8211a8b96ae1c60d7a24",
+      "role": "episode-production-evidence"
+    },
+    {
+      "filename": "Poster Komik Royal Gambler: Kelahiran Sang Penjudi.png",
+      "fileId": "file_000000006e4882119c6e2f479bfcd69a",
+      "role": "episode-production-evidence"
+    },
+    {
+      "filename": "Episode 1: Royal Gambler di Crownhaven.png",
+      "fileId": "file_0000000080f082078023a9c3345e8af9",
+      "role": "episode-production-evidence"
+    },
+    {
+      "filename": "Kisah Noir Steampunk Royal Gambler.png",
+      "fileId": "file_00000000de14821180e72154b4f6c125",
+      "role": "episode-production-evidence"
+    }
+  ],
+  "readerPublishGate": {
+    "required": "12 verified individual page image binaries in canonical order",
+    "current": "4 combined/recovery production images identified; individual Page 01-12 binaries not yet exposed to deployment runtime",
+    "allowPlaceholder": false,
+    "allowCrossIpAsset": false
+  },
+  "continuityRule": "ROYAL_GAMBLER_IS_INDEPENDENT_IP_DO_NOT_MERGE_WITH_LEGENDARY_DECKS_OR_BLACKJACK",
+  "verifiedAt": "2026-08-16"
+}
