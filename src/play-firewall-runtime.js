@@ -158,7 +158,8 @@ async function playHtml(response){
   }
   const scripts=[
     '<script id="am-play-reader-server" src="/native-reader.js?v=4" defer></script>',
-    '<script id="am-growth-reader-server" src="/growth-reader.js?v=1" defer></script>'
+    '<script id="am-growth-reader-server" src="/growth-reader.js?v=1" defer></script>',
+    '<script id="am-reader-zoom-server" src="/reader-zoom.js?v=1" defer></script>'
   ];
   for(const script of scripts){
     const id=(script.match(/id="([^"]+)"/)||[])[1];
@@ -169,6 +170,7 @@ async function playHtml(response){
   headers.set('cache-control','no-store');
   headers.set('x-am-play-firewall','active');
   headers.set('x-am-growth-build','v1');
+  headers.set('x-am-reader-zoom','v1');
   return new Response(html,{status:response.status,statusText:response.statusText,headers});
 }
 
