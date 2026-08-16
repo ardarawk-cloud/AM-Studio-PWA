@@ -7,29 +7,40 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 3
     steps:
-      - name: Inspect live state
+      - name: Wait for live HPG cover route fix
         shell: bash
         run: |
-          set -u
+          set -euo pipefail
           BASE='https://am-studio-pwa.ardarawk.workers.dev'
-          echo '--- CATALOG ---'
-          curl --fail --silent --show-error --location --max-time 20 "$BASE/catalog.json?channel=play" -o catalog.json || true
-          echo '--- READER ---'
-          curl --fail --silent --show-error --location --max-time 20 "$BASE/reader-assets.json?channel=play" -o reader.json || true
-          node <<'NODE'
+          ready=0
+          for attempt in $(seq 1 12); do
+            curl --fail --silent --show-error --location --max-time 20 "$BASE/reader-hotfix.js?diag=$attempt" -o hotfix.js || true
+            curl --fail --silent --show-error --location --max-time 20 "$BASE/catalog.json?channel=play&diag=$attempt" -o catalog.json || true
+            media_code=$(curl --silent --show-error --location --max-time 20 -o hpg-cover.bin -w '%{http_code}' "$BASE/media/comics/hikayat-pohon-ganja/cover.jpg" || true)
+            if grep -q 'const coverUrl=`/media/comics/${id}/cover.jpg`' hotfix.js 2>/dev/null \
+              && ! grep -q "id==='hikayat-pohon-ganja'" hotfix.js 2>/dev/null \
+              && node - <<'NODE'
           const fs=require('fs');
-          try {
-            const c=JSON.parse(fs.readFileSync('catalog.json','utf8'));
-            const r=JSON.parse(fs.readFileSync('reader.json','utf8'));
-            const h=(c.series||[]).find(x=>x.id==='hikayat-pohon-ganja')||null;
-            const e=(r.episodes||[]).filter(x=>x.seriesId==='hikayat-pohon-ganja');
-            console.log(JSON.stringify({hpg:h,hpgReader:e.map(x=>({episode:x.episode,title:x.title,canonState:x.canonState,qc:x.qc,pageCount:x.pageCount,availablePageCount:x.availablePageCount,missingReaderPages:x.missingReaderPages,readerState:x.readerState,coverAsset:x.coverAsset}))},null,2));
-          } catch(e){console.log('LIVE_PARSE_FAILED',String(e));}
+          const c=JSON.parse(fs.readFileSync('catalog.json','utf8'));
+          const h=(c.series||[]).find(x=>x.id==='hikayat-pohon-ganja');
+          if(!h||h.publicReaderState!=='READY'||h.status!=='PUBLISHED')process.exit(2);
+          if(h.cover?.publicReaderAsset!=='/media/comics/hikayat-pohon-ganja/cover.jpg')process.exit(3);
           NODE
-          echo '--- COVER /comics ---'
-          curl --silent --show-error --location --max-time 20 -o comics-cover.bin -w 'HTTP=%{http_code} SIZE=%{size_download}\n' "$BASE/comics/hikayat-pohon-ganja/cover.jpg" || true
-          echo '--- COVER /media ---'
-          curl --silent --show-error --location --max-time 20 -D media-headers.txt -o media-cover.bin -w 'HTTP=%{http_code} SIZE=%{size_download}\n' "$BASE/media/comics/hikayat-pohon-ganja/cover.jpg" || true
-          cat media-headers.txt || true
+            then catalog_ok=1; else catalog_ok=0; fi
+            if [ "$catalog_ok" -eq 1 ] && [ "$media_code" = '200' ] && [ -s hpg-cover.bin ]; then
+              echo "HPG_READER_COVER_FIX_LIVE attempt=$attempt cover_http=$media_code size=$(wc -c < hpg-cover.bin)"
+              ready=1
+              break
+            fi
+            echo "waiting attempt=$attempt catalog_ok=$catalog_ok media_http=$media_code"
+            sleep 10
+          done
+          if [ "$ready" -ne 1 ]; then
+            echo '--- LIVE HOTFIX COVER LINES ---'
+            grep -n 'coverUrl\|hikayat-pohon-ganja' hotfix.js || true
+            echo '--- LIVE HPG CATALOG ---'
+            node -e "const c=require('./catalog.json'); console.log(c.series?.find(x=>x.id==='hikayat-pohon-ganja')||null)" || true
+            exit 1
+          fi
