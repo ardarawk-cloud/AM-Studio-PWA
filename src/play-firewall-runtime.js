@@ -123,11 +123,19 @@ async function playHtml(response){
   if(!html.includes('am-play-firewall-bootstrap')){
     html=html.includes('</head>')?html.replace('</head>',`${PLAY_BOOTSTRAP}</head>`):`${PLAY_BOOTSTRAP}${html}`;
   }
-  const reader='<script id="am-play-reader-server" src="/native-reader.js?v=3" defer></script>';
-  if(!html.includes('am-play-reader-server'))html=html.includes('</body>')?html.replace('</body>',`${reader}</body>`):`${html}${reader}`;
+  const scripts=[
+    '<script id="am-play-reader-server" src="/native-reader.js?v=3" defer></script>',
+    '<script id="am-growth-reader-server" src="/growth-reader.js?v=1" defer></script>'
+  ];
+  for(const script of scripts){
+    const id=(script.match(/id="([^"]+)"/)||[])[1];
+    if(id&&html.includes(`id="${id}"`))continue;
+    html=html.includes('</body>')?html.replace('</body>',`${script}</body>`):`${html}${script}`;
+  }
   const headers=new Headers(response.headers);
   headers.set('cache-control','no-store');
   headers.set('x-am-play-firewall','active');
+  headers.set('x-am-growth-build','v1');
   return new Response(html,{status:response.status,statusText:response.statusText,headers});
 }
 
