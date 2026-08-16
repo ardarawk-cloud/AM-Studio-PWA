@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "product": {
+    "name": "AM STUDIO",
+    "positioning": "Stories • Comics • Universes",
+    "futurePositioning": "Stories • Comics • Universes • Creators",
+    "publicPromise": "Baca universe original AM STUDIO, simpan koleksi, lanjutkan progres, dan ikuti release resmi dalam satu aplikasi."
+  },
+  "growth": {
+    "onboarding": true,
+    "featuredRelease": true,
+    "continueReading": true,
+    "collection": true,
+    "organicShare": true,
+    "campaignDeepLinks": true,
+    "localReleaseDetection": true,
+    "campaignParameters": [
+      "series",
+      "episode",
+      "campaign",
+      "utm_source",
+      "utm_medium",
+      "utm_campaign",
+      "ref"
+    ]
+  },
+  "monetization": {
+    "rewardedAds": {
+      "status": "GATED_NOT_LIVE",
+      "publicEntry": false,
+      "reason": "Requires AdMob app/ad-unit setup, consent/privacy review, Data Safety update, and explicit reward entitlement design."
+    },
+    "premiumSubscription": {
+      "status": "GATED_NOT_LIVE",
+      "publicEntry": false,
+      "reason": "Requires Google Play product setup, secure purchase verification, entitlement backend, RTDN, pricing approval, and explicit owner release approval."
+    },
+    "oneTimeProducts": {
+      "status": "GATED_NOT_LIVE",
+      "publicEntry": false,
+      "reason": "Requires Play product catalog, secure verification, entitlement persistence, and content SKU mapping."
+    },
+    "creatorPlatform": {
+      "status": "FUTURE_PHASE",
+      "publicEntry": false,
+      "reason": "Requires identity/auth, Terms of Use, UGC moderation, report/block systems, creator payout model, and policy review before public launch."
+    }
+  },
+  "data": {
+    "networkAnalytics": false,
+    "localGrowthEvents": true,
+    "localCampaignAttribution": true,
+    "deviceIdentifierCreated": false,
+    "advertisingIdUsed": false
+  },
+  "releaseRule": "Growth features must never bypass the Play firewall or make unavailable paid/creator features appear live."
+}
