@@ -14,16 +14,42 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Verify live Play HTML firewall
+      - name: Verify live Play Growth HTML firewall
         shell: bash
         run: |
           set -euo pipefail
           URL='https://am-studio-pwa.ardarawk.workers.dev/?native=android&channel=play'
           curl --fail --silent --show-error --location --max-time 30 -D headers.txt "$URL" -o play.html
           grep -qi '^x-am-play-firewall: active' headers.txt
+          grep -qi '^x-am-growth-build: v1' headers.txt
           grep -q 'am-play-firewall-bootstrap' play.html
           grep -q 'am-play-reader-server' play.html
+          grep -q 'am-growth-reader-server' play.html
           ! grep -Eq '/(admin-panel|page-control|asset-upload|private-production|private-production-qc-v2|admin-upload-queue-fix)\.js' play.html
+
+      - name: Verify native Play User-Agent stays public without channel query
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 30 \
+            -A 'Android WebView AMStudioAndroid/1.0.0-growth1 PlayReader' \
+            -D native-headers.txt \
+            'https://am-studio-pwa.ardarawk.workers.dev/' -o native.html
+          grep -qi '^x-am-play-firewall: active' native-headers.txt
+          grep -qi '^x-am-growth-build: v1' native-headers.txt
+          grep -q 'am-growth-reader-server' native.html
+          ! grep -Eq '/(admin-panel|page-control|asset-upload|private-production|private-production-qc-v2|admin-upload-queue-fix)\.js' native.html
+
+      - name: Verify privacy policy is always public-safe
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 30 \
+            -D privacy-headers.txt \
+            'https://am-studio-pwa.ardarawk.workers.dev/privacy-policy.html' -o privacy.html
+          grep -qi '^x-am-public-document: safe' privacy-headers.txt
+          grep -q 'href="/?channel=play"' privacy.html
+          ! grep -Eq '/(admin-panel|page-control|asset-upload|private-production|private-production-qc-v2|admin-upload-queue-fix|native-reader|growth-reader)\.js' privacy.html
 
       - name: Verify live Play catalog and registry are public-safe
         shell: bash
@@ -51,5 +77,5 @@ jobs:
             const readerAsset=typeof a.readerAsset==='string'&&a.readerAsset.trim();
             if(!readerAsset&&!(total>0&&pages.length>=total&&available>=total&&missing.length===0))throw new Error(`INCOMPLETE_EPISODE_VISIBLE:${a.seriesId}:${a.episode}`);
           }
-          console.log('LIVE_PLAY_PUBLIC_SAFE',catalog.series?.map(s=>`${s.id}:${s.status}`),reader.episodes?.map(a=>`${a.seriesId}:${a.episode}`));
+          console.log('LIVE_GROWTH_V1_PUBLIC_SAFE',catalog.series?.map(s=>`${s.id}:${s.status}`),reader.episodes?.map(a=>`${a.seriesId}:${a.episode}`));
           NODE
