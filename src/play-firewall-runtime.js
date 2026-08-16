@@ -179,7 +179,7 @@ export default{
   async fetch(request,env,ctx){
     const url=new URL(request.url);
     const response=await base.fetch(request,env,ctx);
-    if(request.method==='GET'&&url.pathname==='/privacy-policy.html')return publicDocument(response);
+    if(request.method==='GET'&&(url.pathname==='/privacy-policy.html'||url.pathname==='/privacy-policy'))return publicDocument(response);
     if(!isPlayRequest(request))return response;
     if(request.method==='GET'&&url.pathname==='/reader-assets.json')return playReaderJson(response);
     if(request.method==='GET'&&url.pathname==='/catalog.json')return playCatalogJson(response,request,env,ctx);
