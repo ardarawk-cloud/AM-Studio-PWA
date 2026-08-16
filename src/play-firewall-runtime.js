@@ -29,6 +29,13 @@ function completeReaderAsset(asset){
   return readerAsset||(total>0&&pages.length>=total&&available>=total&&missing.length===0);
 }
 
+function publicDiscoveryCover(series){
+  const cover=series?.cover;
+  return cover?.publicDiscovery===true
+    && typeof cover.publicReaderAsset==='string'
+    && cover.publicReaderAsset.startsWith('/');
+}
+
 function filterReaderRegistry(data){
   const out=structuredClone(data||{registry:{},episodes:[]});
   out.episodes=(out.episodes||[]).filter(completeReaderAsset);
@@ -55,10 +62,22 @@ function readyEpisodeMap(registry){
 function filterCatalog(catalog,registry){
   const out=structuredClone(catalog||{studio:{},series:[]});
   const ready=readyEpisodeMap(registry);
-  out.series=(out.series||[]).filter(series=>ready.has(series.id)).map(series=>{
-    const episodes=[...ready.get(series.id)].sort((a,b)=>a-b);
-    const max=episodes.length?episodes[episodes.length-1]:0;
-    const contiguous=max>0&&episodes.length===max&&episodes.every((n,i)=>n===i+1);
+  out.series=(out.series||[]).filter(series=>ready.has(series.id)||publicDiscoveryCover(series)).map(series=>{
+    const episodes=[...(ready.get(series.id)||new Set())].sort((a,b)=>a-b);
+    if(!episodes.length){
+      return {
+        ...series,
+        episodes:0,
+        episodeCountVerified:true,
+        verifiedEpisodes:[],
+        freeEpisodes:0,
+        status:'COMING_SOON',
+        qc:'PUBLIC_COVER_APPROVED',
+        publicReaderState:'COMING_SOON'
+      };
+    }
+    const max=episodes[episodes.length-1];
+    const contiguous=episodes.length===max&&episodes.every((n,i)=>n===i+1);
     return {
       ...series,
       episodes:contiguous?max:episodes.length,
@@ -138,7 +157,7 @@ async function playHtml(response){
     html=html.includes('</head>')?html.replace('</head>',`${PLAY_BOOTSTRAP}</head>`):`${PLAY_BOOTSTRAP}${html}`;
   }
   const scripts=[
-    '<script id="am-play-reader-server" src="/native-reader.js?v=3" defer></script>',
+    '<script id="am-play-reader-server" src="/native-reader.js?v=4" defer></script>',
     '<script id="am-growth-reader-server" src="/growth-reader.js?v=1" defer></script>'
   ];
   for(const script of scripts){
@@ -190,4 +209,4 @@ export default{
   }
 };
 
-export {completeReaderAsset,filterReaderRegistry,filterCatalog,stripInternalScripts,isPlayRequest,publicDocument};
+export {completeReaderAsset,publicDiscoveryCover,filterReaderRegistry,filterCatalog,stripInternalScripts,isPlayRequest,publicDocument};

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {
   completeReaderAsset,
+  publicDiscoveryCover,
   filterReaderRegistry,
   filterCatalog,
   stripInternalScripts,
@@ -15,6 +16,7 @@ const catalog=JSON.parse(fs.readFileSync(new URL('../public/catalog.json',import
 const wrangler=fs.readFileSync(new URL('../wrangler.jsonc',import.meta.url),'utf8');
 const privacy=fs.readFileSync(new URL('../public/privacy-policy.html',import.meta.url),'utf8');
 const firewallSource=fs.readFileSync(new URL('../src/play-firewall-runtime.js',import.meta.url),'utf8');
+const hpgCover=new URL('../public/comics/hikayat-pohon-ganja/cover.jpg',import.meta.url);
 
 test('Worker entrypoint is the Play firewall outer layer',()=>{
   assert.match(wrangler,/\.\/src\/play-firewall-runtime\.js/);
@@ -65,14 +67,36 @@ test('static Play registry exposes only complete CANON_FINAL QC_PASS episodes',(
   assert.equal(filtered.registry.playFirewall,true);
 });
 
-test('static Play catalog exposes only public-ready series with public-facing status',()=>{
+test('HPG uploaded cover is explicitly approved for discovery without publishing an episode',()=>{
+  const hpg=catalog.series.find(x=>x.id==='hikayat-pohon-ganja');
+  assert.ok(hpg);
+  assert.equal(fs.existsSync(hpgCover),true);
+  assert.equal(hpg.cover.status,'OWNER_APPROVED_VISUAL_REFERENCE');
+  assert.equal(hpg.cover.publicReaderAsset,'/comics/hikayat-pohon-ganja/cover.jpg');
+  assert.equal(publicDiscoveryCover(hpg),true);
+  assert.equal(hpg.episodeCountVerified,false,'internal HPG episode state must remain unreleased');
+});
+
+test('static Play catalog may expose approved poster-only series as COMING_SOON while episodes stay gated',()=>{
   const registry=filterReaderRegistry(readerRegistry);
   const filtered=filterCatalog(catalog,registry);
-  assert.deepEqual(filtered.series.map(x=>x.id),['amu']);
-  assert.equal(filtered.series[0].publicReaderState,'READY');
-  assert.equal(filtered.series[0].status,'PUBLISHED');
-  assert.equal(filtered.series[0].qc,'PUBLIC_READER_READY');
-  assert.equal(filtered.series[0].episodes,1);
+  assert.deepEqual(filtered.series.map(x=>x.id),['amu','hikayat-pohon-ganja']);
+
+  const amu=filtered.series.find(x=>x.id==='amu');
+  assert.equal(amu.publicReaderState,'READY');
+  assert.equal(amu.status,'PUBLISHED');
+  assert.equal(amu.qc,'PUBLIC_READER_READY');
+  assert.equal(amu.episodes,1);
+
+  const hpg=filtered.series.find(x=>x.id==='hikayat-pohon-ganja');
+  assert.equal(hpg.publicReaderState,'COMING_SOON');
+  assert.equal(hpg.status,'COMING_SOON');
+  assert.equal(hpg.qc,'PUBLIC_COVER_APPROVED');
+  assert.equal(hpg.episodes,0);
+  assert.deepEqual(hpg.verifiedEpisodes,[]);
+  assert.equal(hpg.freeEpisodes,0);
+  assert.equal(hpg.cover.publicReaderAsset,'/comics/hikayat-pohon-ganja/cover.jpg');
+
   assert.ok(filtered.series.every(x=>!String(x.status||'').includes('AUDIT_PENDING')));
   assert.ok(filtered.series.every(x=>!String(x.status||'').includes('CANON_HOLD')));
   assert.equal(filtered.studio.mode,'PUBLIC_READER_ONLY');

@@ -1,16 +1,18 @@
 (()=>{
-  if(window.__amPlayReaderV3)return;
-  window.__amPlayReaderV3=true;
+  if(window.__amPlayReaderV4)return;
+  window.__amPlayReaderV4=true;
 
   const isPlay=()=>document.documentElement.dataset.amDistribution==='play'||new URLSearchParams(location.search).get('channel')==='play';
   if(!isPlay())return;
 
   document.documentElement.dataset.amDistribution='play';
-  document.documentElement.dataset.amPlayReader='v3';
+  document.documentElement.dataset.amPlayReader='v4';
 
   let scheduled=false;
   let policyLoading=null;
   let catalogSeries=[];
+  const allowedSeries=new Set();
+  const publicStateBySeries=new Map();
   const readyBySeries=new Map();
 
   const playUrl=path=>{
@@ -43,6 +45,14 @@
       fetch(playUrl('/reader-assets.json'),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('READER_REGISTRY_UNAVAILABLE');return r.json()})
     ]).then(([catalog,registry])=>{
       catalogSeries=Array.isArray(catalog?.series)?catalog.series:[];
+      allowedSeries.clear();
+      publicStateBySeries.clear();
+      for(const series of catalogSeries){
+        const id=String(series?.id||'').trim();
+        if(!id)continue;
+        allowedSeries.add(id);
+        publicStateBySeries.set(id,String(series?.publicReaderState||''));
+      }
       readyBySeries.clear();
       for(const asset of Array.isArray(registry?.episodes)?registry.episodes:[]){
         if(!completeReaderAsset(asset))continue;
@@ -55,6 +65,9 @@
       document.documentElement.dataset.amPlayPolicy='loaded';
     }).catch(error=>{
       console.error('AM_PLAY_RELEASE_POLICY_FAILED',error);
+      catalogSeries=[];
+      allowedSeries.clear();
+      publicStateBySeries.clear();
       readyBySeries.clear();
       document.documentElement.dataset.amPlayPolicy='failed-closed';
     }).finally(()=>schedule());
@@ -107,7 +120,7 @@
       const eyebrow=hero.querySelector('.eyebrow');
       const copy=hero.querySelector('p');
       if(eyebrow)eyebrow.textContent='OFFICIAL COMICS READER';
-      if(copy)copy.textContent='Baca universe original AM STUDIO. Reader publik hanya menampilkan episode yang sudah CANON FINAL, QC PASS, dan memiliki aset reader lengkap.';
+      if(copy)copy.textContent='Baca universe original AM STUDIO. Episode hanya terbuka setelah CANON FINAL, QC PASS, dan aset reader lengkap; poster resmi dapat tampil lebih awal sebagai Coming Soon.';
     }
   }
 
@@ -123,12 +136,12 @@
     return stored||null;
   }
 
-  function ensureEmptyNotice(container,id,text){
+  function ensureEmptyNotice(container,id,text,title='Konten sedang disiapkan'){
     if(!container||container.querySelector(`#${id}`))return;
     const note=document.createElement('div');
     note.id=id;
     note.className='empty-state notice';
-    note.innerHTML=`<b>Konten sedang disiapkan</b><p>${text}</p>`;
+    note.innerHTML=`<b>${title}</b><p>${text}</p>`;
     container.appendChild(note);
   }
 
@@ -137,14 +150,14 @@
 
     document.querySelectorAll('.card[data-series],.card[data-open]').forEach(card=>{
       const id=card.dataset.series||card.dataset.open;
-      card.style.display=readyBySeries.has(id)&&readyBySeries.get(id).size?'':'none';
+      card.style.display=allowedSeries.has(id)?'':'none';
     });
 
     document.querySelectorAll('.cards,.grid').forEach(container=>{
       const cards=[...container.querySelectorAll('.card[data-series],.card[data-open]')];
       if(!cards.length)return;
       const visible=cards.some(card=>card.style.display!=='none');
-      if(!visible)ensureEmptyNotice(container,'amPlayLibraryGate','Belum ada episode dengan aset lengkap yang dibuka untuk Google Play Reader.');
+      if(!visible)ensureEmptyNotice(container,'amPlayLibraryGate','Belum ada universe yang dibuka untuk Google Play Reader.');
     });
 
     const seriesId=currentSeriesId();
@@ -157,7 +170,12 @@
     const episodeList=document.querySelector('.episodes');
     if(episodeList&&seriesId){
       const rows=[...episodeList.querySelectorAll('.episode[data-episode],.ep[data-ep]')];
-      if(rows.length&&!rows.some(row=>row.style.display!=='none'))ensureEmptyNotice(episodeList,'amPlayEpisodeGate','Episode seri ini belum memiliki paket reader lengkap untuk rilis publik.');
+      const visible=rows.some(row=>row.style.display!=='none');
+      if(publicStateBySeries.get(seriesId)==='COMING_SOON'){
+        ensureEmptyNotice(episodeList,'amPlayComingSoon','Poster resmi sudah tersedia. Episode akan dibuka setelah canon, riset, QC, dan paket reader dinyatakan lengkap.','COMING SOON');
+      }else if((rows.length&&!visible)||(!rows.length&&readyEpisodes?.size)){
+        ensureEmptyNotice(episodeList,'amPlayEpisodeGate','Episode seri ini belum memiliki paket reader lengkap untuk rilis publik.');
+      }
     }
   }
 
@@ -184,7 +202,7 @@
         </div>
         <div class="box">
           <b>Release Policy</b>
-          <p>Konten publik wajib CANON FINAL + QC PASS dan seluruh aset reader untuk episode tersebut harus lengkap. Draft, recovery parsial, panel Admin, dan alat produksi internal tidak tersedia pada build Play Store.</p>
+          <p>Poster owner-approved dapat tampil sebagai Coming Soon. Episode publik tetap wajib CANON FINAL + QC PASS dan seluruh aset reader harus lengkap. Draft, recovery parsial, panel Admin, dan alat produksi internal tidak tersedia pada build Play Store.</p>
         </div>
       </div>`;
   }
