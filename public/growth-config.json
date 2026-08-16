@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "product": {
     "name": "AM STUDIO",
     "positioning": "Stories • Comics • Universes",
@@ -14,6 +14,16 @@
     "organicShare": true,
     "campaignDeepLinks": true,
     "localReleaseDetection": true,
+    "storyPromo": {
+      "status": "LOCKED",
+      "brainId": "am-studio-story-promo-v1",
+      "master": "/story-promo-master.json",
+      "acquisitionGateway": "https://am-studio-pwa.ardarawk.workers.dev/download.html",
+      "storyValuePercentTarget": 80,
+      "promotionPercentMax": 20,
+      "ctaPlacement": "END_ONLY",
+      "sourcePolicy": "OWNER_APPROVED_CANON_OR_RELEASED_READER_ONLY"
+    },
     "pushNotifications": {
       "status": "GATED_NOT_LIVE",
       "publicEntry": false,
