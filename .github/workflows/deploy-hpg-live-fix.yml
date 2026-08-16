@@ -1,0 +1,53 @@
+name: AM STUDIO HPG Live Deploy
+
+on:
+  push:
+    branches:
+      - deploy/hpg-live-fix
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Deploy AM STUDIO Worker and public assets
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          test -n "${CLOUDFLARE_API_TOKEN:-}" || { echo 'CLOUDFLARE_API_TOKEN_NOT_CONFIGURED'; exit 11; }
+          npx wrangler deploy
+
+      - name: Verify HPG public discovery live
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://am-studio-pwa.ardarawk.workers.dev'
+          curl --fail --silent --show-error --location --max-time 30 "$BASE/catalog.json?channel=play" -o catalog.json
+          node <<'NODE'
+          const c=require('./catalog.json');
+          const h=c.series?.find(x=>x.id==='hikayat-pohon-ganja');
+          if(!h)throw new Error('HPG_NOT_IN_PLAY_CATALOG');
+          if(h.status!=='COMING_SOON'||h.publicReaderState!=='COMING_SOON'||h.episodes!==0)throw new Error('HPG_DISCOVERY_STATE_INVALID');
+          console.log('HPG_CATALOG_OK',h.status,h.episodes,h.cover?.publicReaderAsset);
+          NODE
+          code=$(curl --silent --show-error --location --max-time 30 -o hpg-cover.jpg -w '%{http_code}' "$BASE/comics/hikayat-pohon-ganja/cover.jpg")
+          test "$code" = '200'
+          test -s hpg-cover.jpg
+          echo "HPG_COVER_OK size=$(wc -c < hpg-cover.jpg)"
