@@ -5,12 +5,15 @@ import {
   completeReaderAsset,
   filterReaderRegistry,
   filterCatalog,
-  stripInternalScripts
+  stripInternalScripts,
+  isPlayRequest,
+  publicDocument
 } from '../src/play-firewall-runtime.js';
 
 const readerRegistry=JSON.parse(fs.readFileSync(new URL('../public/reader-assets.json',import.meta.url),'utf8'));
 const catalog=JSON.parse(fs.readFileSync(new URL('../public/catalog.json',import.meta.url),'utf8'));
 const wrangler=fs.readFileSync(new URL('../wrangler.jsonc',import.meta.url),'utf8');
+const privacy=fs.readFileSync(new URL('../public/privacy-policy.html',import.meta.url),'utf8');
 
 test('Worker entrypoint is the Play firewall outer layer',()=>{
   assert.match(wrangler,/\.\/src\/play-firewall-runtime\.js/);
@@ -32,6 +35,22 @@ test('Play firewall strips every owner-only injected script from HTML',()=>{
     'private-production-qc-v2.js','admin-upload-queue-fix.js'
   ]) assert.doesNotMatch(out,new RegExp(forbidden.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
   assert.match(out,/reader-hotfix\.js/,'reader-only visual hotfix may remain');
+});
+
+test('Play mode is sticky for native Play WebView even when an internal URL loses channel query',()=>{
+  assert.equal(isPlayRequest(new Request('https://am-studio-pwa.ardarawk.workers.dev/',{headers:{'user-agent':'Android WebView AMStudioAndroid/1.0.0 PlayReader'}})),true);
+  assert.equal(isPlayRequest(new Request('https://am-studio-pwa.ardarawk.workers.dev/?channel=play')),true);
+  assert.equal(isPlayRequest(new Request('https://am-studio-pwa.ardarawk.workers.dev/')),false);
+});
+
+test('Privacy document is public-safe without loading reader growth or owner scripts',async()=>{
+  const source='<html><body><script src="/admin-panel.js?v=1" defer></script><p>Privacy</p></body></html>';
+  const response=await publicDocument(new Response(source,{headers:{'content-type':'text/html'}}));
+  const out=await response.text();
+  assert.doesNotMatch(out,/admin-panel\.js/);
+  assert.doesNotMatch(out,/native-reader\.js|growth-reader\.js/);
+  assert.equal(response.headers.get('x-am-public-document'),'safe');
+  assert.match(privacy,/href="\/\?channel=play"/);
 });
 
 test('static Play registry exposes only complete CANON_FINAL QC_PASS episodes',()=>{
