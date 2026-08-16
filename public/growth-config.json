@@ -14,6 +14,21 @@
     "organicShare": true,
     "campaignDeepLinks": true,
     "localReleaseDetection": true,
+    "pushNotifications": {
+      "status": "GATED_NOT_LIVE",
+      "publicEntry": false,
+      "reason": "Requires push provider/backend, notification permission UX, topic/subscription model, and privacy/Data Safety review. Growth v1 uses in-app local release detection instead."
+    },
+    "referralRewards": {
+      "status": "GATED_NOT_LIVE",
+      "publicEntry": false,
+      "reason": "Organic share/ref parameters are prepared, but rewards require fraud-resistant attribution and an entitlement backend."
+    },
+    "collectibles": {
+      "status": "CONTENT_GATED",
+      "publicEntry": false,
+      "reason": "Wallpaper/character collectibles become public only when owner-approved assets and entitlement rules exist."
+    },
     "campaignParameters": [
       "series",
       "episode",
