@@ -5,12 +5,29 @@
   "episodeTitle": "The House Always Wins",
   "publicationState": "OWNER_VERIFIED_PUBLISHED",
   "publishedPageCount": 12,
+  "readerFrameCount": 13,
+  "readerFrameRule": "PAGE_10_SPLIT_INTO_10A_AND_10B",
+  "canonicalReaderFrames": [
+    "page-01.jpg",
+    "page-02.jpg",
+    "page-03.jpg",
+    "page-04.jpg",
+    "page-05.jpg",
+    "page-06.jpg",
+    "page-07.jpg",
+    "page-08.jpg",
+    "page-09.jpg",
+    "page-10a.jpg",
+    "page-10b.jpg",
+    "page-11.jpg",
+    "page-12.jpg"
+  ],
   "lastPage": {
     "number": 12,
     "title": "Pesan Terakhir",
     "closing": "END OF ISSUE #1"
   },
-  "readerAssetState": "RECOVERY_SOURCE_IDENTIFIED_PARTIAL",
+  "readerAssetState": "STAGING_READY_BINARY_RECOVERY_BLOCKED",
   "recoveredSourceCount": 4,
   "recoveredSources": [
     {
@@ -35,11 +52,18 @@
     }
   ],
   "readerPublishGate": {
-    "required": "12 verified individual page image binaries in canonical order",
-    "current": "4 combined/recovery production images identified; individual Page 01-12 binaries not yet exposed to deployment runtime",
+    "required": "13 verified reader-frame image binaries in canonical order, representing 12 published pages with Page 10 split into 10A and 10B",
+    "current": "4 combined/recovery production images identified; canonical 13-frame mapping is locked, but individual reader-frame binaries are not exposed to deployment runtime",
     "allowPlaceholder": false,
-    "allowCrossIpAsset": false
+    "allowCrossIpAsset": false,
+    "allowGeneratedReplacementWithoutOwnerApproval": false
+  },
+  "deploymentTarget": {
+    "storage": "R2_COMIC_ASSETS",
+    "publicBase": "/media/comics",
+    "episodeBase": "/media/comics/royal-gambler/ep001"
   },
   "continuityRule": "ROYAL_GAMBLER_IS_INDEPENDENT_IP_DO_NOT_MERGE_WITH_LEGENDARY_DECKS_OR_BLACKJACK",
-  "verifiedAt": "2026-08-16"
+  "verifiedAt": "2026-08-16",
+  "stagingUpdatedAt": "2026-08-17"
 }
