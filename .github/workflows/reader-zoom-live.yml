@@ -1,0 +1,31 @@
+name: Reader Zoom Live
+on:
+  push:
+    branches: [diag/reader-zoom-live]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Wait for Zoom Reader live
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://am-studio-pwa.ardarawk.workers.dev'
+          ready=0
+          for attempt in $(seq 1 12); do
+            curl --fail --silent --show-error --location --max-time 20 "$BASE/?channel=play&zoomdiag=$attempt" -o page.html || true
+            curl --fail --silent --show-error --location --max-time 20 "$BASE/reader-zoom.js?v=1&zoomdiag=$attempt" -o zoom.js || true
+            if grep -q 'am-reader-zoom-server' page.html 2>/dev/null \
+              && grep -q 'MAX_SCALE=5' zoom.js 2>/dev/null \
+              && grep -q 'am-reader-zoom-in' zoom.js 2>/dev/null; then
+              echo "READER_ZOOM_LIVE attempt=$attempt"
+              ready=1
+              break
+            fi
+            echo "waiting attempt=$attempt"
+            sleep 10
+          done
+          test "$ready" -eq 1
