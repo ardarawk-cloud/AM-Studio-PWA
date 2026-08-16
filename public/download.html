@@ -20,9 +20,21 @@
     <h1 class="title">AM STUDIO</h1>
     <p class="tag">Stories • Comics • Universes</p>
     <p class="copy">Masuk ke dunia original AM STUDIO, temukan cerita dan comic universe resmi, lalu lanjutkan bacaan dari satu tempat.</p>
-    <a class="cta" href="/?channel=play&utm_source=am_studio_story_promo&utm_medium=acquisition_gateway&utm_campaign=growth_v1">BUKA AM STUDIO</a>
-    <div class="note">Ini adalah link promosi permanen AM STUDIO. Tujuan instalasi dapat dialihkan ke APK resmi atau Google Play tanpa mengganti link yang sudah tersebar.</div>
+    <a class="cta" id="install-cta" href="/?channel=play&utm_source=am_studio_story_promo&utm_medium=acquisition_gateway&utm_campaign=growth_v1">BUKA AM STUDIO</a>
+    <div class="note" id="install-note">Link promosi permanen AM STUDIO. Tujuan instalasi dapat dialihkan ke APK resmi atau Google Play tanpa mengganti link yang sudah tersebar.</div>
     <div class="package">Android identity: com.ardacore.amstudio</div>
   </main>
+  <script>
+    (()=>{
+      const cta=document.getElementById('install-cta'),note=document.getElementById('install-note');
+      fetch('/download-target.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(cfg=>{
+        if(!cfg)return;
+        const mode=String(cfg.mode||'PRELAUNCH_READER').toUpperCase();
+        if(mode==='DIRECT_APK'&&cfg.directApkUrl){cta.href=cfg.directApkUrl;cta.textContent='DOWNLOAD AM STUDIO APK';note.textContent='Download APK resmi AM STUDIO.';return;}
+        if(mode==='GOOGLE_PLAY'&&cfg.playStoreUrl){cta.href=cfg.playStoreUrl;cta.textContent='INSTALL DARI GOOGLE PLAY';note.textContent='Install AM STUDIO dari Google Play.';return;}
+        if(cfg.readerFallbackUrl)cta.href=cfg.readerFallbackUrl;
+      }).catch(()=>{});
+    })();
+  </script>
 </body>
 </html>
