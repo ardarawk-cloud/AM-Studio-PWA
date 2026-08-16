@@ -12,19 +12,36 @@ permissions:
 jobs:
   live-play-smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 7
     steps:
-      - name: Verify live Play Growth HTML firewall
+      - name: Wait for live Growth v1 deployment and verify Play HTML firewall
         shell: bash
         run: |
           set -euo pipefail
           URL='https://am-studio-pwa.ardarawk.workers.dev/?native=android&channel=play'
-          curl --fail --silent --show-error --location --max-time 30 -D headers.txt "$URL" -o play.html
-          grep -qi '^x-am-play-firewall: active' headers.txt
-          grep -qi '^x-am-growth-build: v1' headers.txt
+          ready=0
+          for attempt in $(seq 1 18); do
+            rm -f headers.txt play.html
+            curl --fail --silent --show-error --location --max-time 30 -D headers.txt "$URL" -o play.html || true
+            if grep -qi '^x-am-play-firewall: active' headers.txt 2>/dev/null \
+              && grep -qi '^x-am-growth-build: v1' headers.txt 2>/dev/null \
+              && grep -q 'am-growth-reader-server' play.html 2>/dev/null; then
+              ready=1
+              echo "Growth v1 live on attempt ${attempt}."
+              break
+            fi
+            echo "Waiting for Cloudflare Growth v1 propagation (${attempt}/18)..."
+            sleep 10
+          done
+          if [ "$ready" -ne 1 ]; then
+            echo '--- LIVE HEADERS ---'
+            cat headers.txt || true
+            echo '--- SCRIPT MARKERS ---'
+            grep -Eo 'am-(play-reader|growth-reader|play-firewall)[A-Za-z0-9_-]*' play.html | sort -u || true
+            exit 1
+          fi
           grep -q 'am-play-firewall-bootstrap' play.html
           grep -q 'am-play-reader-server' play.html
-          grep -q 'am-growth-reader-server' play.html
           ! grep -Eq '/(admin-panel|page-control|asset-upload|private-production|private-production-qc-v2|admin-upload-queue-fix)\.js' play.html
 
       - name: Verify native Play User-Agent stays public without channel query
