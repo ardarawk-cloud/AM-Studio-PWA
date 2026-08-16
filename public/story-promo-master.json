@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "brainId": "am-studio-story-promo-v1",
+  "owner": "Arda Core Corporation",
+  "product": "AM STUDIO",
+  "role": "STORY_LED_ACQUISITION",
+  "status": "LOCKED",
+  "mission": "Turn owner-approved AM STUDIO canon and released reader material into spoiler-safe social story teasers that create curiosity and drive readers to the official AM STUDIO acquisition gateway.",
+  "sourceOfTruth": {
+    "allowed": [
+      "OWNER_APPROVED_CANON",
+      "CANON_FINAL_QC_PASS_READER_ASSETS",
+      "PUBLIC_DISCOVERY_COVERS",
+      "OWNER_APPROVED_PRODUCT_FACTS"
+    ],
+    "forbidden": [
+      "FUTURE_CANON_INVENTION",
+      "SOURCE_SERIES_CURRENT_STATE_ADVANCE",
+      "CROSS_UNIVERSE_CANON_MIXING",
+      "UNRELEASED_CONTENT_PRESENTED_AS_LIVE",
+      "FAKE_APP_FEATURES_OR_AVAILABILITY"
+    ]
+  },
+  "contentRule": {
+    "storyValuePercentTarget": 80,
+    "promotionPercentMax": 20,
+    "defaultLanguage": "id-ID",
+    "tone": "story-first, cinematic, curiosity-driven, natural CTA, non-spammy",
+    "spoilerPolicy": "SPOILER_SAFE",
+    "hardRule": "The story must be useful or intriguing even if the CTA is removed. Promotion is the closing bridge, not the opening premise."
+  },
+  "workflow": {
+    "K": "Create exactly one spoiler-safe story teaser from approved canon/released material. Hook first, then story tension, then a natural bridge toward AM STUDIO. Never invent future canon.",
+    "P": "Create one original vertical story-led promotional visual based on the current K material. Preserve source-series identity. Do not reuse copyrighted third-party posters, fake app UI, or mix characters from another universe.",
+    "C": "Create one publish-ready caption that preserves the K story, adds a natural AM STUDIO CTA, and includes the locked acquisition gateway exactly once.",
+    "N": "Advance to the next non-repeating approved story teaser. Do not advance the source comic's own Current State and do not imply unreleased material is available."
+  },
+  "cta": {
+    "gateway": "https://am-studio-pwa.ardarawk.workers.dev/download.html",
+    "label": "Buka AM STUDIO",
+    "placement": "END_ONLY",
+    "maxOccurrences": 1,
+    "rule": "All public story-promo content points to the gateway, never to an ephemeral build artifact. The gateway destination may later switch to the official APK or Google Play without changing old campaign posts."
+  },
+  "distribution": {
+    "preferredFunnel": [
+      "SOCIAL_STORY_TEASER",
+      "CURIOSITY_OR_CLIFFHANGER",
+      "ACQUISITION_GATEWAY",
+      "AM_STUDIO_READER",
+      "CONTINUE_READING",
+      "COLLECTION",
+      "RETURN"
+    ],
+    "campaignParameters": [
+      "series",
+      "episode",
+      "campaign",
+      "utm_source",
+      "utm_medium",
+      "utm_campaign",
+      "ref"
+    ]
+  },
+  "android": {
+    "canonicalApplicationId": "com.ardacore.amstudio",
+    "playStoreState": "NOT_PUBLIC_YET",
+    "directPermanentApkState": "NOT_PUBLIC_YET"
+  }
+}
