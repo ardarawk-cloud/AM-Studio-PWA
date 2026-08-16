@@ -5,28 +5,39 @@ on:
     branches:
       - main
       - fix/amstudio-play-device-apk
+      - 'feature/amstudio-*'
     paths:
       - 'public/native-reader.js'
+      - 'public/growth-reader.js'
+      - 'public/growth-config.json'
+      - 'public/privacy-policy.html'
       - 'public/play-release.json'
       - 'public/reader-assets.json'
       - 'public/index.html'
       - 'src/play-firewall-runtime.js'
+      - 'android/app/src/main/java/com/ardacore/amstudio/AmStudioNavigationPolicy.java'
       - 'wrangler.jsonc'
       - 'tests/division-play-reader.test.mjs'
       - 'tests/division-play-firewall.test.mjs'
+      - 'tests/division-growth-reader.test.mjs'
       - '.github/workflows/play-reader-policy.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'public/native-reader.js'
+      - 'public/growth-reader.js'
+      - 'public/growth-config.json'
+      - 'public/privacy-policy.html'
       - 'public/play-release.json'
       - 'public/reader-assets.json'
       - 'public/index.html'
       - 'src/play-firewall-runtime.js'
+      - 'android/app/src/main/java/com/ardacore/amstudio/AmStudioNavigationPolicy.java'
       - 'wrangler.jsonc'
       - 'tests/division-play-reader.test.mjs'
       - 'tests/division-play-firewall.test.mjs'
+      - 'tests/division-growth-reader.test.mjs'
       - '.github/workflows/play-reader-policy.yml'
   workflow_dispatch:
 
@@ -47,10 +58,11 @@ jobs:
           node-version: '24'
           package-manager-cache: false
 
-      - name: Validate Play Reader and firewall syntax
+      - name: Validate Play Reader, Growth, and firewall syntax
         run: |
           node --check public/native-reader.js
+          node --check public/growth-reader.js
           node --check src/play-firewall-runtime.js
 
-      - name: Run Play Reader release policy tests
-        run: node --test tests/division-play-reader.test.mjs tests/division-play-firewall.test.mjs
+      - name: Run Play Reader and Growth policy tests
+        run: node --test tests/division-play-reader.test.mjs tests/division-play-firewall.test.mjs tests/division-growth-reader.test.mjs

@@ -10,7 +10,11 @@ const INTERNAL_SCRIPT_NAMES=[
 ];
 
 function isPlayRequest(request){
-  try{return new URL(request.url).searchParams.get('channel')==='play'}catch{return false}
+  try{
+    const url=new URL(request.url);
+    if(url.searchParams.get('channel')==='play')return true;
+    return /AMStudioAndroid\/[^\s]+\s+PlayReader/i.test(request.headers.get('user-agent')||'');
+  }catch{return false}
 }
 
 function completeReaderAsset(asset){
@@ -116,6 +120,16 @@ html[data-am-distribution="play"] [id^="am-qc-"]{display:none!important}
 })();
 </script>`;
 
+async function publicDocument(response){
+  const ct=response.headers.get('content-type')||'';
+  if(!response.ok||!ct.includes('text/html'))return response;
+  const html=stripInternalScripts(await response.text());
+  const headers=new Headers(response.headers);
+  headers.set('cache-control','no-store');
+  headers.set('x-am-public-document','safe');
+  return new Response(html,{status:response.status,statusText:response.statusText,headers});
+}
+
 async function playHtml(response){
   const ct=response.headers.get('content-type')||'';
   if(!response.ok||!ct.includes('text/html'))return response;
@@ -123,11 +137,19 @@ async function playHtml(response){
   if(!html.includes('am-play-firewall-bootstrap')){
     html=html.includes('</head>')?html.replace('</head>',`${PLAY_BOOTSTRAP}</head>`):`${PLAY_BOOTSTRAP}${html}`;
   }
-  const reader='<script id="am-play-reader-server" src="/native-reader.js?v=3" defer></script>';
-  if(!html.includes('am-play-reader-server'))html=html.includes('</body>')?html.replace('</body>',`${reader}</body>`):`${html}${reader}`;
+  const scripts=[
+    '<script id="am-play-reader-server" src="/native-reader.js?v=3" defer></script>',
+    '<script id="am-growth-reader-server" src="/growth-reader.js?v=1" defer></script>'
+  ];
+  for(const script of scripts){
+    const id=(script.match(/id="([^"]+)"/)||[])[1];
+    if(id&&html.includes(`id="${id}"`))continue;
+    html=html.includes('</body>')?html.replace('</body>',`${script}</body>`):`${html}${script}`;
+  }
   const headers=new Headers(response.headers);
   headers.set('cache-control','no-store');
   headers.set('x-am-play-firewall','active');
+  headers.set('x-am-growth-build','v1');
   return new Response(html,{status:response.status,statusText:response.statusText,headers});
 }
 
@@ -157,6 +179,7 @@ export default{
   async fetch(request,env,ctx){
     const url=new URL(request.url);
     const response=await base.fetch(request,env,ctx);
+    if(request.method==='GET'&&url.pathname==='/privacy-policy.html')return publicDocument(response);
     if(!isPlayRequest(request))return response;
     if(request.method==='GET'&&url.pathname==='/reader-assets.json')return playReaderJson(response);
     if(request.method==='GET'&&url.pathname==='/catalog.json')return playCatalogJson(response,request,env,ctx);
@@ -167,4 +190,4 @@ export default{
   }
 };
 
-export {completeReaderAsset,filterReaderRegistry,filterCatalog,stripInternalScripts};
+export {completeReaderAsset,filterReaderRegistry,filterCatalog,stripInternalScripts,isPlayRequest,publicDocument};
