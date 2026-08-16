@@ -102,9 +102,11 @@ Before MAU/retention/paid-conversion dashboards are enabled, choose the analytic
 
 ## Marketing links supported by Growth Build v1
 
+Canonical public campaign links must include `channel=play` so browser traffic is also forced through the public Play firewall.
+
 Example installed/web-reader campaign route:
 
-`https://am-studio-pwa.ardarawk.workers.dev/?series=amu&episode=1&utm_source=facebook&utm_medium=reel&utm_campaign=amu_ep001`
+`https://am-studio-pwa.ardarawk.workers.dev/?channel=play&series=amu&episode=1&utm_source=facebook&utm_medium=reel&utm_campaign=amu_ep001`
 
 Supported parameters:
 - `series`
