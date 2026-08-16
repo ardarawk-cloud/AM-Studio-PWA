@@ -136,6 +136,14 @@ public class AmStudioActivity extends Activity {
         settings.setJavaScriptCanOpenWindowsAutomatically(false);
         settings.setSupportMultipleWindows(false);
         settings.setSafeBrowsingEnabled(true);
+
+        // Continuous comic reader zoom: pinch zooms the whole WebView/document,
+        // so users can keep scrolling across pages without opening a per-page modal.
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(false);
+        settings.setUseWideViewPort(true);
+
         settings.setUserAgentString(settings.getUserAgentString()
                 + " AMStudioAndroid/" + BuildConfig.VERSION_NAME
                 + (BuildConfig.PLAY_STORE_MODE ? " PlayReader" : " OwnerBeta"));
