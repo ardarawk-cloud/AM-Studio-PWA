@@ -1,0 +1,29 @@
+{
+  "seriesId": "royal-gambler",
+  "episode": 1,
+  "title": "The House Always Wins",
+  "status": "BINARY_UPLOAD_REQUIRED_BEFORE_REGISTRY_SYNC",
+  "publishedPageCount": 12,
+  "readerFrameCount": 13,
+  "readerFrames": [
+    {"order": 1, "sourcePage": "1", "filename": "page-01.jpg", "target": "/media/comics/royal-gambler/ep001/page-01.jpg"},
+    {"order": 2, "sourcePage": "2", "filename": "page-02.jpg", "target": "/media/comics/royal-gambler/ep001/page-02.jpg"},
+    {"order": 3, "sourcePage": "3", "filename": "page-03.jpg", "target": "/media/comics/royal-gambler/ep001/page-03.jpg"},
+    {"order": 4, "sourcePage": "4", "filename": "page-04.jpg", "target": "/media/comics/royal-gambler/ep001/page-04.jpg"},
+    {"order": 5, "sourcePage": "5", "filename": "page-05.jpg", "target": "/media/comics/royal-gambler/ep001/page-05.jpg"},
+    {"order": 6, "sourcePage": "6", "filename": "page-06.jpg", "target": "/media/comics/royal-gambler/ep001/page-06.jpg"},
+    {"order": 7, "sourcePage": "7", "filename": "page-07.jpg", "target": "/media/comics/royal-gambler/ep001/page-07.jpg"},
+    {"order": 8, "sourcePage": "8", "filename": "page-08.jpg", "target": "/media/comics/royal-gambler/ep001/page-08.jpg"},
+    {"order": 9, "sourcePage": "9", "filename": "page-09.jpg", "target": "/media/comics/royal-gambler/ep001/page-09.jpg"},
+    {"order": 10, "sourcePage": "10A", "filename": "page-10a.jpg", "target": "/media/comics/royal-gambler/ep001/page-10a.jpg"},
+    {"order": 11, "sourcePage": "10B", "filename": "page-10b.jpg", "target": "/media/comics/royal-gambler/ep001/page-10b.jpg"},
+    {"order": 12, "sourcePage": "11", "filename": "page-11.jpg", "target": "/media/comics/royal-gambler/ep001/page-11.jpg"},
+    {"order": 13, "sourcePage": "12", "filename": "page-12.jpg", "target": "/media/comics/royal-gambler/ep001/page-12.jpg"}
+  ],
+  "registryGate": {
+    "readerAssetsJson": "DO_NOT_SYNC_UNTIL_ALL_13_TARGETS_EXIST",
+    "qc": "HOLD_UNTIL_BINARY_VERIFICATION",
+    "placeholders": "FORBIDDEN",
+    "crossIpAssets": "FORBIDDEN"
+  }
+}
