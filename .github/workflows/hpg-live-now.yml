@@ -16,16 +16,20 @@ jobs:
           BASE='https://am-studio-pwa.ardarawk.workers.dev'
           echo '--- CATALOG ---'
           curl --fail --silent --show-error --location --max-time 20 "$BASE/catalog.json?channel=play" -o catalog.json || true
+          echo '--- READER ---'
+          curl --fail --silent --show-error --location --max-time 20 "$BASE/reader-assets.json?channel=play" -o reader.json || true
           node <<'NODE'
           const fs=require('fs');
           try {
             const c=JSON.parse(fs.readFileSync('catalog.json','utf8'));
-            console.log(JSON.stringify({studio:c.studio, ids:(c.series||[]).map(x=>x.id), hpg:(c.series||[]).find(x=>x.id==='hikayat-pohon-ganja')||null},null,2));
-          } catch(e){console.log('CATALOG_PARSE_FAILED',String(e));}
+            const r=JSON.parse(fs.readFileSync('reader.json','utf8'));
+            const h=(c.series||[]).find(x=>x.id==='hikayat-pohon-ganja')||null;
+            const e=(r.episodes||[]).filter(x=>x.seriesId==='hikayat-pohon-ganja');
+            console.log(JSON.stringify({hpg:h,hpgReader:e.map(x=>({episode:x.episode,title:x.title,canonState:x.canonState,qc:x.qc,pageCount:x.pageCount,availablePageCount:x.availablePageCount,missingReaderPages:x.missingReaderPages,readerState:x.readerState,coverAsset:x.coverAsset}))},null,2));
+          } catch(e){console.log('LIVE_PARSE_FAILED',String(e));}
           NODE
           echo '--- COVER /comics ---'
-          curl --silent --show-error --location --max-time 20 -D comics-headers.txt -o comics-cover.bin -w 'HTTP=%{http_code} SIZE=%{size_download}\n' "$BASE/comics/hikayat-pohon-ganja/cover.jpg" || true
-          cat comics-headers.txt || true
+          curl --silent --show-error --location --max-time 20 -o comics-cover.bin -w 'HTTP=%{http_code} SIZE=%{size_download}\n' "$BASE/comics/hikayat-pohon-ganja/cover.jpg" || true
           echo '--- COVER /media ---'
           curl --silent --show-error --location --max-time 20 -D media-headers.txt -o media-cover.bin -w 'HTTP=%{http_code} SIZE=%{size_download}\n' "$BASE/media/comics/hikayat-pohon-ganja/cover.jpg" || true
           cat media-headers.txt || true
