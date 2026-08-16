@@ -184,13 +184,13 @@
   function updateReader(){
     const head=document.querySelector('.reader-head');if(!head)return;
     const s=currentSeries();if(!s)return;
-    const n=Number((head.querySelector('.pill')?.textContent||'').match(/\d+/)?.[0]||0);
+    const episode=Number(sessionStorage.getItem('am_current_episode')||0);
     head.querySelectorAll('.eyebrow').forEach(x=>{if(/CANON FINAL|QC PASS/i.test(x.textContent||''))x.textContent='AM STUDIO OFFICIAL'});
-    if(!head.querySelector('.ag-share')){const b=document.createElement('button');b.className='btn ghost ag-share';b.dataset.agShare=s.id;if(n)b.dataset.agEpisode=String(n);b.textContent='BAGIKAN';head.appendChild(b)}
+    if(!head.querySelector('.ag-share')){const b=document.createElement('button');b.className='btn ghost ag-share';b.dataset.agShare=s.id;if(episode)b.dataset.agEpisode=String(episode);b.textContent='BAGIKAN';head.appendChild(b)}
   }
 
   function shareUrl(seriesId,episode){
-    const u=new URL('/',location.origin);u.searchParams.set('series',seriesId);if(episode)u.searchParams.set('episode',String(episode));u.searchParams.set('utm_source','share');u.searchParams.set('utm_medium','app');u.searchParams.set('utm_campaign','organic_share');return u.toString();
+    const u=new URL('/',location.origin);u.searchParams.set('channel','play');u.searchParams.set('series',seriesId);if(episode)u.searchParams.set('episode',String(episode));u.searchParams.set('utm_source','share');u.searchParams.set('utm_medium','app');u.searchParams.set('utm_campaign','organic_share');return u.toString();
   }
 
   async function share(seriesId,episode){
@@ -206,7 +206,8 @@
 
   function openEpisode(seriesId,episode){
     if(!state.ready.has(seriesId))return;
-    sessionStorage.setItem('am_current_series',seriesId);track('content_open',{seriesId,episode:episode||null});
+    sessionStorage.setItem('am_current_series',seriesId);if(episode)sessionStorage.setItem('am_current_episode',String(episode));
+    track('content_open',{seriesId,episode:episode||null});
     if(typeof window.openSeries==='function')window.openSeries(seriesId);
     if(episode&&state.ready.get(seriesId)?.has(Number(episode)))setTimeout(()=>{if(typeof window.read==='function')window.read(Number(episode))},140);
   }
@@ -236,8 +237,8 @@
     document.addEventListener('click',event=>{
       const open=event.target.closest?.('[data-ag-open]');if(open){openEpisode(open.dataset.agOpen,Number(open.dataset.agEpisode||0)||null);return}
       const sh=event.target.closest?.('[data-ag-share]');if(sh){share(sh.dataset.agShare,Number(sh.dataset.agEpisode||0)||null);return}
-      const card=event.target.closest?.('.card[data-open],.card[data-series]');if(card)track('series_card_open',{seriesId:card.dataset.open||card.dataset.series});
-      const ep=event.target.closest?.('.ep[data-ep],.episode[data-episode]');if(ep)track('episode_row_open',{episode:Number(ep.dataset.ep||ep.dataset.episode||0)});
+      const card=event.target.closest?.('.card[data-open],.card[data-series]');if(card){const seriesId=card.dataset.open||card.dataset.series;sessionStorage.setItem('am_current_series',seriesId);track('series_card_open',{seriesId})}
+      const ep=event.target.closest?.('.ep[data-ep],.episode[data-episode]');if(ep){const episode=Number(ep.dataset.ep||ep.dataset.episode||0);if(episode)sessionStorage.setItem('am_current_episode',String(episode));track('episode_row_open',{episode})}
     },true);
   }
 
