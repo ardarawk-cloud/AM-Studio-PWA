@@ -6,16 +6,19 @@ async function injectQcUi(response){
   const html=await response.text();
   const scripts=[
     '/private-production-qc-v2.js?v=20260815c',
-    '/admin-upload-queue-fix.js?v=20260816c'
+    '/admin-upload-queue-fix.js?v=20260816c',
+    '/reader-zoom.js?v=2'
   ];
   let out=html;
   for(const src of scripts){
-    if(out.includes(src))continue;
+    const baseSrc=src.split('?')[0];
+    if(out.includes(src)||out.includes(`src="${baseSrc}`)||out.includes(`src='${baseSrc}`))continue;
     const marker=`<script src="${src}" defer></script>`;
     out=out.includes('</body>')?out.replace('</body>',`${marker}</body>`):`${out}${marker}`;
   }
   const headers=new Headers(response.headers);
   headers.set('cache-control','no-store');
+  headers.set('x-am-reader-zoom','continuous-v2');
   return new Response(out,{status:response.status,statusText:response.statusText,headers});
 }
 
