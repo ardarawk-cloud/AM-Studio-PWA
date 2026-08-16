@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - fix/amstudio-play-device-apk
+      - 'feature/amstudio-*'
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -54,21 +58,21 @@ jobs:
           yes | sdkmanager --licenses >/dev/null || true
           sdkmanager 'platform-tools' 'platforms;android-36' 'build-tools;36.0.0'
 
-      - name: Build public Play Reader APK
+      - name: Build public Play Reader Growth APK
         working-directory: android
         env:
           AM_STUDIO_APPLICATION_ID: com.ardacore.amstudio
           AM_STUDIO_PLAY_MODE: 'true'
-          AM_STUDIO_VERSION_NAME: '1.0.0'
-          AM_STUDIO_VERSION_CODE: '10000'
+          AM_STUDIO_VERSION_NAME: '1.0.0-growth1'
+          AM_STUDIO_VERSION_CODE: '10001'
         run: gradle --no-daemon clean assembleRelease
 
-      - name: Sign installable device-test APK
+      - name: Sign installable Growth device-test APK
         shell: bash
         run: |
           set -euo pipefail
           UNSIGNED='android/app/build/outputs/apk/release/app-release-unsigned.apk'
-          OUT='AM-STUDIO-Play-Reader-v1.0.0-10000-DEVICE.apk'
+          OUT='AM-STUDIO-Growth-v1-DEVICE.apk'
           test -f "$UNSIGNED"
           "$ANDROID_HOME/build-tools/36.0.0/zipalign" -f -p 4 "$UNSIGNED" aligned.apk
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" sign \
@@ -82,24 +86,24 @@ jobs:
           BADGING=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$OUT")
           printf '%s\n' "$BADGING" > badging.txt
           printf '%s\n' "$BADGING" | grep -q "package: name='com.ardacore.amstudio'"
-          printf '%s\n' "$BADGING" | grep -q "versionCode='10000'"
-          printf '%s\n' "$BADGING" | grep -q "versionName='1.0.0'"
+          printf '%s\n' "$BADGING" | grep -q "versionCode='10001'"
+          printf '%s\n' "$BADGING" | grep -q "versionName='1.0.0-growth1'"
           printf '%s\n' "$BADGING" | grep -q "application-label:'AM STUDIO'"
 
           PERMS=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump permissions "$OUT")
           printf '%s\n' "$PERMS" > permissions.txt
           printf '%s\n' "$PERMS" | grep -q 'android.permission.INTERNET'
-          ! printf '%s\n' "$PERMS" | grep -Eq 'ACCESS_FINE_LOCATION|ACCESS_COARSE_LOCATION|READ_CONTACTS|WRITE_CONTACTS|RECORD_AUDIO|CAMERA|READ_SMS|SEND_SMS|READ_MEDIA_IMAGES|READ_EXTERNAL_STORAGE'
+          ! printf '%s\n' "$PERMS" | grep -Eq 'ACCESS_FINE_LOCATION|ACCESS_COARSE_LOCATION|READ_CONTACTS|WRITE_CONTACTS|RECORD_AUDIO|CAMERA|READ_SMS|SEND_SMS|READ_MEDIA_IMAGES|READ_EXTERNAL_STORAGE|com.google.android.gms.permission.AD_ID|com.android.vending.BILLING'
 
           unzip -l "$OUT" > apk-files.txt
           grep -Eq 'res/.+\.xml|resources\.arsc' apk-files.txt
 
-      - name: Upload device-test APK
+      - name: Upload Growth device-test APK
         uses: actions/upload-artifact@v4
         with:
-          name: AM-STUDIO-Play-Reader-Device-v1.0.0-10000
+          name: AM-STUDIO-Growth-v1-Device-10001
           path: |
-            AM-STUDIO-Play-Reader-v1.0.0-10000-DEVICE.apk
+            AM-STUDIO-Growth-v1-DEVICE.apk
             signing.txt
             badging.txt
             permissions.txt
