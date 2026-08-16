@@ -1,0 +1,54 @@
+name: Royal Gambler R2 Import
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  import:
+    if: contains(github.event.head_commit.message, '[rg-import]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Wait for Cloudflare deployment and scan Meta source
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://am-studio-pwa.ardarawk.workers.dev/api/internal/royal-gambler-upload'
+          TOKEN='aQ31gfD6kY1R0RBnEScCReNi7BPeWZi7RC82WpbqfvI'
+          ok=0
+          for i in $(seq 1 30); do
+            code=$(curl -sS -o /tmp/scan.json -w '%{http_code}' "$BASE?action=meta-scan&token=$TOKEN" || true)
+            echo "scan attempt=$i http=$code"
+            if [ "$code" = "200" ] && jq -e '.ok == true' /tmp/scan.json >/dev/null 2>&1; then
+              ok=1
+              break
+            fi
+            sleep 10
+          done
+          cat /tmp/scan.json || true
+          test "$ok" = "1"
+
+      - name: Import 12 published pages into R2
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://am-studio-pwa.ardarawk.workers.dev/api/internal/royal-gambler-upload'
+          TOKEN='aQ31gfD6kY1R0RBnEScCReNi7BPeWZi7RC82WpbqfvI'
+          curl -fsS "$BASE?action=meta-import&token=$TOKEN" | tee /tmp/import.json
+          jq -e '.ok == true and (.imported | length == 12)' /tmp/import.json >/dev/null
+
+      - name: Verify R2 inventory and public reader binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://am-studio-pwa.ardarawk.workers.dev/api/internal/royal-gambler-upload'
+          TOKEN='aQ31gfD6kY1R0RBnEScCReNi7BPeWZi7RC82WpbqfvI'
+          curl -fsS "$BASE?token=$TOKEN" | tee /tmp/inventory.json
+          count=$(jq '[.objects[] | select(.key | test("^comics/royal-gambler/ep001/page-(0[1-9]|1[0-2])\\.(jpg|jpeg|png|webp)$"))] | length' /tmp/inventory.json)
+          echo "verified_page_objects=$count"
+          test "$count" -eq 12
+          jq -r '.objects[] | select(.key | test("^comics/royal-gambler/ep001/page-(0[1-9]|1[0-2])\\.(jpg|jpeg|png|webp)$")) | .key' /tmp/inventory.json | while read -r key; do
+            curl -fsS -o /dev/null "https://am-studio-pwa.ardarawk.workers.dev/${key}"
+            echo "OK $key"
+          done
