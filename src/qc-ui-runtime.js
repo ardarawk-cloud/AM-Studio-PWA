@@ -7,7 +7,7 @@ async function injectQcUi(response){
   const scripts=[
     '/private-production-qc-v2.js?v=20260815c',
     '/admin-upload-queue-fix.js?v=20260816c',
-    '/reader-zoom.js?v=2'
+    '/reader-zoom.js?v=3'
   ];
   let out=html;
   for(const src of scripts){
@@ -18,7 +18,7 @@ async function injectQcUi(response){
   }
   const headers=new Headers(response.headers);
   headers.set('cache-control','no-store');
-  headers.set('x-am-reader-zoom','continuous-v2');
+  headers.set('x-am-reader-zoom','continuous-v3');
   return new Response(out,{status:response.status,statusText:response.statusText,headers});
 }
 
