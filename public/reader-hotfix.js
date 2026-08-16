@@ -25,7 +25,7 @@
       const id=card.dataset.open,cover=card.querySelector('.cover');
       if(!id||!cover||cover.dataset.amCover==='1')return;
       const fallback=getComputedStyle(cover).backgroundImage||'linear-gradient(145deg,#273246,#0d1118)';
-      const coverUrl=id==='hikayat-pohon-ganja'?'/comics/hikayat-pohon-ganja/cover.jpg?v=20260814hpg1':`/media/comics/${id}/cover.jpg`;
+      const coverUrl=`/media/comics/${id}/cover.jpg`;
       cover.style.backgroundImage=`linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.08)),url('${coverUrl}'),${fallback}`;
       cover.dataset.amCover='1';
     });

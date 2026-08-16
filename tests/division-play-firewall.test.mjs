@@ -67,17 +67,17 @@ test('static Play registry exposes only complete CANON_FINAL QC_PASS episodes',(
   assert.equal(filtered.registry.playFirewall,true);
 });
 
-test('HPG uploaded cover is explicitly approved for discovery without publishing an episode',()=>{
+test('HPG uploaded cover is explicitly approved for discovery without publishing a static episode',()=>{
   const hpg=catalog.series.find(x=>x.id==='hikayat-pohon-ganja');
   assert.ok(hpg);
   assert.equal(fs.existsSync(hpgCover),true);
   assert.equal(hpg.cover.status,'OWNER_APPROVED_VISUAL_REFERENCE');
-  assert.equal(hpg.cover.publicReaderAsset,'/comics/hikayat-pohon-ganja/cover.jpg');
+  assert.equal(hpg.cover.publicReaderAsset,'/media/comics/hikayat-pohon-ganja/cover.jpg');
   assert.equal(publicDiscoveryCover(hpg),true);
-  assert.equal(hpg.episodeCountVerified,false,'internal HPG episode state must remain unreleased');
+  assert.equal(hpg.episodeCountVerified,false,'static catalog must not invent an HPG episode; R2 runtime overlay is authoritative for uploaded episode assets');
 });
 
-test('static Play catalog may expose approved poster-only series as COMING_SOON while episodes stay gated',()=>{
+test('static Play catalog may expose approved poster-only series as COMING_SOON while runtime R2 episodes remain independently gated',()=>{
   const registry=filterReaderRegistry(readerRegistry);
   const filtered=filterCatalog(catalog,registry);
   assert.deepEqual(filtered.series.map(x=>x.id),['amu','hikayat-pohon-ganja']);
@@ -95,7 +95,7 @@ test('static Play catalog may expose approved poster-only series as COMING_SOON 
   assert.equal(hpg.episodes,0);
   assert.deepEqual(hpg.verifiedEpisodes,[]);
   assert.equal(hpg.freeEpisodes,0);
-  assert.equal(hpg.cover.publicReaderAsset,'/comics/hikayat-pohon-ganja/cover.jpg');
+  assert.equal(hpg.cover.publicReaderAsset,'/media/comics/hikayat-pohon-ganja/cover.jpg');
 
   assert.ok(filtered.series.every(x=>!String(x.status||'').includes('AUDIT_PENDING')));
   assert.ok(filtered.series.every(x=>!String(x.status||'').includes('CANON_HOLD')));
