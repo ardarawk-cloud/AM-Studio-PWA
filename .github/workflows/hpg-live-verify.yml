@@ -1,0 +1,45 @@
+name: HPG Live Discovery Verify
+
+on:
+  push:
+    branches:
+      - verify/hpg-live
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Wait for HPG Coming Soon catalog and cover
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://am-studio-pwa.ardarawk.workers.dev'
+          ready=0
+          for attempt in $(seq 1 18); do
+            curl --fail --silent --show-error --location --max-time 30 "$BASE/catalog.json?channel=play" -o catalog.json || true
+            cover_code=$(curl --silent --show-error --location --max-time 30 -o hpg-cover.jpg -w '%{http_code}' "$BASE/comics/hikayat-pohon-ganja/cover.jpg" || true)
+            if node - <<'NODE'
+          const fs=require('fs');
+          try{
+            const c=JSON.parse(fs.readFileSync('catalog.json','utf8'));
+            const h=c.series?.find(x=>x.id==='hikayat-pohon-ganja');
+            if(!h)process.exit(2);
+            if(h.status!=='COMING_SOON'||h.publicReaderState!=='COMING_SOON'||h.episodes!==0)process.exit(3);
+            if(h.cover?.publicReaderAsset!=='/comics/hikayat-pohon-ganja/cover.jpg')process.exit(4);
+          }catch{process.exit(5)}
+          NODE
+            then catalog_ok=1; else catalog_ok=0; fi
+            if [ "$catalog_ok" -eq 1 ] && [ "$cover_code" = '200' ] && [ -s hpg-cover.jpg ]; then
+              echo "HPG_LIVE_OK attempt=$attempt cover_http=$cover_code size=$(wc -c < hpg-cover.jpg)"
+              node -e "const c=require('./catalog.json'); const h=c.series.find(x=>x.id==='hikayat-pohon-ganja'); console.log(JSON.stringify({id:h.id,status:h.status,publicReaderState:h.publicReaderState,episodes:h.episodes,cover:h.cover},null,2))"
+              ready=1
+              break
+            fi
+            echo "Waiting HPG live propagation attempt=$attempt catalog_ok=$catalog_ok cover_http=$cover_code"
+            sleep 10
+          done
+          [ "$ready" -eq 1 ]
