@@ -1,4 +1,4 @@
-import base from './qc-ui-runtime.js';
+import base from './owner-lite-runtime.js';
 
 const INTERNAL_SCRIPT_NAMES=[
   'page-control',
@@ -6,7 +6,8 @@ const INTERNAL_SCRIPT_NAMES=[
   'asset-upload',
   'private-production',
   'private-production-qc-v2',
-  'admin-upload-queue-fix'
+  'admin-upload-queue-fix',
+  'admin-delete-panel'
 ];
 
 function isPlayRequest(request){
@@ -39,11 +40,7 @@ function publicDiscoveryCover(series){
 function filterReaderRegistry(data){
   const out=structuredClone(data||{registry:{},episodes:[]});
   out.episodes=(out.episodes||[]).filter(completeReaderAsset);
-  out.registry={
-    ...(out.registry||{}),
-    readerMode:'PUBLIC_READER_ONLY',
-    playFirewall:true
-  };
+  out.registry={...(out.registry||{}),readerMode:'PUBLIC_READER_ONLY',playFirewall:true};
   return out;
 }
 
@@ -64,37 +61,11 @@ function filterCatalog(catalog,registry){
   const ready=readyEpisodeMap(registry);
   out.series=(out.series||[]).filter(series=>ready.has(series.id)||publicDiscoveryCover(series)).map(series=>{
     const episodes=[...(ready.get(series.id)||new Set())].sort((a,b)=>a-b);
-    if(!episodes.length){
-      return {
-        ...series,
-        episodes:0,
-        episodeCountVerified:true,
-        verifiedEpisodes:[],
-        freeEpisodes:0,
-        status:'COMING_SOON',
-        qc:'PUBLIC_COVER_APPROVED',
-        publicReaderState:'COMING_SOON'
-      };
-    }
-    const max=episodes[episodes.length-1];
-    const contiguous=episodes.length===max&&episodes.every((n,i)=>n===i+1);
-    return {
-      ...series,
-      episodes:contiguous?max:episodes.length,
-      episodeCountVerified:contiguous,
-      verifiedEpisodes:episodes,
-      freeEpisodes:Math.max(Number(series.freeEpisodes||0),contiguous?max:0),
-      status:'PUBLISHED',
-      qc:'PUBLIC_READER_READY',
-      publicReaderState:'READY'
-    };
+    if(!episodes.length)return {...series,episodes:0,episodeCountVerified:true,verifiedEpisodes:[],freeEpisodes:0,status:'COMING_SOON',qc:'PUBLIC_COVER_APPROVED',publicReaderState:'COMING_SOON'};
+    const max=episodes[episodes.length-1],contiguous=episodes.length===max&&episodes.every((n,i)=>n===i+1);
+    return {...series,episodes:contiguous?max:episodes.length,episodeCountVerified:contiguous,verifiedEpisodes:episodes,freeEpisodes:Math.max(Number(series.freeEpisodes||0),contiguous?max:0),status:'PUBLISHED',qc:'PUBLIC_READER_READY',publicReaderState:'READY'};
   });
-  out.studio={
-    ...(out.studio||{}),
-    mode:'PUBLIC_READER_ONLY',
-    publicPromotion:true,
-    playFirewall:true
-  };
+  out.studio={...(out.studio||{}),mode:'PUBLIC_READER_ONLY',publicPromotion:true,playFirewall:true};
   return out;
 }
 
@@ -153,62 +124,45 @@ async function playHtml(response){
   const ct=response.headers.get('content-type')||'';
   if(!response.ok||!ct.includes('text/html'))return response;
   let html=stripInternalScripts(await response.text());
-  if(!html.includes('am-play-firewall-bootstrap')){
-    html=html.includes('</head>')?html.replace('</head>',`${PLAY_BOOTSTRAP}</head>`):`${PLAY_BOOTSTRAP}${html}`;
-  }
+  if(!html.includes('am-play-firewall-bootstrap'))html=html.includes('</head>')?html.replace('</head>',`${PLAY_BOOTSTRAP}</head>`):`${PLAY_BOOTSTRAP}${html}`;
   const scripts=[
     '<script id="am-play-reader-server" src="/native-reader.js?v=4" defer></script>',
     '<script id="am-growth-reader-server" src="/growth-reader.js?v=1" defer></script>',
     '<script id="am-reader-zoom-server" src="/reader-zoom.js?v=1" defer></script>'
   ];
-  for(const script of scripts){
-    const id=(script.match(/id="([^"]+)"/)||[])[1];
-    if(id&&html.includes(`id="${id}"`))continue;
-    html=html.includes('</body>')?html.replace('</body>',`${script}</body>`):`${html}${script}`;
-  }
+  for(const script of scripts){const id=(script.match(/id="([^"]+)"/)||[])[1];if(id&&html.includes(`id="${id}"`))continue;html=html.includes('</body>')?html.replace('</body>',`${script}</body>`):`${html}${script}`}
   const headers=new Headers(response.headers);
-  headers.set('cache-control','no-store');
-  headers.set('x-am-play-firewall','active');
-  headers.set('x-am-growth-build','v1');
-  headers.set('x-am-reader-zoom','v1');
+  headers.set('cache-control','no-store');headers.set('x-am-play-firewall','active');headers.set('x-am-growth-build','v1');headers.set('x-am-reader-zoom','v1');
   return new Response(html,{status:response.status,statusText:response.statusText,headers});
 }
 
 async function playReaderJson(response){
   if(!response.ok)return response;
   let data;try{data=await response.json()}catch{return response}
-  const headers=new Headers(response.headers);
-  headers.set('cache-control','no-store');
-  headers.set('x-am-play-firewall','active');
+  const headers=new Headers(response.headers);headers.set('cache-control','no-store');headers.set('x-am-play-firewall','active');
   return Response.json(filterReaderRegistry(data),{status:response.status,headers});
 }
 
 async function playCatalogJson(response,request,env,ctx){
   if(!response.ok)return response;
   let catalog;try{catalog=await response.json()}catch{return response}
-  const readerUrl=new URL('/reader-assets.json',request.url);
-  readerUrl.searchParams.set('playFirewallSource','1');
+  const readerUrl=new URL('/reader-assets.json',request.url);readerUrl.searchParams.set('playFirewallSource','1');
   const readerResponse=await base.fetch(new Request(readerUrl.toString(),{method:'GET',headers:{accept:'application/json'}}),env,ctx);
   let registry={episodes:[]};try{if(readerResponse.ok)registry=await readerResponse.json()}catch{}
-  const headers=new Headers(response.headers);
-  headers.set('cache-control','no-store');
-  headers.set('x-am-play-firewall','active');
+  const headers=new Headers(response.headers);headers.set('cache-control','no-store');headers.set('x-am-play-firewall','active');
   return Response.json(filterCatalog(catalog,registry),{status:response.status,headers});
 }
 
 export default{
   async fetch(request,env,ctx){
-    const url=new URL(request.url);
-    const response=await base.fetch(request,env,ctx);
+    const url=new URL(request.url),response=await base.fetch(request,env,ctx);
     if(request.method==='GET'&&(url.pathname==='/privacy-policy.html'||url.pathname==='/privacy-policy'))return publicDocument(response);
     if(!isPlayRequest(request))return response;
     if(request.method==='GET'&&url.pathname==='/reader-assets.json')return playReaderJson(response);
     if(request.method==='GET'&&url.pathname==='/catalog.json')return playCatalogJson(response,request,env,ctx);
     return playHtml(response);
   },
-  async scheduled(controller,env,ctx){
-    if(base.scheduled)return base.scheduled(controller,env,ctx);
-  }
+  async scheduled(controller,env,ctx){if(base.scheduled)return base.scheduled(controller,env,ctx)}
 };
 
 export {completeReaderAsset,publicDiscoveryCover,filterReaderRegistry,filterCatalog,stripInternalScripts,isPlayRequest,publicDocument};
