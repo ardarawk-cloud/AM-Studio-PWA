@@ -1,4 +1,4 @@
-import base from './workers-ai-production-runtime.js';
+import base from './admin-delete-runtime.js';
 
 async function injectQcUi(response){
   const ct=response.headers.get('content-type')||'';
@@ -7,7 +7,7 @@ async function injectQcUi(response){
   const scripts=[
     '/private-production-qc-v2.js?v=20260815c',
     '/admin-upload-queue-fix.js?v=20260816c',
-    '/admin-delete-panel.js?v=20260817a',
+    '/admin-delete-panel.js?v=20260817b',
     '/reader-zoom.js?v=3'
   ];
   let out=html;
