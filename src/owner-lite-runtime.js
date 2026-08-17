@@ -114,11 +114,16 @@ async function trimEpisode(request,env,rawId,rawEp,rawKeep){
 async function injectOwnerUi(response){
   const ct=response.headers.get('content-type')||'';if(!response.ok||!ct.includes('text/html'))return response;
   let html=await response.text();
-  for(const src of ['/admin-upload-queue-fix.js?v=20260816c','/admin-delete-panel.js?v=20260817b']){
+  const scripts=[
+    '/admin-panel.js?v=20260817c',
+    '/admin-upload-queue-fix.js?v=20260816c',
+    '/admin-delete-panel.js?v=20260817b'
+  ];
+  for(const src of scripts){
     const plain=src.split('?')[0];if(html.includes(src)||html.includes(`src="${plain}`)||html.includes(`src='${plain}`))continue;
     const marker=`<script src="${src}" defer></script>`;html=html.includes('</body>')?html.replace('</body>',`${marker}</body>`):`${html}${marker}`;
   }
-  const h=new Headers(response.headers);h.set('cache-control','no-store');h.set('x-am-runtime','owner-lite');
+  const h=new Headers(response.headers);h.set('cache-control','no-store');h.set('x-am-runtime','owner-lite');h.set('x-am-admin-ui','restored');
   return new Response(html,{status:response.status,statusText:response.statusText,headers:h});
 }
 
