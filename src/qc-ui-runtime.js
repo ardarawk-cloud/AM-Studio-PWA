@@ -5,6 +5,8 @@ async function injectQcUi(response){
   if(!response.ok||!ct.includes('text/html'))return response;
   const html=await response.text();
   const scripts=[
+    '/reader-hotfix.js?v=20260816hpgr2',
+    '/admin-panel.js?v=20260817cpu1',
     '/private-production-qc-v2.js?v=20260815c',
     '/admin-upload-queue-fix.js?v=20260816c',
     '/admin-delete-panel.js?v=20260817b',
@@ -19,6 +21,7 @@ async function injectQcUi(response){
   }
   const headers=new Headers(response.headers);
   headers.set('cache-control','no-store');
+  headers.set('x-am-owner-ui','single-pass');
   headers.set('x-am-reader-zoom','continuous-v3');
   return new Response(out,{status:response.status,statusText:response.statusText,headers});
 }
