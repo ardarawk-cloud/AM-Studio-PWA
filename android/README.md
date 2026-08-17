@@ -8,10 +8,13 @@ Official hybrid Android shell for AM STUDIO.
 - The web/PWA source remains the primary product core and can deploy independently from the APK.
 
 ## Application identity
-- Package: `com.ardacore.amstudio`
+- Public Play Reader package: `com.ardacore.amstudio`
+- Owner Beta package: `com.ardacore.amstudio.v2`
 - App label: `AM STUDIO`
 - Production host: `am-studio-pwa.ardarawk.workers.dev`
 - Native marker: `?native=android`
+- Public Play channel uses `channel=play`, hides owner/admin controls, and blocks file upload.
+- Owner Beta uses `channel=beta`, keeps ADMIN/upload tools available, and can coexist with the public Play app.
 
 ## Security defaults
 - HTTPS-only transport.
@@ -22,7 +25,7 @@ Official hybrid Android shell for AM STUDIO.
 - WebView debugging disabled in release builds.
 
 ## CI
-`android-validation.yml` builds debug and unsigned release variants. Production signing is intentionally separate and requires AM STUDIO-specific GitHub Actions secrets.
+`android-validation.yml` builds the Owner Beta debug APK plus public Play validation artifacts. Production signing is intentionally separate and requires AM STUDIO-specific GitHub Actions secrets.
 
 ## Production signing secrets
 - `AM_STUDIO_ANDROID_KEYSTORE_B64`
