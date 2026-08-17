@@ -1,4 +1,4 @@
-import base from './workers-ai-production-runtime.js';
+import base,{invalidateInventoryCache} from './asset-runtime.js';
 
 const SERIES_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)$/i;
 const EPISODE_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)\/episodes\/(\d{1,3})$/i;
@@ -54,6 +54,7 @@ async function deleteSeries(request,env,rawSeriesId){
   const prefix=`comics/${seriesId}/`;
   const objects=await listAll(env,prefix);
   const deletedCount=await deleteObjects(env,objects);
+  invalidateInventoryCache();
   return Response.json({ok:true,action:'DELETE_SERIES_ASSETS',seriesId,prefix,deletedCount,readyForReupload:true},{headers:{'cache-control':'no-store'}});
 }
 
@@ -68,6 +69,7 @@ async function deleteEpisode(request,env,rawSeriesId,rawEpisode){
   const prefix=`comics/${seriesId}/ep${pad(episode)}/`;
   const objects=await listAll(env,prefix);
   const deletedCount=await deleteObjects(env,objects);
+  invalidateInventoryCache();
   return Response.json({ok:true,action:'DELETE_EPISODE_ASSETS',seriesId,episode,prefix,deletedCount,readyForReupload:true},{headers:{'cache-control':'no-store'}});
 }
 
@@ -106,8 +108,9 @@ async function trimEpisode(request,env,rawSeriesId,rawEpisode,rawKeepThrough){
   meta.trimmedAfterPage=keepThrough;
   await env.COMIC_ASSETS.put(metaKey,JSON.stringify(meta),{
     httpMetadata:{contentType:'application/json',cacheControl:'no-store'},
-    customMetadata:{source:'OWNER_ADMIN_TRIM',updatedAt:meta.updatedAt}
+    customMetadata:{source:'OWNER_ADMIN_TRIM',episodeTitle:String(meta.title||`Episode ${pad(episode)}`).slice(0,180),pageCount:String(keepThrough),updatedAt:meta.updatedAt}
   });
+  invalidateInventoryCache();
 
   return Response.json({
     ok:true,
