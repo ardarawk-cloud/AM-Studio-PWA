@@ -3,4 +3,10 @@
     right: 16px;
     bottom: 42px;
   }
+
+  .heroStamp small {
+    font-size: 6px;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
 }
