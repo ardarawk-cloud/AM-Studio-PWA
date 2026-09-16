@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://brush.nadmo.id/sitemap.xml
+Sitemap: https://brushbyyuda.nadmo.id/sitemap.xml
