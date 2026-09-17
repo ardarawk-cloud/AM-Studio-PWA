@@ -1,7 +1,5 @@
 (function(){
-  const current=document.currentScript&&document.currentScript.src?document.currentScript.src:'';
-  const base=current?current.slice(0,current.lastIndexOf('/')+1):'';
-  const atlas=base+'gallery-atlas.jpg';
+  const atlas='https://cdn.jsdelivr.net/gh/ardarawk-cloud/AM-Studio-PWA@d004d04055c0f6c039fccf9db15930d4967efb95/brush-by-yuda/gallery-atlas.jpg';
   const items=[
     ['Payas Agung','Royal Purple',0],
     ['Payas Agung','Golden Detail',1],
@@ -42,8 +40,10 @@
     items.filter(function(x){return cat==='All'||x[0]===cat;}).forEach(function(item){
       const category=item[0],title=item[1],i=item[2],col=i%4,row=Math.floor(i/4);
       const fig=document.createElement('figure');fig.className='byCard';
-      fig.innerHTML='<div class="byShot"><img alt="'+category+' makeup by Brush by Yuda Christ" decoding="async"></div><figcaption><small>'+category+'</small><strong>'+title+'</strong></figcaption>';
-      const img=fig.querySelector('img');img.src=atlas;img.style.left=(-col*100)+'%';img.style.top=(-row*100)+'%';
+      const shot=document.createElement('div');shot.className='byShot';
+      const img=document.createElement('img');img.alt=category+' makeup by Brush by Yuda Christ';img.decoding='async';img.loading='lazy';img.src=atlas;img.style.left=(-col*100)+'%';img.style.top=(-row*100)+'%';
+      shot.appendChild(img);fig.appendChild(shot);
+      const caption=document.createElement('figcaption');caption.innerHTML='<small>'+category+'</small><strong>'+title+'</strong>';fig.appendChild(caption);
       grid.appendChild(fig);
     });
   }
