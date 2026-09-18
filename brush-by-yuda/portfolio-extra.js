@@ -42,7 +42,7 @@
 
     const frame=document.createElement('div');
     frame.className='photoFrame';
-    frame.style.aspectRatio='2 / 3';
+    frame.style.aspectRatio='3 / 4';
     frame.style.overflow='hidden';
     frame.style.position='relative';
 
@@ -54,10 +54,10 @@
     photo.style.position='absolute';
     photo.style.maxWidth='none';
     photo.style.width='400%';
-    photo.style.height='auto';
+    photo.style.height='400%';
     photo.style.left=(-col*100)+'%';
     photo.style.top=(-row*100)+'%';
-    photo.style.objectFit='unset';
+    photo.style.objectFit='fill';
 
     const number=document.createElement('span');
     number.className='photoIndex';
