@@ -1,6 +1,7 @@
 (function(){
-  const atlas=window.BY_GALLERY_ATLAS;
-  if(!atlas)return;
+  const current=document.currentScript&&document.currentScript.src?document.currentScript.src:'';
+  const base=current?current.slice(0,current.lastIndexOf('/')+1):'';
+  const atlas=base+'gallery-atlas.jpg';
 
   const items=[
     ['Payas Agung','Royal Purple',0],
@@ -44,20 +45,10 @@
       canvas.width=tileWidth;
       canvas.height=tileHeight;
       const ctx=canvas.getContext('2d');
-      ctx.drawImage(
-        source,
-        col*tileWidth,
-        row*tileHeight,
-        tileWidth,
-        tileHeight,
-        0,
-        0,
-        tileWidth,
-        tileHeight
-      );
+      ctx.drawImage(source,col*tileWidth,row*tileHeight,tileWidth,tileHeight,0,0,tileWidth,tileHeight);
 
       const photoIndex=index+6;
-      const dataUrl=canvas.toDataURL('image/webp',0.84);
+      const dataUrl=canvas.toDataURL('image/jpeg',0.88);
       window.BY_IMAGES[photoIndex]=dataUrl;
 
       const figure=document.createElement('figure');
@@ -117,7 +108,7 @@
     });
   };
   source.onerror=function(){
-    console.error('Brush portfolio atlas failed to load');
+    console.error('Brush portfolio image source failed to load');
   };
   source.src=atlas;
 })();
