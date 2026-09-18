@@ -21,85 +21,80 @@
   ];
   const categories=['All','Payas Agung','Bali Classic','Bali Modif','Casual','Character','Graduations','Others'];
 
-  async function render(){
-    const gallery=document.querySelector('.portfolio .gallery');
-    const categoryRow=document.querySelector('.portfolio .categoryRow');
-    if(!gallery||!categoryRow)return;
+  const gallery=document.querySelector('.portfolio .gallery');
+  const categoryRow=document.querySelector('.portfolio .categoryRow');
+  if(!gallery||!categoryRow)return;
 
-    gallery.querySelectorAll('.work').forEach(function(card){
-      card.dataset.category='Featured';
-    });
+  gallery.querySelectorAll('.work').forEach(function(card){
+    card.dataset.category='Featured';
+  });
 
-    items.forEach(function(item,index){
-      const category=item[0];
-      const title=item[1];
-      const sourceIndex=item[2];
-      const col=sourceIndex%4;
-      const row=Math.floor(sourceIndex/4);
+  items.forEach(function(item,index){
+    const category=item[0];
+    const title=item[1];
+    const sourceIndex=item[2];
+    const col=sourceIndex%4;
+    const row=Math.floor(sourceIndex/4);
 
-      const figure=document.createElement('figure');
-      figure.className='work';
-      figure.dataset.category=category;
+    const figure=document.createElement('figure');
+    figure.className='work';
+    figure.dataset.category=category;
 
-      const frame=document.createElement('div');
-      frame.className='photoFrame';
-      frame.setAttribute('role','img');
-      frame.setAttribute('aria-label',category+' makeup by Brush by Yuda Christ');
-      frame.style.aspectRatio='3 / 4';
-      frame.style.backgroundImage='url("'+atlas+'")';
-      frame.style.backgroundRepeat='no-repeat';
-      frame.style.backgroundSize='400% 400%';
-      frame.style.backgroundPosition=(col*33.333333)+'% '+(row*33.333333)+'%';
+    const frame=document.createElement('div');
+    frame.className='photoFrame';
+    frame.style.aspectRatio='2 / 3';
+    frame.style.overflow='hidden';
+    frame.style.position='relative';
 
-      const number=document.createElement('span');
-      number.className='photoIndex';
-      number.textContent=String(index+7).padStart(2,'0');
+    const photo=document.createElement('img');
+    photo.src=atlas;
+    photo.alt=category+' makeup by Brush by Yuda Christ';
+    photo.decoding='async';
+    photo.loading='lazy';
+    photo.style.position='absolute';
+    photo.style.maxWidth='none';
+    photo.style.width='400%';
+    photo.style.height='auto';
+    photo.style.left=(-col*100)+'%';
+    photo.style.top=(-row*100)+'%';
+    photo.style.objectFit='unset';
 
-      const caption=document.createElement('figcaption');
-      caption.innerHTML='<small>'+category+'</small><strong>'+title+'</strong><span>Original work by Brush by Yuda Christ.</span>';
+    const number=document.createElement('span');
+    number.className='photoIndex';
+    number.textContent=String(index+7).padStart(2,'0');
 
-      frame.appendChild(number);
-      figure.appendChild(frame);
-      figure.appendChild(caption);
-      gallery.appendChild(figure);
-    });
+    const caption=document.createElement('figcaption');
+    caption.innerHTML='<small>'+category+'</small><strong>'+title+'</strong><span>Original work by Brush by Yuda Christ.</span>';
 
-    categoryRow.innerHTML='';
-    categories.forEach(function(category,index){
-      const button=document.createElement('button');
-      button.type='button';
-      button.className='pill';
-      button.textContent=category;
-      button.style.cursor='pointer';
-      if(index===0){
-        button.style.background='var(--ink)';
-        button.style.color='#fff';
-      }
-      button.addEventListener('click',function(){
-        categoryRow.querySelectorAll('.pill').forEach(function(item){
-          item.style.background='rgba(255,255,255,.22)';
-          item.style.color='#655d55';
-        });
-        button.style.background='var(--ink)';
-        button.style.color='#fff';
-        gallery.querySelectorAll('.work').forEach(function(card){
-          card.style.display=category==='All'||card.dataset.category===category?'':'none';
-        });
+    frame.appendChild(photo);
+    frame.appendChild(number);
+    figure.appendChild(frame);
+    figure.appendChild(caption);
+    gallery.appendChild(figure);
+  });
+
+  categoryRow.innerHTML='';
+  categories.forEach(function(category,index){
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='pill';
+    button.textContent=category;
+    button.style.cursor='pointer';
+    if(index===0){
+      button.style.background='var(--ink)';
+      button.style.color='#fff';
+    }
+    button.addEventListener('click',function(){
+      categoryRow.querySelectorAll('.pill').forEach(function(item){
+        item.style.background='rgba(255,255,255,.22)';
+        item.style.color='#655d55';
       });
-      categoryRow.appendChild(button);
+      button.style.background='var(--ink)';
+      button.style.color='#fff';
+      gallery.querySelectorAll('.work').forEach(function(card){
+        card.style.display=category==='All'||card.dataset.category===category?'':'none';
+      });
     });
-  }
-
-  const preload=new Image();
-  preload.decoding='async';
-  preload.onload=async function(){
-    try{
-      if(preload.decode)await preload.decode();
-    }catch(error){}
-    render();
-  };
-  preload.onerror=function(){
-    console.error('Brush portfolio image source failed to load');
-  };
-  preload.src=atlas;
+    categoryRow.appendChild(button);
+  });
 })();
