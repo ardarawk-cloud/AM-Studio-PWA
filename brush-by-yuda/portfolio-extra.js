@@ -29,12 +29,15 @@
     card.dataset.category='Featured';
   });
 
+  const ns='http://www.w3.org/2000/svg';
   items.forEach(function(item,index){
     const category=item[0];
     const title=item[1];
     const sourceIndex=item[2];
     const col=sourceIndex%4;
     const row=Math.floor(sourceIndex/4);
+    const x=col*360;
+    const y=row*480;
 
     const figure=document.createElement('figure');
     figure.className='work';
@@ -46,18 +49,22 @@
     frame.style.overflow='hidden';
     frame.style.position='relative';
 
-    const photo=document.createElement('img');
-    photo.src=atlas;
-    photo.alt=category+' makeup by Brush by Yuda Christ';
-    photo.decoding='async';
-    photo.loading='lazy';
-    photo.style.position='absolute';
-    photo.style.maxWidth='none';
-    photo.style.width='400%';
-    photo.style.height='400%';
-    photo.style.left=(-col*100)+'%';
-    photo.style.top=(-row*100)+'%';
-    photo.style.objectFit='fill';
+    const svg=document.createElementNS(ns,'svg');
+    svg.setAttribute('viewBox',x+' '+y+' 360 480');
+    svg.setAttribute('preserveAspectRatio','xMidYMid slice');
+    svg.setAttribute('role','img');
+    svg.setAttribute('aria-label',category+' makeup by Brush by Yuda Christ');
+    svg.style.width='100%';
+    svg.style.height='100%';
+    svg.style.display='block';
+
+    const image=document.createElementNS(ns,'image');
+    image.setAttribute('href',atlas);
+    image.setAttribute('x','0');
+    image.setAttribute('y','0');
+    image.setAttribute('width','1440');
+    image.setAttribute('height','1920');
+    image.setAttribute('preserveAspectRatio','none');
 
     const number=document.createElement('span');
     number.className='photoIndex';
@@ -66,7 +73,8 @@
     const caption=document.createElement('figcaption');
     caption.innerHTML='<small>'+category+'</small><strong>'+title+'</strong><span>Original work by Brush by Yuda Christ.</span>';
 
-    frame.appendChild(photo);
+    svg.appendChild(image);
+    frame.appendChild(svg);
     frame.appendChild(number);
     figure.appendChild(frame);
     figure.appendChild(caption);
