@@ -1,23 +1,19 @@
 (function(){
-  const current=document.currentScript&&document.currentScript.src?document.currentScript.src:'';
-  const base=current?current.slice(0,current.lastIndexOf('/')+1):'';
-  const atlas=base+'gallery-atlas.jpg';
-
   const items=[
-    ['Payas Agung','Royal Purple',0],
-    ['Payas Agung','Golden Detail',1],
-    ['Bali Classic','Traditional Couple',2],
-    ['Bali Classic','Heritage Beauty',3],
-    ['Bali Modif','Modern Maroon',4],
-    ['Bali Modif','Modern Lace',5],
-    ['Casual','Soft Glam',6],
-    ['Casual','Beach Beauty',7],
-    ['Character','Blue Crystal',8],
-    ['Character','Editorial Detail',9],
-    ['Graduations','Formal Navy',10],
-    ['Graduations','Formal Portrait',11],
-    ['Others','Hair & Beauty',12],
-    ['Casual','Event Glam',13]
+    ['Payas Agung','Royal Purple',6],
+    ['Payas Agung','Golden Detail',7],
+    ['Bali Classic','Traditional Couple',8],
+    ['Bali Classic','Heritage Beauty',9],
+    ['Bali Modif','Modern Maroon',10],
+    ['Bali Modif','Modern Lace',11],
+    ['Casual','Soft Glam',12],
+    ['Casual','Beach Beauty',13],
+    ['Character','Blue Crystal',14],
+    ['Character','Editorial Detail',15],
+    ['Graduations','Formal Navy',16],
+    ['Graduations','Formal Portrait',17],
+    ['Others','Hair & Beauty',18],
+    ['Casual','Event Glam',19]
   ];
   const categories=['All','Payas Agung','Bali Classic','Bali Modif','Casual','Character','Graduations','Others'];
 
@@ -29,15 +25,15 @@
     card.dataset.category='Featured';
   });
 
-  const ns='http://www.w3.org/2000/svg';
   items.forEach(function(item,index){
     const category=item[0];
     const title=item[1];
-    const sourceIndex=item[2];
-    const col=sourceIndex%4;
-    const row=Math.floor(sourceIndex/4);
-    const x=col*360;
-    const y=row*480;
+    const photoIndex=item[2];
+    const source=window.BY_IMAGES&&window.BY_IMAGES[photoIndex];
+    if(!source){
+      console.error('Brush portfolio image missing',photoIndex);
+      return;
+    }
 
     const figure=document.createElement('figure');
     figure.className='work';
@@ -46,25 +42,18 @@
     const frame=document.createElement('div');
     frame.className='photoFrame';
     frame.style.aspectRatio='3 / 4';
-    frame.style.overflow='hidden';
-    frame.style.position='relative';
 
-    const svg=document.createElementNS(ns,'svg');
-    svg.setAttribute('viewBox',x+' '+y+' 360 480');
-    svg.setAttribute('preserveAspectRatio','xMidYMid slice');
-    svg.setAttribute('role','img');
-    svg.setAttribute('aria-label',category+' makeup by Brush by Yuda Christ');
-    svg.style.width='100%';
-    svg.style.height='100%';
-    svg.style.display='block';
-
-    const image=document.createElementNS(ns,'image');
-    image.setAttribute('href',atlas);
-    image.setAttribute('x','0');
-    image.setAttribute('y','0');
-    image.setAttribute('width','1440');
-    image.setAttribute('height','1920');
-    image.setAttribute('preserveAspectRatio','none');
+    const img=document.createElement('img');
+    img.src=source;
+    img.alt=category+' makeup by Brush by Yuda Christ';
+    img.width=360;
+    img.height=480;
+    img.loading='lazy';
+    img.decoding='async';
+    img.style.width='100%';
+    img.style.height='100%';
+    img.style.objectFit='cover';
+    img.style.display='block';
 
     const number=document.createElement('span');
     number.className='photoIndex';
@@ -73,8 +62,7 @@
     const caption=document.createElement('figcaption');
     caption.innerHTML='<small>'+category+'</small><strong>'+title+'</strong><span>Original work by Brush by Yuda Christ.</span>';
 
-    svg.appendChild(image);
-    frame.appendChild(svg);
+    frame.appendChild(img);
     frame.appendChild(number);
     figure.appendChild(frame);
     figure.appendChild(caption);
