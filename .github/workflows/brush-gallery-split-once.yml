@@ -1,0 +1,66 @@
+name: Brush Gallery Split Once
+on:
+  push:
+    paths:
+      - '.github/workflows/brush-gallery-split-once.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Split atlas into BY_IMAGES files
+        run: |
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          from io import BytesIO
+          import base64
+
+          root = Path('brush-by-yuda')
+          atlas_path = root / 'gallery-atlas.jpg'
+          image = Image.open(atlas_path).convert('RGB')
+          if image.size != (1440, 1920):
+              raise SystemExit(f'Unexpected atlas size: {image.size}')
+
+          cell_w, cell_h = 360, 480
+          for source_index in range(14):
+              col = source_index % 4
+              row = source_index // 4
+              crop = image.crop((col * cell_w, row * cell_h, (col + 1) * cell_w, (row + 1) * cell_h))
+
+              buffer = BytesIO()
+              crop.save(buffer, format='WEBP', quality=94, method=6)
+              payload = buffer.getvalue()
+
+              verify = Image.open(BytesIO(payload))
+              if verify.size != (cell_w, cell_h):
+                  raise SystemExit(f'Invalid generated size for photo {source_index + 6}: {verify.size}')
+
+              encoded = base64.b64encode(payload).decode('ascii')
+              target_index = source_index + 6
+              (root / f'photo{target_index}.js').write_text(
+                  f"window.BY_IMAGES[{target_index}]='data:image/webp;base64,{encoded}';\n",
+                  encoding='utf-8'
+              )
+
+          print('Generated photo6.js through photo19.js at 360x480.')
+          PY
+      - name: Commit generated gallery files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add brush-by-yuda/photo6.js brush-by-yuda/photo7.js brush-by-yuda/photo8.js brush-by-yuda/photo9.js brush-by-yuda/photo10.js brush-by-yuda/photo11.js brush-by-yuda/photo12.js brush-by-yuda/photo13.js brush-by-yuda/photo14.js brush-by-yuda/photo15.js brush-by-yuda/photo16.js brush-by-yuda/photo17.js brush-by-yuda/photo18.js brush-by-yuda/photo19.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Generate individual Brush portfolio images"
+          git push
