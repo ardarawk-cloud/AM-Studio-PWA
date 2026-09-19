@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Split atlas into BY_IMAGES files
+      - name: Rebuild atlas and split into BY_IMAGES files
         run: |
           python -m pip install --quiet pillow
           python - <<'PY'
@@ -28,8 +28,16 @@ jobs:
           import base64
 
           root = Path('brush-by-yuda')
-          atlas_path = root / 'gallery-atlas.jpg'
-          image = Image.open(atlas_path).convert('RGB')
+          encoded = ''.join(
+              (root / f'gallery-atlas-q0{i}.txt').read_text(encoding='utf-8')
+              for i in range(5)
+          )
+          encoded = ''.join(encoded.split())
+          payload = base64.b64decode(encoded, validate=True)
+          if not payload.startswith(b'\xff\xd8') or not payload.endswith(b'\xff\xd9'):
+              raise SystemExit('Reconstructed atlas is not a complete JPEG stream')
+
+          image = Image.open(BytesIO(payload)).convert('RGB')
           if image.size != (1440, 1920):
               raise SystemExit(f'Unexpected atlas size: {image.size}')
 
@@ -39,22 +47,27 @@ jobs:
               row = source_index // 4
               crop = image.crop((col * cell_w, row * cell_h, (col + 1) * cell_w, (row + 1) * cell_h))
 
+              spans = [high - low for low, high in crop.getextrema()]
+              if max(spans) < 20:
+                  raise SystemExit(f'Photo {source_index + 6} appears blank: channel spans {spans}')
+
               buffer = BytesIO()
               crop.save(buffer, format='WEBP', quality=94, method=6)
-              payload = buffer.getvalue()
+              webp = buffer.getvalue()
 
-              verify = Image.open(BytesIO(payload))
+              verify = Image.open(BytesIO(webp))
               if verify.size != (cell_w, cell_h):
                   raise SystemExit(f'Invalid generated size for photo {source_index + 6}: {verify.size}')
 
-              encoded = base64.b64encode(payload).decode('ascii')
               target_index = source_index + 6
+              encoded_webp = base64.b64encode(webp).decode('ascii')
               (root / f'photo{target_index}.js').write_text(
-                  f"window.BY_IMAGES[{target_index}]='data:image/webp;base64,{encoded}';\n",
+                  f"window.BY_IMAGES[{target_index}]='data:image/webp;base64,{encoded_webp}';\n",
                   encoding='utf-8'
               )
+              print(f'photo{target_index}.js: 360x480, spans={spans}, bytes={len(webp)}')
 
-          print('Generated photo6.js through photo19.js at 360x480.')
+          print('Generated photo6.js through photo19.js from complete q00-q04 atlas.')
           PY
       - name: Commit generated gallery files
         run: |
