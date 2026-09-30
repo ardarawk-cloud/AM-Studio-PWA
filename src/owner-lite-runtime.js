@@ -2,7 +2,8 @@ import base from './asset-runtime.js';
 
 const SERIES_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)$/i;
 const EPISODE_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)\/episodes\/(\d{1,3})$/i;
-const TRIM_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)\/episodes\/(\d{1,3})\/trim\/(\d{1,3})$/i;\nconst PAGE_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)\/episodes\/(\d{1,3})\/pages\/(\d{1,3})$/i;
+const TRIM_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)\/episodes\/(\d{1,3})\/trim\/(\d{1,3})$/i;
+const PAGE_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)\/episodes\/(\d{1,3})\/pages\/(\d{1,3})$/i;
 const META_KEY=/^comics\/([a-z0-9-]+)\/ep(\d{3})\/meta\.json$/i;
 const CACHE_TTL_MS=30000;
 let inventoryCache=null;
@@ -121,7 +122,8 @@ async function deletePage(request,env,rawId,rawEp,rawPage){
 
 const SERIES_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)$/i;
 const EPISODE_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)\/episodes\/(\d{1,3})$/i;
-const TRIM_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)\/episodes\/(\d{1,3})\/trim\/(\d{1,3})$/i;\nconst PAGE_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)\/episodes\/(\d{1,3})\/pages\/(\d{1,3})$/i;
+const TRIM_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)\/episodes\/(\d{1,3})\/trim\/(\d{1,3})$/i;
+const PAGE_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)\/episodes\/(\d{1,3})\/pages\/(\d{1,3})$/i;
 const META_KEY=/^comics\/([a-z0-9-]+)\/ep(\d{3})\/meta\.json$/i;
 const CACHE_TTL_MS=30000;
 let inventoryCache=null;
@@ -271,7 +273,8 @@ async function injectOwnerUi(response){
   const scripts=[
     '/admin-panel.js?v=20260817c',
     '/admin-upload-queue-fix.js?v=20260816c',
-    '/admin-delete-panel.js?v=20260930a',\n    '/admin-page-delete.js?v=20260930a'
+    '/admin-delete-panel.js?v=20260930a',
+    '/admin-page-delete.js?v=20260930a'
   ];
   for(const src of scripts){
     const plain=src.split('?')[0];if(html.includes(src)||html.includes(`src="${plain}`)||html.includes(`src='${plain}`))continue;
@@ -286,7 +289,8 @@ export default{
     const url=new URL(request.url);
     if(request.method==='GET'&&url.pathname==='/reader-assets.json')return liteJson(request,env,'reader');
     if(request.method==='GET'&&url.pathname==='/catalog.json')return liteJson(request,env,'catalog');
-    const pm=url.pathname.match(PAGE_ROUTE);if(pm&&request.method==='DELETE')return deletePage(request,env,pm[1],pm[2],pm[3]);\n    const tm=url.pathname.match(TRIM_ROUTE);if(tm&&request.method==='DELETE')return trimEpisode(request,env,tm[1],tm[2],tm[3]);
+    const pm=url.pathname.match(PAGE_ROUTE);if(pm&&request.method==='DELETE')return deletePage(request,env,pm[1],pm[2],pm[3]);
+    const tm=url.pathname.match(TRIM_ROUTE);if(tm&&request.method==='DELETE')return trimEpisode(request,env,tm[1],tm[2],tm[3]);
     const em=url.pathname.match(EPISODE_ROUTE);if(em&&request.method==='DELETE')return deleteEpisode(request,env,em[1],em[2]);
     const sm=url.pathname.match(SERIES_ROUTE);if(sm&&request.method==='DELETE')return deleteSeries(request,env,sm[1]);
     const response=await base.fetch(request,env,ctx);
