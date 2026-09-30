@@ -7,7 +7,8 @@ const INTERNAL_SCRIPT_NAMES=[
   'private-production',
   'private-production-qc-v2',
   'admin-upload-queue-fix',
-  'admin-delete-panel'
+  'admin-delete-panel',
+  'admin-page-delete'
 ];
 
 function isPlayRequest(request){
