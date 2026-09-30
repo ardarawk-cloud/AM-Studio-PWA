@@ -54,7 +54,17 @@ function dynamicEntry(g,covers){
 
 function mergeReader(staticRegistry,inv){
   const out=structuredClone(staticRegistry||{registry:{},episodes:[]}),map=new Map((out.episodes||[]).map(e=>[`${e.seriesId}:${Number(e.episode)}`,e]));
-  for(const g of inv.episodes){if(!g.meta&&!g.pages.size)continue;const d=dynamicEntry(g,inv.covers),k=`${d.seriesId}:${d.episode}`,old=map.get(k);map.set(k,old?{...old,...d,pageCount:Math.max(Number(old.pageCount)||0,Number(d.pageCount)||0),title:old.title||d.title}:d)}
+  for(const g of inv.episodes){
+    if(!g.meta&&!g.pages.size)continue;
+    const d=dynamicEntry(g,inv.covers),k=`${d.seriesId}:${d.episode}`,old=map.get(k);
+    if(old&&g.meta){
+      // Owner metadata is authoritative after upload/trim/reset. Never let an older
+      // static pageCount/readerAsset resurrect pages that were explicitly deleted.
+      map.set(k,{...old,...d,pageCount:Number(d.pageCount)||0,availablePageCount:d.availablePageCount,pages:d.pages,missingReaderPages:d.missingReaderPages,readerState:d.readerState,readerAsset:undefined,replacementPending:false,title:d.title||old.title});
+    }else if(old){
+      map.set(k,{...old,...d,pageCount:Math.max(Number(old.pageCount)||0,Number(d.pageCount)||0),title:old.title||d.title});
+    }else map.set(k,d);
+  }
   out.registry={...(out.registry||{}),storage:'R2_COMIC_ASSETS',runtimeOverlay:true,inventoryCacheSeconds:CACHE_TTL_MS/1000};
   out.episodes=[...map.values()].sort((a,b)=>a.seriesId.localeCompare(b.seriesId)||Number(a.episode)-Number(b.episode));
   return out;
@@ -107,7 +117,7 @@ async function trimEpisode(request,env,rawId,rawEp,rawKeep){
   try{const o=await env.COMIC_ASSETS.get(metaKey);if(o)meta=JSON.parse(await o.text())}catch{}
   if(meta.pageQc&&typeof meta.pageQc==='object')meta.pageQc=Object.fromEntries(Object.entries(meta.pageQc).filter(([p])=>Number(p)<=keep));
   meta={...meta,seriesId:id,episode:ep,pageCount:keep,lastGeneratedPage:Math.min(Number(meta.lastGeneratedPage)||keep,keep),updatedAt:new Date().toISOString(),trimmedByOwner:true,trimmedAfterPage:keep};
-  await env.COMIC_ASSETS.put(metaKey,JSON.stringify(meta),{httpMetadata:{contentType:'application/json',cacheControl:'no-store'},customMetadata:{source:'OWNER_ADMIN_TRIM'}});invalidateInventory();
+  await env.COMIC_ASSETS.put(metaKey,JSON.stringify(meta),{httpMetadata:{contentType:'application/json',cacheControl:'no-store'},customMetadata:{source:'OWNER_ADMIN_TRIM',episodeTitle:String(meta.title||`Episode ${pad(ep)}`).slice(0,180),pageCount:String(keep),updatedAt:meta.updatedAt}});invalidateInventory();
   return Response.json({ok:true,action:'TRIM_EPISODE_AFTER_PAGE',seriesId:id,episode:ep,keepThrough:keep,deletedCount,pageCount:keep},{headers:{'cache-control':'no-store'}});
 }
 
@@ -117,7 +127,7 @@ async function injectOwnerUi(response){
   const scripts=[
     '/admin-panel.js?v=20260817c',
     '/admin-upload-queue-fix.js?v=20260816c',
-    '/admin-delete-panel.js?v=20260817b'
+    '/admin-delete-panel.js?v=20260930a'
   ];
   for(const src of scripts){
     const plain=src.split('?')[0];if(html.includes(src)||html.includes(`src="${plain}`)||html.includes(`src='${plain}`))continue;
