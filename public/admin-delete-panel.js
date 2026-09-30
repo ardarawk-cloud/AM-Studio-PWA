@@ -80,6 +80,7 @@
         if(total)total.value=String(keep);
         setStatus(`<span class="ama-ok">✓ SISA AUTO PRODUCE DIHAPUS</span>\n${s.title} • Episode ${ep}\nPage 1–${keep} dipertahankan. ${x.deletedCount||0} file setelahnya dihapus. Total page sekarang ${keep}.`);
         window.dispatchEvent(new Event('am-admin-assets-changed'));
+        setTimeout(()=>location.reload(),650);
       }catch(e){setStatus(`<span class="ama-bad">GAGAL POTONG EPISODE</span>\n${String(e.message||e)}`);}
     };
 
