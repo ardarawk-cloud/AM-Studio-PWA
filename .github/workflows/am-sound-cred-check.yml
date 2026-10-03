@@ -1,0 +1,31 @@
+name: AM Sound Cloudflare Credential Check
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    if: github.event_name != 'issues' || github.event.issue.title == 'AM SOUND CRED CHECK'
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check
+        shell: bash
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            MSG="CREDENTIALS_OK"
+          else
+            MSG="CREDENTIALS_MISSING"
+          fi
+          if [ "${{ github.event_name }}" = "issues" ]; then
+            gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body "$MSG"
+          fi
