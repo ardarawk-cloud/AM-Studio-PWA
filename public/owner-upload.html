@@ -9,14 +9,14 @@
     :root{color-scheme:dark;--bg:#05070b;--card:#0d131d;--line:#2a3546;--text:#f7f9fc;--muted:#97a3b5;--ok:#72e7ad;--bad:#ff9d97}
     *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
     main{max-width:680px;margin:auto;padding:14px 12px 100px}.top{position:sticky;top:0;z-index:4;background:#05070bf2;backdrop-filter:blur(14px);padding:10px 0 12px}.title{font-size:24px;font-weight:950}.sub{font-size:12px;color:var(--muted);margin-top:2px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;margin:10px 0}.label{display:block;font-size:10px;font-weight:900;letter-spacing:.08em;color:#bdc6d3;margin:12px 0 6px}.row{display:flex;gap:9px;align-items:center}.grow{flex:1;min-width:0}
-    input,select,button,.pick{width:100%;border:1px solid #344155;background:#121a26;color:#fff;border-radius:14px;padding:13px;font:inherit}button,.pick{font-weight:900;cursor:pointer}.primary{background:#fff;color:#090c11;border-color:#fff;font-size:16px;padding:15px}.ghost{background:#141b26}.danger{color:#ffaaa4;border-color:#65373c}.small{width:auto;padding:9px 11px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;margin:10px 0}.label{display:block;font-size:10px;font-weight:900;letter-spacing:.08em;color:#bdc6d3;margin:12px 0 7px}.row{display:flex;gap:9px;align-items:center}.grow{flex:1;min-width:0}
+    input,select,.pick{width:100%;border:1px solid #344155;background:#121a26;color:#fff;border-radius:14px;padding:13px;font:inherit}button,.pick{font-weight:900;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-align:center;min-height:44px}.primary{background:#fff;color:#090c11;border-color:#fff;font-size:16px;padding:15px}.ghost{background:#141b26}.danger{color:#ffaaa4;border-color:#65373c}.small{width:auto;flex:0 0 auto;padding:9px 11px;font-size:13px;white-space:nowrap}.pick{width:100%;max-width:100%;min-height:52px;white-space:normal;overflow-wrap:anywhere}.row>.grow{min-width:0}.row>div{min-width:0}
     .auth-ok{color:var(--ok)}.auth-bad{color:var(--bad)}.note{font-size:11px;line-height:1.45;color:var(--muted)}.status{white-space:pre-wrap;font-size:12px;line-height:1.55}
     .drop{display:block;text-align:center;border:1.5px dashed #53627a;border-radius:18px;padding:19px 14px;background:#091019;cursor:pointer}.drop b{display:block;font-size:16px}.drop span{display:block;font-size:11px;color:#9ba6b7;margin-top:5px}
     #pagesInput,#coverInput{display:none}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}.media{position:relative;aspect-ratio:3/4;border:1px solid #2d394a;border-radius:14px;overflow:hidden;background:#070b10}.media img{width:100%;height:100%;object-fit:cover}.num{position:absolute;left:6px;top:6px;background:#05070bdc;border:1px solid #ffffff2d;border-radius:999px;padding:4px 7px;font-size:10px;font-weight:900}.x{position:absolute;right:6px;top:6px;width:28px;height:28px;padding:0;border:0;background:#d9272e;border-radius:999px;font-size:18px}
     .mv{position:absolute;left:5px;right:5px;bottom:5px;display:flex;gap:4px}.mv button{padding:4px 0;border-radius:8px;background:#05070bdc}.summary{display:flex;justify-content:space-between;gap:8px;align-items:center;background:#111926;border:1px solid #2c3849;border-radius:14px;padding:10px 12px;margin-top:11px}.summary b{font-size:13px}.summary span{display:block;font-size:10px;color:var(--muted)}
     .bar{height:9px;border-radius:999px;background:#1c2634;overflow:hidden;margin-top:10px}.bar i{display:block;height:100%;width:0;background:#72e7ad;transition:width .18s}.success{border-color:#2b644a;background:#0b1913}
-    @media(max-width:420px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:420px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:12px}.row{gap:8px}#newSeriesToggle{font-size:12px;padding:10px}#coverPick{margin-top:5px}}
   </style>
 </head>
 <body>
@@ -43,7 +43,7 @@
       <div class="grow"><label class="label">JUDUL — opsional</label><input id="title" placeholder="Episode 001"></div>
     </div>
     <label class="label">COVER — opsional</label>
-    <label class="pick ghost" for="coverInput" id="coverPick">PILIH COVER</label>
+    <label class="pick ghost" for="coverInput" id="coverPick">＋ PILIH COVER</label>
     <input id="coverInput" type="file" accept="image/jpeg,image/png,image/webp,image/avif">
   </section>
 
@@ -135,8 +135,8 @@
   }
   $('#unlock').onclick=unlock;
   newSeriesToggle.onclick=()=>setNewSeriesMode(!newSeriesMode);
-  $('#reset').onclick=()=>{queue=[];coverFile=null;coverInput.value='';coverPick.textContent='PILIH COVER';render();status.textContent='Pilihan dikosongkan.'};
-  coverInput.onchange=()=>{coverFile=coverInput.files?.[0]||null;coverPick.textContent=coverFile?('COVER: '+coverFile.name):'PILIH COVER'};
+  $('#reset').onclick=()=>{queue=[];coverFile=null;coverInput.value='';coverPick.textContent='＋ PILIH COVER';render();status.textContent='Pilihan dikosongkan.'};
+  coverInput.onchange=()=>{coverFile=coverInput.files?.[0]||null;coverPick.textContent=coverFile?('COVER: '+coverFile.name) :'＋ PILIH COVER'};
   pagesInput.onchange=()=>{const files=[...(pagesInput.files||[])];if(files.length)queue.push(...sortFiles(files));pagesInput.value='';render()};
   publish.onclick=async()=>{
     if(busy)return;
