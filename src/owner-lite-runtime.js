@@ -58,7 +58,7 @@ function dynamicEntry(g,covers){
 function mergeReader(staticRegistry,inv){
   const out=structuredClone(staticRegistry||{registry:{},episodes:[]}),map=new Map((out.episodes||[]).map(e=>[`${e.seriesId}:${Number(e.episode)}`,e]));
   for(const g of inv.episodes){
-    if(!g.meta&&!g.pages.size)continue;
+    if(!g.pages.size)continue;
     const d=dynamicEntry(g,inv.covers),k=`${d.seriesId}:${d.episode}`,old=map.get(k);
     if(old&&g.meta){
       // Owner metadata is authoritative after upload/trim/reset. Never let an older
@@ -75,7 +75,7 @@ function mergeReader(staticRegistry,inv){
 
 function mergeCatalog(catalog,inv){
   const out=structuredClone(catalog||{studio:{},series:[]}),bySeries=new Map();
-  for(const g of inv.episodes){if(!g.meta)continue;if(!bySeries.has(g.seriesId))bySeries.set(g.seriesId,[]);bySeries.get(g.seriesId).push(g)}
+  for(const g of inv.episodes){if(!g.pages.size)continue;if(!bySeries.has(g.seriesId))bySeries.set(g.seriesId,[]);bySeries.get(g.seriesId).push(g)}
   out.series=(out.series||[]).map(s=>{
     const groups=(bySeries.get(s.id)||[]).sort((a,b)=>a.episode-b.episode);if(!groups.length)return s;
     const nums=groups.map(g=>g.episode),max=Math.max(...nums),contiguous=nums.length===max&&nums.every((n,i)=>n===i+1),titles=Array.from({length:max},(_,i)=>groups.find(g=>g.episode===i+1)?.meta?.title||s.episodeTitles?.[i]||`Episode ${pad(i+1)}`);
@@ -177,9 +177,8 @@ async function injectOwnerUi(response){
   const ct=response.headers.get('content-type')||'';if(!response.ok||!ct.includes('text/html'))return response;
   let html=await response.text();
   const scripts=[
-    '/admin-panel.js?v=20260817c',
-    '/admin-upload-queue-fix.js?v=20260816c',
-    '/admin-delete-panel.js?v=20260930a',
+    '/admin-panel.js?v=20261018-social1',
+    '/admin-delete-panel.js?v=20261018-simple1',
     '/admin-page-delete.js?v=20261018c'
   ];
   for(const src of scripts){
