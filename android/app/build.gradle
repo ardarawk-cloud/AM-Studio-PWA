@@ -74,3 +74,8 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 }
+
+
+dependencies {
+    implementation 'com.android.billingclient:billing:9.1.0'
+}
