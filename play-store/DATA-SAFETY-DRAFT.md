@@ -57,3 +57,8 @@ AM STUDIO currently uses Cloudflare infrastructure for app delivery, Worker exec
 5. Confirm favourites/progress remain local-only.
 6. Confirm Play build cannot reach Admin/upload/production controls.
 7. Make the Play Console Data safety answers match `public/privacy-policy.html` and actual runtime behavior exactly.
+
+
+## Subscription / purchase verification
+
+When Premium is enabled, Google Play handles payment details. AM STUDIO backend receives the Google Play purchase token, subscription state, product/base-plan identifiers, expiry state, test-purchase flag, and region code needed to verify entitlement. No card number or raw payment instrument is received by AM STUDIO. Re-check Play Console Data Safety answers before publishing the billing-enabled build.
