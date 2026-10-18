@@ -72,7 +72,12 @@ async function signingMaterialRoute(request,env){
     const object=await env.COMIC_ASSETS?.get(SIGNING_OBJECT_KEY);
     if(!object)return Response.json({ok:false,error:'SIGNING_MATERIAL_NOT_CONFIGURED'},{status:503});
     const body=await object.text();
-    return new Response(body,{
+    let normalized=body;
+    try{
+      const parsed=JSON.parse(body);
+      if(typeof parsed==='string')normalized=parsed;
+    }catch{}
+    return new Response(normalized,{
       status:200,
       headers:{
         'content-type':'application/json',
