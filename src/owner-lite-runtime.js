@@ -118,30 +118,46 @@ async function deletePage(request,env,rawId,rawEp,rawPage){
   if((request.headers.get('x-am-delete-confirmation')||'')!==expected)return Response.json({ok:false,error:'DELETE_CONFIRMATION_REQUIRED',expected},{status:409});
 
   const prefix=`comics/${id}/ep${pad(ep)}/`,objects=await listAll(env,prefix);
-  const pageMatch=x=>{const m=String(x.key||'').match(/\/page-(\d{2,3})\.(?:jpg|jpeg|png|webp|avif)$/i);return Boolean(m&&Number(m[1])===page)};
-  const targets=objects.filter(pageMatch);
+  const pageInfo=x=>{const m=String(x.key||'').match(/\/page-(\d{2,3})\.(jpg|jpeg|png|webp|avif)$/i);return m?{number:Number(m[1]),ext:m[2].toLowerCase()}:null};
+  const imageObjects=objects.map(x=>({obj:x,info:pageInfo(x)})).filter(x=>x.info).sort((a,b)=>a.info.number-b.info.number);
+  const targets=imageObjects.filter(x=>x.info.number===page);
   if(!targets.length)return Response.json({ok:false,error:'PAGE_ASSET_NOT_FOUND',seriesId:id,episode:ep,page},{status:404,headers:{'cache-control':'no-store'}});
-  await deleteObjects(env,targets);
 
-  const remaining=objects.filter(x=>!pageMatch(x));
-  const nums=remaining.map(x=>{const m=String(x.key||'').match(/\/page-(\d{2,3})\.(?:jpg|jpeg|png|webp|avif)$/i);return m?Number(m[1]):null}).filter(Number.isInteger);
-  const highest=nums.length?Math.max(...nums):0;
-  const highestBefore=Math.max(page,...nums);
+  for(const x of targets)await env.COMIC_ASSETS.delete(x.obj.key);
+
+  // Close the gap: every later page shifts down by one, so the reader remains
+  // contiguous and never renders dead image slots after a single-page delete.
+  const shifted=[];
+  for(const x of imageObjects.filter(x=>x.info.number>page)){
+    const src=await env.COMIC_ASSETS.get(x.obj.key);
+    if(!src)continue;
+    const nextNo=x.info.number-1;
+    const nextKey=`${prefix}page-${String(nextNo).padStart(2,'0')}.${x.info.ext}`;
+    await env.COMIC_ASSETS.put(nextKey,src.body,{httpMetadata:src.httpMetadata,customMetadata:src.customMetadata});
+    await env.COMIC_ASSETS.delete(x.obj.key);
+    shifted.push({from:x.info.number,to:nextNo,key:nextKey});
+  }
+
+  const oldHighest=imageObjects.length?Math.max(...imageObjects.map(x=>x.info.number)):page;
+  const newHighest=Math.max(0,oldHighest-1);
   const metaKey=`${prefix}meta.json`;
-  let meta={seriesId:id,episode:ep,title:`Episode ${pad(ep)}`,pageCount:highestBefore};
+  let meta={seriesId:id,episode:ep,title:`Episode ${pad(ep)}`,pageCount:oldHighest};
   try{const o=await env.COMIC_ASSETS.get(metaKey);if(o)meta=JSON.parse(await o.text())}catch{}
-  const currentCount=Number(meta.pageCount)||highestBefore;
-  const nextCount=(page===highestBefore&&currentCount<=highestBefore)?highest:currentCount;
-  if(meta.pageQc&&typeof meta.pageQc==='object')delete meta.pageQc[String(page)];
-  meta={...meta,seriesId:id,episode:ep,pageCount:nextCount||null,updatedAt:new Date().toISOString(),pageDeletedByOwner:page};
+  const currentCount=Number(meta.pageCount)||oldHighest;
+  const nextCount=Math.max(0,currentCount-1,newHighest);
+  if(meta.pageQc&&typeof meta.pageQc==='object'){
+    const nextQc={};
+    for(const [k,v] of Object.entries(meta.pageQc)){const n=Number(k);if(!Number.isInteger(n)||n===page)continue;nextQc[String(n>page?n-1:n)]=v}
+    meta.pageQc=nextQc;
+  }
+  meta={...meta,seriesId:id,episode:ep,pageCount:nextCount||null,lastGeneratedPage:Math.min(Number(meta.lastGeneratedPage)||nextCount,nextCount),updatedAt:new Date().toISOString(),pageDeletedByOwner:page,compactedAfterDelete:true};
   await env.COMIC_ASSETS.put(metaKey,JSON.stringify(meta),{
     httpMetadata:{contentType:'application/json',cacheControl:'no-store'},
-    customMetadata:{source:'OWNER_ADMIN_PAGE_DELETE',episodeTitle:String(meta.title||`Episode ${pad(ep)}`).slice(0,180),pageCount:String(meta.pageCount||0),updatedAt:meta.updatedAt}
+    customMetadata:{source:'OWNER_ADMIN_PAGE_DELETE_COMPACT',episodeTitle:String(meta.title||`Episode ${pad(ep)}`).slice(0,180),pageCount:String(meta.pageCount||0),updatedAt:meta.updatedAt}
   });
   invalidateInventory();
-  return Response.json({ok:true,action:'DELETE_SINGLE_PAGE',seriesId:id,episode:ep,page,deletedCount:targets.length,pageCount:meta.pageCount,remainingPages:nums.sort((a,b)=>a-b)},{headers:{'cache-control':'no-store'}});
+  return Response.json({ok:true,action:'DELETE_SINGLE_PAGE_AND_COMPACT',seriesId:id,episode:ep,page,deletedCount:targets.length,shifted,pageCount:meta.pageCount},{headers:{'cache-control':'no-store'}});
 }
-
 async function trimEpisode(request,env,rawId,rawEp,rawKeep){
   if(!adminOK(request,env))return deny();if(!env?.COMIC_ASSETS)return Response.json({ok:false,error:'COMIC_ASSETS_NOT_CONFIGURED'},{status:503});
   const id=cleanSeries(rawId),ep=Number(rawEp),keep=Number(rawKeep);if(!id||!Number.isInteger(ep)||ep<1||!Number.isInteger(keep)||keep<1)return Response.json({ok:false,error:'INVALID_TRIM_RANGE'},{status:400});
@@ -162,7 +178,7 @@ async function injectOwnerUi(response){
     '/admin-panel.js?v=20260817c',
     '/admin-upload-queue-fix.js?v=20260816c',
     '/admin-delete-panel.js?v=20260930a',
-    '/admin-page-delete.js?v=20260930b'
+    '/admin-page-delete.js?v=20261018c'
   ];
   for(const src of scripts){
     const plain=src.split('?')[0];if(html.includes(src)||html.includes(`src="${plain}`)||html.includes(`src='${plain}`))continue;
