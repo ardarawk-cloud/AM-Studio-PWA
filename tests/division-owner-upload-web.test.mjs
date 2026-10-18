@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const html=fs.readFileSync(new URL('../public/owner-upload.html',import.meta.url),'utf8');
+const runtime=fs.readFileSync(new URL('../src/owner-lite-runtime.js',import.meta.url),'utf8');
 
 test('standalone owner uploader is browser-only and uses verified R2 publish flow',()=>{
   assert.match(html,/AM STUDIO Owner • browser only/);
@@ -18,13 +19,6 @@ test('standalone owner uploader is browser-only and uses verified R2 publish flo
 test('owner uploader has no production generator or auto-produce dependency',()=>{
   assert.doesNotMatch(html,/generate-next|AUTO PRODUCE|OPENAI_API_KEY|Workers AI/i);
 });
-
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import fs from 'node:fs';
-
-const html=fs.readFileSync(new URL('../public/owner-upload.html',import.meta.url),'utf8');
-const runtime=fs.readFileSync(new URL('../src/owner-lite-runtime.js',import.meta.url),'utf8');
 
 test('owner uploader can create a new comic without editing the static catalog',()=>{
   assert.match(html,/＋ KOMIK BARU/);
