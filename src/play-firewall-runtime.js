@@ -127,13 +127,13 @@ async function playHtml(response){
   let html=stripInternalScripts(await response.text());
   if(!html.includes('am-play-firewall-bootstrap'))html=html.includes('</head>')?html.replace('</head>',`${PLAY_BOOTSTRAP}</head>`):`${PLAY_BOOTSTRAP}${html}`;
   const scripts=[
-    '<script id="am-play-reader-server" src="/native-reader.js?v=4" defer></script>',
-    '<script id="am-growth-reader-server" src="/growth-reader.js?v=1" defer></script>',
-    '<script id="am-reader-zoom-server" src="/reader-zoom.js?v=1" defer></script>'
+    '<script id="am-play-reader-server" src="/native-reader.js?v=5" defer></script>',
+    '<script id="am-growth-reader-server" src="/growth-reader.js?v=2" defer></script>',
+    '<script id="am-reader-zoom-server" src="/reader-zoom.js?v=2" defer></script>'
   ];
   for(const script of scripts){const id=(script.match(/id="([^"]+)"/)||[])[1];if(id&&html.includes(`id="${id}"`))continue;html=html.includes('</body>')?html.replace('</body>',`${script}</body>`):`${html}${script}`}
   const headers=new Headers(response.headers);
-  headers.set('cache-control','no-store');headers.set('x-am-play-firewall','active');headers.set('x-am-growth-build','v1');headers.set('x-am-reader-zoom','v1');
+  headers.set('cache-control','no-store');headers.set('x-am-play-firewall','active');headers.set('x-am-growth-build','v2');headers.set('x-am-reader-zoom','v2');
   return new Response(html,{status:response.status,statusText:response.statusText,headers});
 }
 
