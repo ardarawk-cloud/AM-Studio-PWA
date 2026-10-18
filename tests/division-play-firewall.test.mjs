@@ -53,7 +53,7 @@ test('Privacy document is public-safe on both source and Cloudflare clean routes
   assert.doesNotMatch(out,/admin-panel\.js/);
   assert.doesNotMatch(out,/native-reader\.js|growth-reader\.js/);
   assert.equal(response.headers.get('x-am-public-document'),'safe');
-  assert.match(privacy,/href="\/\?channel=play"/);
+  assert.match(privacy,/href="\/\?channel=public"/);
   assert.match(firewallSource,/url\.pathname==='\/privacy-policy\.html'/);
   assert.match(firewallSource,/url\.pathname==='\/privacy-policy'/);
 });
