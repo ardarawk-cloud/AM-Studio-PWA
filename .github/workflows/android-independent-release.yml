@@ -21,6 +21,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   release:
@@ -30,10 +31,6 @@ jobs:
       AM_STUDIO_APPLICATION_ID: com.ardacore.amstudio
       AM_STUDIO_PUBLIC_MODE: 'true'
       AM_STUDIO_PLAY_MODE: 'false'
-      AM_STUDIO_ANDROID_KEYSTORE_B64: ${{ secrets.AM_STUDIO_ANDROID_KEYSTORE_B64 }}
-      AM_STUDIO_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.AM_STUDIO_ANDROID_KEYSTORE_PASSWORD }}
-      AM_STUDIO_ANDROID_KEY_ALIAS: ${{ secrets.AM_STUDIO_ANDROID_KEY_ALIAS }}
-      AM_STUDIO_ANDROID_KEY_PASSWORD: ${{ secrets.AM_STUDIO_ANDROID_KEY_PASSWORD }}
 
     steps:
       - name: Checkout
@@ -86,26 +83,47 @@ jobs:
           yes | "$SDKMANAGER" --licenses >/dev/null || true
           "$SDKMANAGER" 'platform-tools' 'platforms;android-36' 'build-tools;36.0.0'
 
-      - name: Require protected signing key
+      - name: Fetch protected release signing material
         shell: bash
         run: |
           set -euo pipefail
-          for name in AM_STUDIO_ANDROID_KEYSTORE_B64 AM_STUDIO_ANDROID_KEYSTORE_PASSWORD AM_STUDIO_ANDROID_KEY_ALIAS AM_STUDIO_ANDROID_KEY_PASSWORD; do
-            if [ -z "${!name:-}" ]; then
-              echo "::error::$name is required"
-              exit 1
-            fi
-          done
+          TOKEN_JSON="$(curl -fsS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=am-studio-signing")"
+          OIDC_TOKEN="$(printf '%s' "$TOKEN_JSON" | jq -r '.value')"
+          test -n "$OIDC_TOKEN"
+          test "$OIDC_TOKEN" != "null"
 
-      - name: Restore release keystore
-        shell: bash
-        run: |
-          set -euo pipefail
+          MATERIAL="$RUNNER_TEMP/am-studio-signing.json"
+          STATUS=""
+          for attempt in $(seq 1 12); do
+            STATUS="$(curl -sS -o "$MATERIAL" -w '%{http_code}' -X POST \
+              -H "Authorization: Bearer $OIDC_TOKEN" \
+              -H 'Accept: application/json' \
+              'https://am-studio-pwa.ardarawk.workers.dev/api/internal/build/signing-material' || true)"
+            [ "$STATUS" = "200" ] && break
+            sleep 5
+          done
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::Unable to retrieve protected signing material (HTTP $STATUS)"
+            cat "$MATERIAL" || true
+            exit 1
+          fi
+
           KEYSTORE="$RUNNER_TEMP/am-studio-public-release.jks"
-          printf '%s' "$AM_STUDIO_ANDROID_KEYSTORE_B64" | base64 --decode > "$KEYSTORE"
+          STORE_PASSWORD="$(jq -r '.storePassword' "$MATERIAL")"
+          KEY_ALIAS="$(jq -r '.alias' "$MATERIAL")"
+          KEY_PASSWORD="$(jq -r '.keyPassword' "$MATERIAL")"
+          jq -r '.keystoreB64' "$MATERIAL" | base64 --decode > "$KEYSTORE"
           chmod 600 "$KEYSTORE"
-          keytool -list -keystore "$KEYSTORE" -storepass "$AM_STUDIO_ANDROID_KEYSTORE_PASSWORD" -alias "$AM_STUDIO_ANDROID_KEY_ALIAS" >/dev/null
+
+          echo "::add-mask::$STORE_PASSWORD"
+          echo "::add-mask::$KEY_PASSWORD"
           echo "AM_STUDIO_ANDROID_KEYSTORE_PATH=$KEYSTORE" >> "$GITHUB_ENV"
+          echo "AM_STUDIO_ANDROID_KEYSTORE_PASSWORD=$STORE_PASSWORD" >> "$GITHUB_ENV"
+          echo "AM_STUDIO_ANDROID_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+          echo "AM_STUDIO_ANDROID_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
+
+          keytool -list -keystore "$KEYSTORE" -storepass "$STORE_PASSWORD" -alias "$KEY_ALIAS" >/dev/null
+          rm -f "$MATERIAL"
 
       - name: Build signed public APK
         working-directory: android
