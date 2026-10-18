@@ -73,3 +73,13 @@ Required repository secrets:
 
 ## Hard rule
 A successful Android build is not the same as Play approval. Do not label a release `PLAY_READY` until technical, content, privacy, store-listing, signing, and owner-approval gates are all complete.
+
+
+## Premium subscription activation
+
+- [ ] Google Play subscription product `am_studio_premium` exists.
+- [ ] Base plans `monthly` and `yearly` are active with approved pricing.
+- [ ] Android Publisher service account has access to the AM STUDIO app.
+- [ ] Cloudflare secrets `GOOGLE_PLAY_SERVICE_ACCOUNT_EMAIL` and `GOOGLE_PLAY_SERVICE_ACCOUNT_PRIVATE_KEY` are configured.
+- [ ] Cloudflare secret `GOOGLE_PLAY_RTDN_SECRET` is configured and Pub/Sub RTDN push points to `/api/subscription/rtdn?key=...`.
+- [ ] License-tester purchase, restore, cancel/grace/expiry flows verified before public release.
