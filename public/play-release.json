@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "app": "AM STUDIO",
   "owner": "Arda Core Corporation",
-  "channel": "GOOGLE_PLAY",
+  "channel": "LEGACY_GOOGLE_PLAY_DISABLED",
   "applicationId": "com.ardacore.amstudio",
   "mode": "PUBLIC_READER_ONLY",
   "playReady": false,
@@ -23,5 +23,6 @@
     "missingReaderPagesBlocked": true,
     "contentReadinessReviewRequired": true
   },
-  "note": "Keep playReady and ownerReleaseApproval false until Arda explicitly approves Google Play submission after content, policy, signing, store assets, and complete reader-asset QC pass final review."
+  "note": "Google Play distribution is disabled by owner direction. AM STUDIO customer distribution now uses the independent signed APK channel.",
+  "supersededBy": "/independent-release.json"
 }
