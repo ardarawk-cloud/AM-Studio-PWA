@@ -32,9 +32,10 @@
       html[data-am-reader-zoom="continuous"],html[data-am-reader-zoom="continuous"] body{overscroll-behavior-x:auto}
       html[data-am-reader-zoom="continuous"] .comic-stack{overflow:visible!important;max-width:none!important;transform-origin:top left;touch-action:pan-x pan-y}
       html[data-am-reader-zoom="continuous"] .comic-page{display:block;width:100%;height:auto;cursor:default!important;touch-action:pan-x pan-y!important;-webkit-user-drag:none}
-      .am-reader-zoom-entry-hint{margin:8px 0 8px;padding:9px 12px;border-radius:12px;background:#101722;border:1px solid #ffffff1f;color:#cbd3df;font-size:11px;line-height:1.45;text-align:center}
-      .am-reader-zoom-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px;padding:8px 10px;border-radius:12px;background:#080c12;border:1px solid #ffffff1a;color:#d7deea;font:700 11px system-ui,-apple-system,Segoe UI,sans-serif}
-      .am-reader-zoom-bar button{border:1px solid #ffffff26;border-radius:9px;background:#151b25;color:#fff;padding:7px 10px;font:800 11px system-ui,-apple-system,Segoe UI,sans-serif}
+      .am-reader-zoom-entry-hint{display:none!important}
+      .am-reader-zoom-bar{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin:0 0 8px;padding:0;background:transparent;border:0;color:#d7deea;font:700 10px system-ui,-apple-system,Segoe UI,sans-serif}
+      .am-reader-zoom-bar[hidden]{display:none!important}
+      .am-reader-zoom-bar button{border:1px solid #ffffff26;border-radius:999px;background:#151b25;color:#fff;padding:7px 11px;font:800 10px system-ui,-apple-system,Segoe UI,sans-serif}
       .am-reader-page-number{display:flex;align-items:center;justify-content:center;min-height:31px;padding:7px 10px;background:#05070b;color:#d7deea;border-top:1px solid #ffffff1a;border-bottom:1px solid #ffffff1a;font:800 11px/1 system-ui,-apple-system,Segoe UI,sans-serif;letter-spacing:.12em;text-transform:uppercase;user-select:none;-webkit-user-select:none}
       #am-reader-zoom-overlay{display:none!important}
     `;
@@ -53,7 +54,9 @@
     activeStack.style.width=`${Math.round(scale*10000)/100}%`;
     activeStack.dataset.amContinuousScale=String(scale);
     const level=document.getElementById('am-reader-continuous-zoom-level');
-    if(level)level.textContent=`Zoom seluruh komik: ${Math.round(scale*100)}%`;
+    const bar=document.getElementById('am-reader-continuous-zoom-bar');
+    if(level)level.textContent=`${Math.round(scale*100)}%`;
+    if(bar)bar.hidden=scale<=1.001;
   }
 
   function resetZoom(){
@@ -105,20 +108,17 @@
     updateZoomUi();
 
     document.getElementById('am-reader-zoom-entry-hint')?.remove();
-    document.getElementById('am-reader-continuous-zoom-bar')?.remove();
 
-    const hint=document.createElement('div');
-    hint.id='am-reader-zoom-entry-hint';
-    hint.className='am-reader-zoom-entry-hint';
-    hint.textContent='Cubit 2 jari di area komik untuk zoom seluruh episode sampai 5×. Semua halaman tetap tersambung—tidak ada lagi buka/tutup zoom per page.';
-    stack.parentNode?.insertBefore(hint,stack);
-
-    const bar=document.createElement('div');
-    bar.id='am-reader-continuous-zoom-bar';
-    bar.className='am-reader-zoom-bar';
-    bar.innerHTML='<span id="am-reader-continuous-zoom-level">Zoom seluruh komik: 100%</span><button type="button" id="am-reader-continuous-reset">Reset zoom</button>';
-    stack.parentNode?.insertBefore(bar,stack);
-    bar.querySelector('#am-reader-continuous-reset')?.addEventListener('click',resetZoom);
+    let bar=document.getElementById('am-reader-continuous-zoom-bar');
+    if(!bar){
+      bar=document.createElement('div');
+      bar.id='am-reader-continuous-zoom-bar';
+      bar.className='am-reader-zoom-bar';
+      bar.hidden=true;
+      bar.innerHTML='<span id="am-reader-continuous-zoom-level">100%</span><button type="button" id="am-reader-continuous-reset">Reset</button>';
+      stack.parentNode?.insertBefore(bar,stack);
+      bar.querySelector('#am-reader-continuous-reset')?.addEventListener('click',resetZoom);
+    }
     updateZoomUi();
 
     const pages=[...stack.querySelectorAll('img.comic-page')];
