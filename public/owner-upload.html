@@ -28,8 +28,16 @@
   </section>
 
   <section class="card">
-    <label class="label">KOMIK</label>
-    <select id="series"></select>
+    <div class="row" style="justify-content:space-between">
+      <label class="label" style="margin:0">KOMIK</label>
+      <button id="newSeriesToggle" type="button" class="small ghost">＋ KOMIK BARU</button>
+    </div>
+    <select id="series" style="margin-top:8px"></select>
+    <div id="newSeriesBox" style="display:none">
+      <label class="label">JUDUL KOMIK BARU</label>
+      <input id="newSeriesTitle" placeholder="Contoh: Kota Tanpa Matahari" maxlength="160">
+      <div class="note" style="margin-top:6px">ID dibuat otomatis. Setelah Publish, judul baru langsung masuk catalog/Library.</div>
+    </div>
     <div class="row">
       <div style="width:110px"><label class="label">EPISODE</label><input id="episode" type="number" min="1" max="999" value="1"></div>
       <div class="grow"><label class="label">JUDUL — opsional</label><input id="title" placeholder="Episode 001"></div>
@@ -52,13 +60,14 @@
 </main>
 <script>
 (()=>{
-  const $=s=>document.querySelector(s),series=$('#series'),episode=$('#episode'),title=$('#title'),pagesInput=$('#pagesInput'),coverInput=$('#coverInput'),grid=$('#grid'),count=$('#count'),order=$('#order'),status=$('#status'),bar=$('#bar'),publish=$('#publish'),authState=$('#authState'),statusCard=$('#statusCard'),coverPick=$('#coverPick');
-  let catalog={series:[]},queue=[],coverFile=null,busy=false,urls=[];
+  const $=s=>document.querySelector(s),series=$('#series'),episode=$('#episode'),title=$('#title'),pagesInput=$('#pagesInput'),coverInput=$('#coverInput'),grid=$('#grid'),count=$('#count'),order=$('#order'),status=$('#status'),bar=$('#bar'),publish=$('#publish'),authState=$('#authState'),statusCard=$('#statusCard'),coverPick=$('#coverPick'),newSeriesToggle=$('#newSeriesToggle'),newSeriesBox=$('#newSeriesBox'),newSeriesTitle=$('#newSeriesTitle');
+  let catalog={series:[]},queue=[],coverFile=null,busy=false,urls=[],newSeriesMode=false;
   const pad=(n,w=3)=>String(n).padStart(w,'0');
   const key=()=>sessionStorage.getItem('am_admin_key')||'';
   const cleanUrls=()=>{urls.forEach(URL.revokeObjectURL);urls=[]};
   const ext=file=>file.type==='image/png'?'png':file.type==='image/webp'?'webp':file.type==='image/avif'?'avif':'jpg';
   const numberFromName=name=>{const m=String(name||'').match(/(?:page|pg|halaman|p)?[ _.-]*0*(\d{1,3})(?!.*\d)/i);return m?Number(m[1]):null};
+  const slugify=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,56);
   function sortFiles(files){
     const rows=files.map((file,i)=>({file,i,n:numberFromName(file.name)}));
     if(rows.every(x=>Number.isInteger(x.n)))rows.sort((a,b)=>a.n-b.n||a.i-b.i);
@@ -71,9 +80,18 @@
     sessionStorage.setItem('am_admin_key',k.trim());
     try{await json('/api/assets/list?prefix=comics%2F',{headers:{'x-am-studio-admin-key':key()}});setAuth();return true}catch(e){sessionStorage.removeItem('am_admin_key');setAuth();alert('Admin Key salah / tidak aktif.');return false}
   }
-  async function loadCatalog(){
+  async function loadCatalog(preferredId=''){
     const r=await fetch('/catalog.json?channel=beta&t='+Date.now(),{cache:'no-store'});catalog=await r.json();
-    series.innerHTML=(catalog.series||[]).map(s=>'<option value="'+s.id+'">'+s.title+'</option>').join('');
+    const list=[...(catalog.series||[])].sort((a,b)=>String(a.title||'').localeCompare(String(b.title||''),'id'));
+    series.innerHTML=list.map(s=>'<option value="'+s.id+'">'+s.title+'</option>').join('');
+    if(preferredId&&list.some(s=>String(s.id)===String(preferredId)))series.value=preferredId;
+  }
+  function setNewSeriesMode(on){
+    newSeriesMode=Boolean(on);
+    newSeriesBox.style.display=newSeriesMode?'block':'none';
+    series.disabled=newSeriesMode;
+    newSeriesToggle.textContent=newSeriesMode?'← PILIH KOMIK LAMA':'＋ KOMIK BARU';
+    if(newSeriesMode){episode.value='1';newSeriesTitle.focus()}
   }
   function render(){
     cleanUrls();count.textContent=queue.length?(queue.length+' PAGE SIAP'):'Belum ada page';
@@ -101,6 +119,9 @@
   async function saveMeta(seriesId,ep,episodeTitle,pageCount){
     return json('/api/assets/meta',{method:'POST',headers:{'x-am-studio-admin-key':key(),'content-type':'application/json'},body:JSON.stringify({seriesId,episode:ep,title:episodeTitle,pageCount,ownerApproved:true})});
   }
+  async function saveSeriesMeta(seriesId,seriesTitle){
+    return json('/api/assets/series-meta',{method:'POST',headers:{'x-am-studio-admin-key':key(),'content-type':'application/json'},body:JSON.stringify({id:seriesId,title:seriesTitle})});
+  }
   async function trim(seriesId,ep,pageCount){
     return json('/api/assets/series/'+encodeURIComponent(seriesId)+'/episodes/'+ep+'/trim/'+pageCount,{method:'DELETE',headers:{'x-am-studio-admin-key':key(),'x-am-delete-confirmation':seriesId+':'+ep+':trim:'+pageCount}});
   }
@@ -113,14 +134,24 @@
     return {missing,extra,actual:nums};
   }
   $('#unlock').onclick=unlock;
+  newSeriesToggle.onclick=()=>setNewSeriesMode(!newSeriesMode);
   $('#reset').onclick=()=>{queue=[];coverFile=null;coverInput.value='';coverPick.textContent='PILIH COVER';render();status.textContent='Pilihan dikosongkan.'};
   coverInput.onchange=()=>{coverFile=coverInput.files?.[0]||null;coverPick.textContent=coverFile?('COVER: '+coverFile.name):'PILIH COVER'};
   pagesInput.onchange=()=>{const files=[...(pagesInput.files||[])];if(files.length)queue.push(...sortFiles(files));pagesInput.value='';render()};
   publish.onclick=async()=>{
     if(busy)return;
     if(!key()&&!(await unlock()))return;
-    const seriesId=series.value,ep=Number(episode.value),pageCount=queue.length;
-    const selected=(catalog.series||[]).find(s=>String(s.id)===String(seriesId));
+    const ep=Number(episode.value),pageCount=queue.length;
+    const requestedTitle=newSeriesMode?newSeriesTitle.value.trim():'';
+    let seriesId=newSeriesMode?slugify(requestedTitle):series.value;
+    let selected=(catalog.series||[]).find(s=>String(s.id)===String(seriesId));
+    if(newSeriesMode){
+      if(requestedTitle.length<2)return alert('Isi judul komik baru dulu.');
+      const duplicate=(catalog.series||[]).find(s=>String(s.id)===seriesId||String(s.title||'').trim().toLowerCase()===requestedTitle.toLowerCase());
+      if(duplicate)return alert('Komik ini sudah ada: '+duplicate.title+'\nPilih dari daftar KOMIK LAMA.');
+      if(!seriesId)return alert('Judul komik tidak menghasilkan ID yang valid.');
+      selected={id:seriesId,title:requestedTitle};
+    }
     const episodeTitle=title.value.trim()||('Episode '+pad(ep));
     if(!seriesId||!Number.isInteger(ep)||ep<1)return alert('Pilih komik dan episode.');
     if(!pageCount)return alert('Pilih page dulu.');
@@ -139,10 +170,18 @@
       await trim(seriesId,ep,pageCount);tick('✓ Sisa page lama dibersihkan');
       const check=await verify(seriesId,ep,pageCount);
       if(check.missing.length||check.extra.length)throw new Error('VERIFY_FAILED • missing: '+(check.missing.join(',')||'-')+' • extra: '+(check.extra.join(',')||'-'));
-      tick('✓ Semua page terverifikasi');
-      status.textContent='✓ PUBLISHED\n'+(selected?.title||seriesId)+' • Episode '+pad(ep)+'\n'+pageCount+'/'+pageCount+' page terverifikasi di R2.';
+      if(newSeriesMode){await saveSeriesMeta(seriesId,requestedTitle);tick('✓ Komik baru masuk catalog')}
+      const verifyCatalog=await fetch('/catalog.json?channel=beta&t='+Date.now(),{cache:'no-store'}).then(r=>r.json());
+      const catalogSeries=(verifyCatalog.series||[]).find(s=>String(s.id)===String(seriesId));
+      if(!catalogSeries)throw new Error('CATALOG_VERIFY_FAILED');
+      const verifyReader=await fetch('/reader-assets.json?channel=beta&t='+Date.now(),{cache:'no-store'}).then(r=>r.json());
+      const readerEpisode=(verifyReader.episodes||[]).find(x=>String(x.seriesId)===String(seriesId)&&Number(x.episode)===ep);
+      if(!readerEpisode||!Array.isArray(readerEpisode.pages)||readerEpisode.pages.length!==pageCount)throw new Error('READER_VERIFY_FAILED');
+      tick('✓ Catalog + Reader terverifikasi');
+      status.textContent='✓ PUBLISHED\n'+(catalogSeries.title||selected?.title||seriesId)+' • Episode '+pad(ep)+'\n'+pageCount+'/'+pageCount+' page terverifikasi di R2 + Catalog + Reader.';
       statusCard.classList.add('success');
       queue=[];coverFile=null;coverInput.value='';coverPick.textContent='PILIH COVER';render();
+      if(newSeriesMode){await loadCatalog(seriesId);setNewSeriesMode(false);newSeriesTitle.value=''};
     }catch(e){
       status.textContent='PUBLISH GAGAL\n'+String(e.message||e)+'\n\nTidak dianggap berhasil. File yang sudah dipilih tetap aman di browser; tekan PUBLISH lagi untuk retry.';
     }finally{busy=false;publish.disabled=false}
