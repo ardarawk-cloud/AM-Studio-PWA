@@ -11,6 +11,81 @@ const INTERNAL_SCRIPT_NAMES=[
   'admin-page-delete'
 ];
 
+const SIGNING_OBJECT_KEY='system/signing/am-studio-public.json';
+const GITHUB_OIDC_ISSUER='https://token.actions.githubusercontent.com';
+const GITHUB_OIDC_AUDIENCE='am-studio-signing';
+let githubJwksCache={keys:[],expiresAt:0};
+
+function b64UrlBytes(value){
+  let s=String(value||'').replace(/-/g,'+').replace(/_/g,'/');
+  while(s.length%4)s+='=';
+  const raw=atob(s),out=new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++)out[i]=raw.charCodeAt(i);
+  return out;
+}
+
+function b64UrlJson(value){
+  return JSON.parse(new TextDecoder().decode(b64UrlBytes(value)));
+}
+
+async function githubJwks(){
+  if(githubJwksCache.keys.length&&Date.now()<githubJwksCache.expiresAt)return githubJwksCache.keys;
+  const r=await fetch(GITHUB_OIDC_ISSUER+'/.well-known/jwks',{headers:{accept:'application/json'}});
+  if(!r.ok)throw new Error('GITHUB_OIDC_JWKS_UNAVAILABLE');
+  const data=await r.json(),keys=Array.isArray(data?.keys)?data.keys:[];
+  if(!keys.length)throw new Error('GITHUB_OIDC_JWKS_EMPTY');
+  githubJwksCache={keys,expiresAt:Date.now()+60*60*1000};
+  return keys;
+}
+
+async function verifyGithubSigningOidc(token){
+  const parts=String(token||'').split('.');
+  if(parts.length!==3)throw new Error('OIDC_INVALID_TOKEN');
+  const header=b64UrlJson(parts[0]),claims=b64UrlJson(parts[1]);
+  if(header.alg!=='RS256'||!header.kid)throw new Error('OIDC_INVALID_HEADER');
+
+  const now=Math.floor(Date.now()/1000);
+  const audience=Array.isArray(claims.aud)?claims.aud:[claims.aud];
+  if(claims.iss!==GITHUB_OIDC_ISSUER||!audience.includes(GITHUB_OIDC_AUDIENCE))throw new Error('OIDC_INVALID_ISSUER_OR_AUDIENCE');
+  if(Number(claims.exp||0)<=now||Number(claims.nbf||0)>now+30)throw new Error('OIDC_TOKEN_EXPIRED');
+  if(claims.repository!=='ardarawk-cloud/AM-Studio-PWA')throw new Error('OIDC_REPOSITORY_DENIED');
+  if(claims.ref!=='refs/heads/main')throw new Error('OIDC_REF_DENIED');
+  if(!['push','workflow_dispatch'].includes(String(claims.event_name||'')))throw new Error('OIDC_EVENT_DENIED');
+  const wf=String(claims.workflow_ref||'');
+  if(!wf.includes('ardarawk-cloud/AM-Studio-PWA/.github/workflows/android-independent-release.yml@refs/heads/main'))throw new Error('OIDC_WORKFLOW_DENIED');
+
+  const jwk=(await githubJwks()).find(k=>k.kid===header.kid);
+  if(!jwk)throw new Error('OIDC_KEY_NOT_FOUND');
+  const key=await crypto.subtle.importKey('jwk',jwk,{name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},false,['verify']);
+  const data=new TextEncoder().encode(parts[0]+'.'+parts[1]);
+  const valid=await crypto.subtle.verify('RSASSA-PKCS1-v1_5',key,b64UrlBytes(parts[2]),data);
+  if(!valid)throw new Error('OIDC_BAD_SIGNATURE');
+  return claims;
+}
+
+async function signingMaterialRoute(request,env){
+  if(request.method!=='POST')return new Response(null,{status:405,headers:{allow:'POST'}});
+  const auth=request.headers.get('authorization')||'';
+  if(!auth.startsWith('Bearer '))return Response.json({ok:false,error:'OIDC_REQUIRED'},{status:401});
+  try{
+    await verifyGithubSigningOidc(auth.slice(7).trim());
+    const object=await env.COMIC_ASSETS?.get(SIGNING_OBJECT_KEY);
+    if(!object)return Response.json({ok:false,error:'SIGNING_MATERIAL_NOT_CONFIGURED'},{status:503});
+    const body=await object.text();
+    return new Response(body,{
+      status:200,
+      headers:{
+        'content-type':'application/json',
+        'cache-control':'no-store',
+        'pragma':'no-cache',
+        'x-content-type-options':'nosniff'
+      }
+    });
+  }catch(error){
+    return Response.json({ok:false,error:String(error?.message||'OIDC_DENIED')},{status:403,headers:{'cache-control':'no-store'}});
+  }
+}
+
 function isPlayRequest(request){
   try{
     const url=new URL(request.url);
@@ -156,7 +231,9 @@ async function playCatalogJson(response,request,env,ctx){
 
 export default{
   async fetch(request,env,ctx){
-    const url=new URL(request.url),response=await base.fetch(request,env,ctx);
+    const url=new URL(request.url);
+    if(url.pathname==='/api/internal/build/signing-material')return signingMaterialRoute(request,env);
+    const response=await base.fetch(request,env,ctx);
     if(request.method==='GET'&&(url.pathname==='/privacy-policy.html'||url.pathname==='/privacy-policy'))return publicDocument(response);
     if(!isPlayRequest(request))return response;
     if(request.method==='GET'&&url.pathname==='/reader-assets.json')return playReaderJson(response);
