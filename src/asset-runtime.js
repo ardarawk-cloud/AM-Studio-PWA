@@ -62,9 +62,9 @@ async function listAll(env,prefix='comics/'){
 
 async function buildInventoryFresh(env){
   if(!env?.COMIC_ASSETS)return {covers:new Set(),episodes:[]};
-  const objects=await listAll(env,'comics/'),covers=new Set(),groups=new Map();
+  const objects=await listAll(env,'comics/'),covers=new Map(),groups=new Map();
   for(const o of objects){
-    const c=o.key.match(/^comics\/([a-z0-9-]+)\/cover\./i);if(c){covers.add(c[1]);continue}
+    const c=o.key.match(/^comics\/([a-z0-9-]+)\/cover\./i);if(c){covers.set(c[1],`/media/${o.key}`);continue}
     const p=o.key.match(/^comics\/([a-z0-9-]+)\/ep(\d{3})\/page-(\d{2,3})\./i);
     if(p){
       const k=`${p[1]}:${Number(p[2])}`;
@@ -99,7 +99,7 @@ async function buildInventory(env){
 function dynamicEntry(g,covers){
   const nums=[...g.pages.keys()].sort((a,b)=>a-b),pages=nums.map(n=>g.pages.get(n)),meta=g.meta||{},pageCount=Math.max(Number(meta.pageCount)||0,nums.at(-1)||0),missing=[];
   for(let i=1;i<=pageCount;i++)if(!g.pages.has(i))missing.push(i);
-  return {seriesId:g.seriesId,episode:g.episode,title:meta.title||`Episode ${pad(g.episode)}`,canonState:'CANON_FINAL',qc:'QC_PASS',publicationState:'OWNER_MANUAL_RECOVERY',productionFormat:'PROFESSIONAL_MULTI_PAGE_EPISODE',coverAsset:covers.has(g.seriesId)?`/media/comics/${g.seriesId}/cover.jpg`:undefined,pageCount,availablePageCount:pages.length,pages,missingReaderPages:missing,readerState:missing.length?'PARTIAL_ASSET_RECOVERY':'READER_COMPLETE',assetQuality:'OWNER_ADMIN_UPLOAD',evidence:{type:'OWNER_ADMIN_UPLOAD',verifiedAt:meta.updatedAt||null}};
+  return {seriesId:g.seriesId,episode:g.episode,title:meta.title||`Episode ${pad(g.episode)}`,canonState:'CANON_FINAL',qc:'QC_PASS',publicationState:'OWNER_MANUAL_RECOVERY',productionFormat:'PROFESSIONAL_MULTI_PAGE_EPISODE',coverAsset:covers.get(g.seriesId)||undefined,pageCount,availablePageCount:pages.length,pages,missingReaderPages:missing,readerState:missing.length?'PARTIAL_ASSET_RECOVERY':'READER_COMPLETE',assetQuality:'OWNER_ADMIN_UPLOAD',evidence:{type:'OWNER_ADMIN_UPLOAD',verifiedAt:meta.updatedAt||null}};
 }
 
 function mergeReader(staticRegistry,inventory){
