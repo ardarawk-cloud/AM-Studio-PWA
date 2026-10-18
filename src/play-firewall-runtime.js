@@ -93,10 +93,15 @@ async function signingMaterialRoute(request,env){
 
 function isPlayRequest(request){
   try{
-    const url=new URL(request.url);
-    if(url.searchParams.get('channel')==='play'||url.searchParams.get('channel')==='public')return true;
-    return /AMStudioAndroid\/[^\s]+\s+(?:PlayReader|PublicReader)/i.test(request.headers.get('user-agent')||'');
-  }catch{return false}
+    const url=new URL(request.url),channel=String(url.searchParams.get('channel')||'').toLowerCase();
+    const ua=request.headers.get('user-agent')||'';
+    if(channel==='beta'||channel==='owner')return false;
+    if(/AMStudioAndroid\/[^\s]+\s+OwnerBeta/i.test(ua))return false;
+    if(channel==='play'||channel==='public')return true;
+    if(/AMStudioAndroid\/[^\s]+\s+(?:PlayReader|PublicReader)/i.test(ua))return true;
+    // Web visitors are public by default. Owner access must be explicit.
+    return true;
+  }catch{return true}
 }
 
 function completeReaderAsset(asset){
@@ -239,7 +244,7 @@ export default{
     const url=new URL(request.url);
     if(url.pathname==='/api/internal/build/signing-material')return signingMaterialRoute(request,env);
     const response=await base.fetch(request,env,ctx);
-    if(request.method==='GET'&&(url.pathname==='/privacy-policy.html'||url.pathname==='/privacy-policy'))return publicDocument(response);
+    if(request.method==='GET'&&(url.pathname==='/privacy-policy.html'||url.pathname==='/privacy-policy'||url.pathname==='/owner-upload.html'||url.pathname==='/owner-upload'))return publicDocument(response);
     if(!isPlayRequest(request))return response;
     if(request.method==='GET'&&url.pathname==='/reader-assets.json')return playReaderJson(response);
     if(request.method==='GET'&&url.pathname==='/catalog.json')return playCatalogJson(response,request,env,ctx);
