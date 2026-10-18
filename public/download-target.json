@@ -1,11 +1,11 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "product": "AM STUDIO",
   "applicationId": "com.ardacore.amstudio",
-  "mode": "PRELAUNCH_READER",
+  "mode": "DIRECT_APK",
   "permanentGateway": "https://am-studio-pwa.ardarawk.workers.dev/download.html",
-  "directApkUrl": null,
-  "playStoreUrl": "https://play.google.com/store/apps/details?id=com.ardacore.amstudio",
-  "readerFallbackUrl": "/?channel=play&utm_source=am_studio_story_promo&utm_medium=acquisition_gateway&utm_campaign=growth_v1",
-  "rule": "When a permanent public APK or Google Play release is verified, change mode and target here only. Existing social campaign links must continue using permanentGateway."
+  "directApkUrl": "https://github.com/ardarawk-cloud/AM-Studio-PWA/releases/latest/download/AM-STUDIO.apk",
+  "readerFallbackUrl": "/?channel=public&utm_source=am_studio_direct&utm_medium=web&utm_campaign=independent_public",
+  "distribution": "INDEPENDENT_PUBLIC",
+  "rule": "Public Android distribution is direct APK. Owner Beta remains separate and must never be offered to customers."
 }
