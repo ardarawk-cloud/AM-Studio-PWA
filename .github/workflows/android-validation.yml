@@ -14,6 +14,7 @@ on:
       - '.github/workflows/android-validation.yml'
       - '.github/workflows/android-production-release.yml'
       - '.github/workflows/android-play-store.yml'
+      - '.github/workflows/android-independent-release.yml'
   pull_request:
     branches:
       - main
@@ -140,41 +141,40 @@ jobs:
           grep -q 'PLAY_STORE_MODE = false' "$BETA_CONFIG"
           cp "$APK" validation-out/AM-STUDIO-Owner-Beta-v0.2.3.apk
 
-      - name: Validate unsigned Play Reader variant
+      - name: Validate independent Public Reader variant
         working-directory: android
         env:
           AM_STUDIO_APPLICATION_ID: com.ardacore.amstudio
-          AM_STUDIO_PLAY_MODE: 'true'
+          AM_STUDIO_PUBLIC_MODE: 'true'
+          AM_STUDIO_PLAY_MODE: 'false'
           AM_STUDIO_VERSION_NAME: '1.0.0'
           AM_STUDIO_VERSION_CODE: '10000'
-        run: gradle --no-daemon clean assembleRelease bundleRelease lintRelease
+        run: gradle --no-daemon clean assembleRelease lintRelease
 
-      - name: Verify Play Reader compile identity
+      - name: Verify independent Public Reader compile identity
         shell: bash
         run: |
           set -euo pipefail
           APK='android/app/build/outputs/apk/release/app-release-unsigned.apk'
-          AAB='android/app/build/outputs/bundle/release/app-release.aab'
           test -f "$APK"
-          test -f "$AAB"
           BADGING=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | head -n1)
-          echo "$BADGING" | tee validation-out/AM-STUDIO-play-build-identity.txt
+          echo "$BADGING" | tee validation-out/AM-STUDIO-public-build-identity.txt
           echo "$BADGING" | grep -q "name='com.ardacore.amstudio'"
           echo "$BADGING" | grep -q "versionCode='10000'"
           echo "$BADGING" | grep -q "versionName='1.0.0'"
-          PLAY_CONFIG='android/app/build/generated/source/buildConfig/release/com/ardacore/amstudio/BuildConfig.java'
-          test -f "$PLAY_CONFIG"
-          grep -q 'PLAY_STORE_MODE = true' "$PLAY_CONFIG"
+          PUBLIC_CONFIG='android/app/build/generated/source/buildConfig/release/com/ardacore/amstudio/BuildConfig.java'
+          test -f "$PUBLIC_CONFIG"
+          grep -q 'PUBLIC_READER_MODE = true' "$PUBLIC_CONFIG"
+          grep -q 'PLAY_STORE_MODE = false' "$PUBLIC_CONFIG"
           PERMS=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump permissions "$APK")
-          printf '%s\n' "$PERMS" | tee -a validation-out/AM-STUDIO-play-build-identity.txt
+          printf '%s\n' "$PERMS" | tee -a validation-out/AM-STUDIO-public-build-identity.txt
           printf '%s\n' "$PERMS" | grep -q 'android.permission.INTERNET'
-          ! printf '%s\n' "$PERMS" | grep -Eq 'ACCESS_FINE_LOCATION|ACCESS_COARSE_LOCATION|READ_CONTACTS|WRITE_CONTACTS|RECORD_AUDIO|CAMERA|READ_SMS|SEND_SMS|READ_MEDIA_IMAGES|READ_EXTERNAL_STORAGE'
-          cp "$AAB" validation-out/AM-STUDIO-Play-unsigned-validation.aab
+          ! printf '%s\n' "$PERMS" | grep -Eq 'ACCESS_FINE_LOCATION|ACCESS_COARSE_LOCATION|READ_CONTACTS|WRITE_CONTACTS|RECORD_AUDIO|CAMERA|READ_SMS|SEND_SMS|READ_MEDIA_IMAGES|READ_EXTERNAL_STORAGE|REQUEST_INSTALL_PACKAGES|SYSTEM_ALERT_WINDOW|QUERY_ALL_PACKAGES'
 
       - name: Upload Android validation artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: AM-STUDIO-Android-Dual-Channel-Validation
+          name: AM-STUDIO-Android-Owner-and-Public-Validation
           path: validation-out/
           if-no-files-found: error
           retention-days: 30
