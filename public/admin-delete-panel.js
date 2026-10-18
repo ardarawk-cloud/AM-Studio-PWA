@@ -19,21 +19,21 @@
     zone.id='amaDeleteZone';
     zone.style.borderColor='#69363d';
     zone.innerHTML=`
-      <b style="color:#ffaaa4">Hapus / Reset Upload</b>
-      <div class="ama-note" style="margin-top:6px">Buang asset salah atau sisa Auto Produce tanpa menyentuh catalog komik.</div>
+      <details class="ama-tools">
+        <summary>TOOLS LANJUTAN / RESET</summary>
+        <div class="ama-note" style="margin-top:8px">Buka hanya kalau perlu bersihkan upload lama.</div>
 
-      <label class="ama-label">SIMPAN SAMPAI PAGE</label>
-      <div class="ama-row">
-        <input class="ama-input" id="amaTrimKeep" type="number" min="1" max="999" value="5" style="flex:1;min-width:130px" placeholder="contoh: 5">
-        <button class="ama-btn danger" id="amaTrimEpisode" style="width:auto">HAPUS PAGE SETELAHNYA</button>
-      </div>
-      <div class="ama-note" style="margin-top:8px">Contoh: isi 5 → Page 1–5 tetap, semua Page 6 ke atas dihapus dan total page diubah menjadi 5.</div>
+        <label class="ama-label">SIMPAN SAMPAI PAGE</label>
+        <div class="ama-row">
+          <input class="ama-input" id="amaTrimKeep" type="number" min="1" max="999" value="5" style="flex:1;min-width:130px" placeholder="contoh: 5">
+          <button class="ama-btn danger" id="amaTrimEpisode" style="width:auto">POTONG</button>
+        </div>
 
-      <div class="ama-grid" style="margin-top:14px">
-        <button class="ama-btn danger" id="amaDeleteEpisode">HAPUS EPISODE TERPILIH</button>
-        <button class="ama-btn danger" id="amaDeleteSeries">HAPUS SELURUH KOMIK</button>
-      </div>
-      <div class="ama-note" style="margin-top:8px">Hapus seluruh komik = cover + semua episode asset pada series yang dipilih.</div>`;
+        <div class="ama-row" style="margin-top:12px">
+          <button class="ama-btn danger" id="amaDeleteEpisode">HAPUS EPISODE</button>
+          <button class="ama-btn danger" id="amaDeleteSeries">RESET KOMIK</button>
+        </div>
+      </details>`;
 
     const statusCard=status?.closest('.ama-card');
     if(statusCard)shell.insertBefore(zone,statusCard);else shell.appendChild(zone);
