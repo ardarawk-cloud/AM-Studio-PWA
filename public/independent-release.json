@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "channel": "INDEPENDENT_PUBLIC",
+  "applicationId": "com.ardacore.amstudio",
+  "versionName": "1.0.0",
+  "versionCode": 10000,
+  "distribution": "DIRECT_APK",
+  "adminTools": false,
+  "googlePlayBilling": false,
+  "requiredPermissions": ["android.permission.INTERNET"]
+}
