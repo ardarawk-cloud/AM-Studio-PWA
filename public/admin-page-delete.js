@@ -45,7 +45,7 @@
       alert('Unlock ADMIN dulu. Setelah itu kembali ke page dan tekan × lagi.');
       return;
     }
-    if(!confirm(`Hapus Page ${info.page} saja?\n\nSeries: ${info.seriesId}\nEpisode: ${info.episode}\n\nPage lain tidak ikut terhapus.`))return;
+    if(!confirm(`Hapus Page ${info.page} saja?\n\nSeries: ${info.seriesId}\nEpisode: ${info.episode}\n\nPage lain tidak ikut terhapus. Page setelahnya otomatis naik satu nomor.`))return;
     button.disabled=true;
     button.textContent='…';
     try{
@@ -97,7 +97,7 @@
   }
 
   function scan(){
-    document.querySelectorAll('img.comic-page, .comic-stack img').forEach(decorate);
+    document.querySelectorAll('img.comic-page, .comic-stack img, img.reader-page, .reader-pages img').forEach(decorate);
   }
 
   scan();
