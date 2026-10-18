@@ -13,6 +13,7 @@ def amVersionName = System.getenv('AM_STUDIO_VERSION_NAME') ?: '0.2.3'
 def amVersionCodeRaw = System.getenv('AM_STUDIO_VERSION_CODE')
 def amVersionCode = amVersionCodeRaw ? Integer.parseInt(amVersionCodeRaw) : 4
 def amPlayStoreMode = (System.getenv('AM_STUDIO_PLAY_MODE') ?: 'false').toBoolean()
+def amPublicReaderMode = (System.getenv('AM_STUDIO_PUBLIC_MODE') ?: 'false').toBoolean()
 
 android {
     namespace 'com.ardacore.amstudio'
@@ -25,6 +26,7 @@ android {
         versionCode amVersionCode
         versionName amVersionName
         buildConfigField 'boolean', 'PLAY_STORE_MODE', amPlayStoreMode.toString()
+        buildConfigField 'boolean', 'PUBLIC_READER_MODE', amPublicReaderMode.toString()
     }
 
     buildFeatures {
@@ -73,9 +75,4 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-}
-
-
-dependencies {
-    implementation 'com.android.billingclient:billing:9.1.0'
 }
