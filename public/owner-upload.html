@@ -55,6 +55,7 @@
     <div id="grid" class="grid"></div>
     <button id="publish" class="primary" style="margin-top:15px">UPLOAD HALAMAN</button>
     <button id="managePages" type="button" class="ghost" style="margin-top:10px;width:100%">KELOLA / HAPUS HALAMAN TERUPLOAD</button>
+    <label class="row note" style="margin-top:12px"><input id="replaceEpisode" type="checkbox" style="width:20px;height:20px;flex:0 0 auto"> Ganti seluruh isi episode (hapus halaman lama)</label>
     <div id="uploadedPages" class="grid"></div>
     <div class="note" style="text-align:center;margin-top:8px">Tidak akan ditulis “berhasil” sebelum semua page benar-benar ditemukan kembali di R2.</div>
   </section>
@@ -194,7 +195,7 @@
   publish.onclick=async()=>{
     if(busy)return;
     if(!key()&&!(await unlock()))return;
-    const ep=Number(episode.value),pageCount=queue.length;
+    const ep=Number(episode.value),pageCount=queue.length,replaceEpisode=$('#replaceEpisode').checked;
     const requestedTitle=newSeriesMode?newSeriesTitle.value.trim():'';
     let seriesId=newSeriesMode?slugify(requestedTitle):series.value;
     let selected=(catalog.series||[]).find(s=>String(s.id)===String(seriesId));
@@ -208,20 +209,25 @@
     const episodeTitle=title.value.trim()||('Episode '+pad(ep));
     if(!seriesId||!Number.isInteger(ep)||ep<1)return alert('Pilih komik dan episode.');
     if(!pageCount)return alert('Pilih minimal satu gambar halaman.');
-    if(!confirm('Publish '+(selected?.title||seriesId)+' • Episode '+ep+' • '+pageCount+' page?'))return;
+    if(!confirm((replaceEpisode?'GANTI SEMUA HALAMAN':'TAMBAH HALAMAN')+' • '+(selected?.title||seriesId)+' • Episode '+ep+' • '+pageCount+' gambar?'))return;
 
     busy=true;publish.disabled=true;statusCard.classList.remove('success');bar.style.width='0%';
-    const steps=pageCount+(coverFile?1:0)+3;let done=0;
+    const steps=pageCount+(coverFile?1:0)+4;let done=0;
     const tick=t=>{done++;bar.style.width=Math.min(100,Math.round(done/steps*100))+'%';status.textContent=t};
     try{
       if(coverFile){await uploadFile(coverFile,'comics/'+seriesId+'/cover.'+ext(coverFile));tick('✓ Cover tersimpan')}
+      const before=await json('/api/assets/list?prefix='+encodeURIComponent('comics/'+seriesId+'/ep'+pad(ep)+'/'),{headers:{'x-am-studio-admin-key':key()}});
+      const existingNums=(before.objects||[]).map(o=>{const m=String(o.key||'').match(/\\/page-(\\d{2,3})\\.(?:jpg|jpeg|png|webp|avif)$/i);return m?Number(m[1]):null}).filter(Number.isInteger);
+      const startPage=replaceEpisode?1:Math.max(0,...existingNums)+1;
+      const totalPages=replaceEpisode?pageCount:startPage-1+pageCount;
+      if(totalPages>999)throw new Error('Maksimal 999 halaman per episode.');
       for(let i=0;i<pageCount;i++){
-        const file=queue[i],assetKey='comics/'+seriesId+'/ep'+pad(ep)+'/page-'+pad(i+1,2)+'.'+ext(file);
+        const file=queue[i],assetKey='comics/'+seriesId+'/ep'+pad(ep)+'/page-'+pad(startPage+i,2)+'.'+ext(file);
         await uploadFile(file,assetKey);tick('Uploading Page '+(i+1)+'/'+pageCount+'…');
       }
-      await saveMeta(seriesId,ep,episodeTitle,pageCount);tick('✓ Metadata tersimpan');
-      await trim(seriesId,ep,pageCount);tick('✓ Sisa page lama dibersihkan');
-      const check=await verify(seriesId,ep,pageCount);
+      await saveMeta(seriesId,ep,episodeTitle,totalPages);tick('✓ Metadata tersimpan');
+      if(replaceEpisode){await trim(seriesId,ep,totalPages);tick('✓ Halaman lama yang berlebih dibersihkan')}else tick('✓ Halaman lama dipertahankan');
+      const check=await verify(seriesId,ep,totalPages);
       if(check.missing.length||check.extra.length)throw new Error('VERIFY_FAILED • missing: '+(check.missing.join(',')||'-')+' • extra: '+(check.extra.join(',')||'-'));
       if(newSeriesMode){await saveSeriesMeta(seriesId,requestedTitle);tick('✓ Komik baru masuk catalog')}
       const verifyCatalog=await fetch('/catalog.json?channel=beta&t='+Date.now(),{cache:'no-store'}).then(r=>r.json());
@@ -229,11 +235,11 @@
       if(!catalogSeries)throw new Error('CATALOG_VERIFY_FAILED');
       const verifyReader=await fetch('/reader-assets.json?channel=beta&t='+Date.now(),{cache:'no-store'}).then(r=>r.json());
       const readerEpisode=(verifyReader.episodes||[]).find(x=>String(x.seriesId)===String(seriesId)&&Number(x.episode)===ep);
-      if(!readerEpisode||!Array.isArray(readerEpisode.pages)||readerEpisode.pages.length!==pageCount)throw new Error('READER_VERIFY_FAILED');
+      if(!readerEpisode||!Array.isArray(readerEpisode.pages)||readerEpisode.pages.length!==totalPages)throw new Error('READER_VERIFY_FAILED');
       tick('✓ Catalog + Reader terverifikasi');
-      status.textContent='✓ PUBLISHED\n'+(catalogSeries.title||selected?.title||seriesId)+' • Episode '+pad(ep)+'\n'+pageCount+'/'+pageCount+' page terverifikasi di R2 + Catalog + Reader.';
+      status.textContent='✓ PUBLISHED\n'+(catalogSeries.title||selected?.title||seriesId)+' • Episode '+pad(ep)+'\n'+totalPages+'/'+totalPages+' page terverifikasi di R2 + Catalog + Reader.';
       statusCard.classList.add('success');
-      queue=[];coverFile=null;coverInput.value='';coverPick.textContent='PILIH COVER';render();
+      queue=[];coverFile=null;coverInput.value='';coverPick.textContent='＋ PILIH COVER';$('#replaceEpisode').checked=false;render();
       if(newSeriesMode){await loadCatalog(seriesId);setNewSeriesMode(false);newSeriesTitle.value=''};
     }catch(e){
       status.textContent='PUBLISH GAGAL\n'+String(e.message||e)+'\n\nTidak dianggap berhasil. File yang sudah dipilih tetap aman di browser; tekan PUBLISH lagi untuk retry.';
