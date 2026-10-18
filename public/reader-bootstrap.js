@@ -51,6 +51,10 @@
   function openOwnerAdmin(){
     if(!owner)return;
     document.documentElement.dataset.amOwnerMode='1';
+    if(sessionStorage.getItem('am_owner_skip_admin_once')==='1'){
+      sessionStorage.removeItem('am_owner_skip_admin_once');
+      return true;
+    }
     const panel=document.getElementById('am-admin-panel'),launch=document.getElementById('am-admin-launch');
     if(panel){panel.classList.add('open');return true}
     if(launch){launch.click();return true}
