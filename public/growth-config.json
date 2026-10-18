@@ -56,14 +56,14 @@
       "reason": "Requires AdMob app/ad-unit setup, consent/privacy review, Data Safety update, and explicit reward entitlement design."
     },
     "premiumSubscription": {
-      "status": "IMPLEMENTED_WAITING_FOR_PLAY_CONSOLE",
+      "status": "DISABLED_BY_OWNER_DIRECTION",
       "publicEntry": false,
-      "reason": "Native Play Billing + server verification + entitlement storage are implemented. Activation still requires Google Play Console subscription/base plans, Android Publisher service-account access, Cloudflare verification secrets, RTDN push configuration, pricing approval, and owner release approval."
+      "reason": "Google Play Billing is not used. AM STUDIO public distribution is independent direct APK; paid access will use an independent entitlement/payment flow."
     },
     "oneTimeProducts": {
-      "status": "GATED_NOT_LIVE",
+      "status": "INDEPENDENT_PAYMENT_FUTURE",
       "publicEntry": false,
-      "reason": "Requires Play product catalog, secure verification, entitlement persistence, and content SKU mapping."
+      "reason": "Google Play products are not used. Future paid access must use the independent AM STUDIO payment and entitlement backend."
     },
     "creatorPlatform": {
       "status": "FUTURE_PHASE",
