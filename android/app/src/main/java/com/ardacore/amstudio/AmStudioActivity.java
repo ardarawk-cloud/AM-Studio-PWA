@@ -44,6 +44,7 @@ public class AmStudioActivity extends Activity {
     private String lastInternalUrl;
     private boolean loadFailed;
     private OnBackInvokedCallback predictiveBackCallback;
+    private AmStudioBillingBridge billingBridge;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -148,6 +149,11 @@ public class AmStudioActivity extends Activity {
                 + " AMStudioAndroid/" + BuildConfig.VERSION_NAME
                 + (BuildConfig.PLAY_STORE_MODE ? " PlayReader" : " OwnerBeta"));
 
+        if (BuildConfig.PLAY_STORE_MODE) {
+            billingBridge = new AmStudioBillingBridge(this, webView);
+            webView.addJavascriptInterface(billingBridge, "AmStudioBilling");
+        }
+
         boolean debuggable = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         WebView.setWebContentsDebuggingEnabled(debuggable);
         webView.setWebViewClient(new AmStudioWebViewClient());
@@ -179,7 +185,7 @@ public class AmStudioActivity extends Activity {
                 + "const hide=()=>['am-admin-launch','am-page-control-launch','am-admin-panel','am-page-control'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.setProperty('display','none','important')});"
                 + "hide();"
                 + "if(!window.__amNativeReaderObserver){window.__amNativeReaderObserver=new MutationObserver(hide);window.__amNativeReaderObserver.observe(document.documentElement,{childList:true,subtree:true});}"
-                + "if(!document.getElementById('am-native-reader-script')){const s=document.createElement('script');s.id='am-native-reader-script';s.src='/native-reader.js?v=1';s.defer=true;document.documentElement.appendChild(s);}"
+                + "if(!document.getElementById('am-native-reader-script')){const s=document.createElement('script');s.id='am-native-reader-script';s.src='/native-reader.js?v=5';s.defer=true;document.documentElement.appendChild(s);}"
                 + "})();";
         view.evaluateJavascript(script, null);
     }
@@ -228,7 +234,10 @@ public class AmStudioActivity extends Activity {
         @Override
         public void onPageFinished(WebView view, String url) {
             if (!loadFailed) errorPanel.setVisibility(View.GONE);
-            if (BuildConfig.PLAY_STORE_MODE) applyPublicNativeMode(view);
+            if (BuildConfig.PLAY_STORE_MODE) {
+                applyPublicNativeMode(view);
+                if (billingBridge != null) billingBridge.refresh();
+            }
         }
 
         @Override
@@ -347,6 +356,11 @@ public class AmStudioActivity extends Activity {
         if (filePathCallback != null) {
             filePathCallback.onReceiveValue(null);
             filePathCallback = null;
+        }
+        if (billingBridge != null) {
+            if (webView != null) webView.removeJavascriptInterface("AmStudioBilling");
+            billingBridge.destroy();
+            billingBridge = null;
         }
         if (webView != null) {
             webView.stopLoading();
