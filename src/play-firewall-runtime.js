@@ -145,9 +145,9 @@ function readyEpisodeMap(registry){
 function filterCatalog(catalog,registry){
   const out=structuredClone(catalog||{studio:{},series:[]});
   const ready=readyEpisodeMap(registry);
-  out.series=(out.series||[]).filter(series=>ready.has(series.id)||publicDiscoveryCover(series)).map(series=>{
+  out.series=(out.series||[]).map(series=>{
     const episodes=[...(ready.get(series.id)||new Set())].sort((a,b)=>a-b);
-    if(!episodes.length)return {...series,episodes:0,episodeCountVerified:true,verifiedEpisodes:[],freeEpisodes:0,status:'COMING_SOON',qc:'PUBLIC_COVER_APPROVED',publicReaderState:'COMING_SOON'};
+    if(!episodes.length)return {...series,episodes:0,episodeCountVerified:true,verifiedEpisodes:[],freeEpisodes:0,status:'COMING_SOON',qc:'PUBLIC_LISTING_ONLY',publicReaderState:'COMING_SOON'};
     const max=episodes[episodes.length-1],contiguous=episodes.length===max&&episodes.every((n,i)=>n===i+1);
     return {...series,episodes:contiguous?max:episodes.length,episodeCountVerified:contiguous,verifiedEpisodes:episodes,freeEpisodes:Math.max(Number(series.freeEpisodes||0),contiguous?max:0),status:'PUBLISHED',qc:'PUBLIC_READER_READY',publicReaderState:'READY'};
   });
