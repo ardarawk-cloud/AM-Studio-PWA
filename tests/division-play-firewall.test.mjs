@@ -40,10 +40,12 @@ test('Play firewall strips every owner-only injected script from HTML',()=>{
   assert.match(out,/reader-hotfix\.js/,'reader-only visual hotfix may remain');
 });
 
-test('Play mode is sticky for native Play WebView even when an internal URL loses channel query',()=>{
-  assert.equal(isPlayRequest(new Request('https://am-studio-pwa.ardarawk.workers.dev/',{headers:{'user-agent':'Android WebView AMStudioAndroid/1.0.0 PlayReader'}})),true);
-  assert.equal(isPlayRequest(new Request('https://am-studio-pwa.ardarawk.workers.dev/?channel=play')),true);
-  assert.equal(isPlayRequest(new Request('https://am-studio-pwa.ardarawk.workers.dev/')),false);
+test('Public mode is the safe default while owner mode must be explicit',()=>{
+  assert.equal(isPlayRequest(new Request('https://am-studio-pwa.ardarawk.workers.dev/',{headers:{'user-agent':'Android WebView AMStudioAndroid/1.0.0 PublicReader'}})),true);
+  assert.equal(isPlayRequest(new Request('https://am-studio-pwa.ardarawk.workers.dev/?channel=public')),true);
+  assert.equal(isPlayRequest(new Request('https://am-studio-pwa.ardarawk.workers.dev/')),true);
+  assert.equal(isPlayRequest(new Request('https://am-studio-pwa.ardarawk.workers.dev/?channel=beta')),false);
+  assert.equal(isPlayRequest(new Request('https://am-studio-pwa.ardarawk.workers.dev/',{headers:{'user-agent':'Android WebView AMStudioAndroid/0.2.3 OwnerBeta'}})),false);
 });
 
 test('Privacy document is public-safe on both source and Cloudflare clean routes',async()=>{
