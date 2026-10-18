@@ -56,9 +56,9 @@
       "reason": "Requires AdMob app/ad-unit setup, consent/privacy review, Data Safety update, and explicit reward entitlement design."
     },
     "premiumSubscription": {
-      "status": "GATED_NOT_LIVE",
+      "status": "IMPLEMENTED_WAITING_FOR_PLAY_CONSOLE",
       "publicEntry": false,
-      "reason": "Requires Google Play product setup, secure purchase verification, entitlement backend, RTDN, pricing approval, and explicit owner release approval."
+      "reason": "Native Play Billing + server verification + entitlement storage are implemented. Activation still requires Google Play Console subscription/base plans, Android Publisher service-account access, Cloudflare verification secrets, RTDN push configuration, pricing approval, and owner release approval."
     },
     "oneTimeProducts": {
       "status": "GATED_NOT_LIVE",
