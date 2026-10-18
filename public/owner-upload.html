@@ -144,7 +144,7 @@
     if(!id||!Number.isInteger(ep)||ep<1)return alert('Pilih komik dan episode.');
     const prefix='comics/'+id+'/ep'+pad(ep)+'/';
     const data=await json('/api/assets/list?prefix='+encodeURIComponent(prefix),{headers:{'x-am-studio-admin-key':key()}});
-    const files=(data.objects||[]).map(o=>{const m=String(o.key||'').match(/\\/page-(\\d{2,3})\\.(jpg|jpeg|png|webp|avif)$/i);return m?{n:Number(m[1]),key:o.key}:null}).filter(Boolean).sort((a,b)=>a.n-b.n);
+    const files=(data.objects||[]).map(o=>{const m=String(o.key||'').match(/\/page-(\d{2,3})\.(jpg|jpeg|png|webp|avif)$/i);return m?{n:Number(m[1]),key:o.key}:null}).filter(Boolean).sort((a,b)=>a.n-b.n);
     uploadedPages.innerHTML='';
     if(!files.length){uploadedPages.textContent='Belum ada halaman tersimpan.';return}
     for(const file of files){
@@ -217,7 +217,7 @@
     try{
       if(coverFile){await uploadFile(coverFile,'comics/'+seriesId+'/cover.'+ext(coverFile));tick('✓ Cover tersimpan')}
       const before=await json('/api/assets/list?prefix='+encodeURIComponent('comics/'+seriesId+'/ep'+pad(ep)+'/'),{headers:{'x-am-studio-admin-key':key()}});
-      const existingNums=(before.objects||[]).map(o=>{const m=String(o.key||'').match(/\\/page-(\\d{2,3})\\.(?:jpg|jpeg|png|webp|avif)$/i);return m?Number(m[1]):null}).filter(Number.isInteger);
+      const existingNums=(before.objects||[]).map(o=>{const m=String(o.key||'').match(/\/page-(\d{2,3})\.(?:jpg|jpeg|png|webp|avif)$/i);return m?Number(m[1]):null}).filter(Number.isInteger);
       const startPage=replaceEpisode?1:Math.max(0,...existingNums)+1;
       const totalPages=replaceEpisode?pageCount:startPage-1+pageCount;
       if(totalPages>999)throw new Error('Maksimal 999 halaman per episode.');
