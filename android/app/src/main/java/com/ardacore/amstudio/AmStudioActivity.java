@@ -44,7 +44,6 @@ public class AmStudioActivity extends Activity {
     private String lastInternalUrl;
     private boolean loadFailed;
     private OnBackInvokedCallback predictiveBackCallback;
-    private AmStudioBillingBridge billingBridge;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -57,6 +56,7 @@ public class AmStudioActivity extends Activity {
     }
 
     private String distributionChannel() {
+        if (BuildConfig.PUBLIC_READER_MODE) return "public";
         return BuildConfig.PLAY_STORE_MODE ? "play" : "beta";
     }
 
@@ -147,12 +147,7 @@ public class AmStudioActivity extends Activity {
 
         settings.setUserAgentString(settings.getUserAgentString()
                 + " AMStudioAndroid/" + BuildConfig.VERSION_NAME
-                + (BuildConfig.PLAY_STORE_MODE ? " PlayReader" : " OwnerBeta"));
-
-        if (BuildConfig.PLAY_STORE_MODE) {
-            billingBridge = new AmStudioBillingBridge(this, webView);
-            webView.addJavascriptInterface(billingBridge, "AmStudioBilling");
-        }
+                + (BuildConfig.PUBLIC_READER_MODE ? " PublicReader" : (BuildConfig.PLAY_STORE_MODE ? " PlayReader" : " OwnerBeta")));
 
         boolean debuggable = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         WebView.setWebContentsDebuggingEnabled(debuggable);
@@ -234,10 +229,7 @@ public class AmStudioActivity extends Activity {
         @Override
         public void onPageFinished(WebView view, String url) {
             if (!loadFailed) errorPanel.setVisibility(View.GONE);
-            if (BuildConfig.PLAY_STORE_MODE) {
-                applyPublicNativeMode(view);
-                if (billingBridge != null) billingBridge.refresh();
-            }
+            if (BuildConfig.PUBLIC_READER_MODE || BuildConfig.PLAY_STORE_MODE) applyPublicNativeMode(view);
         }
 
         @Override
@@ -274,7 +266,7 @@ public class AmStudioActivity extends Activity {
     private final class AmStudioChromeClient extends WebChromeClient {
         @Override
         public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
-            if (BuildConfig.PLAY_STORE_MODE) {
+            if (BuildConfig.PUBLIC_READER_MODE || BuildConfig.PLAY_STORE_MODE) {
                 callback.onReceiveValue(null);
                 Toast.makeText(AmStudioActivity.this, "Upload hanya tersedia di AM STUDIO Owner Beta.", Toast.LENGTH_SHORT).show();
                 return true;
@@ -356,11 +348,6 @@ public class AmStudioActivity extends Activity {
         if (filePathCallback != null) {
             filePathCallback.onReceiveValue(null);
             filePathCallback = null;
-        }
-        if (billingBridge != null) {
-            if (webView != null) webView.removeJavascriptInterface("AmStudioBilling");
-            billingBridge.destroy();
-            billingBridge = null;
         }
         if (webView != null) {
             webView.stopLoading();
