@@ -127,9 +127,9 @@ function mergeCatalog(catalog,inv){
   }
 
   out.series=[...existing.values()].map(s=>{
-    const groups=(bySeries.get(s.id)||[]).sort((a,b)=>a.episode-b.episode);if(!groups.length)return s;
+    const groups=(bySeries.get(s.id)||[]).sort((a,b)=>a.episode-b.episode);const withCover=inv.covers.has(s.id)?{...s,cover:{...(s.cover||{}),asset:inv.covers.get(s.id),status:'OWNER_UPLOAD_READY'}}:s;if(!groups.length)return withCover;
     const nums=groups.map(g=>g.episode),max=Math.max(...nums),contiguous=nums.length===max&&nums.every((n,i)=>n===i+1),titles=Array.from({length:max},(_,i)=>groups.find(g=>g.episode===i+1)?.meta?.title||s.episodeTitles?.[i]||`Episode ${pad(i+1)}`);
-    return {...s,episodes:contiguous?max:(s.episodes||nums.length),episodeCountVerified:contiguous||s.episodeCountVerified,verifiedEpisodes:[...new Set([...(s.verifiedEpisodes||[]),...nums])].sort((a,b)=>a-b),freeEpisodes:Math.max(Number(s.freeEpisodes||0),contiguous?max:nums.length),episodeTitles:titles,cover:{...(s.cover||{}),asset:inv.covers.get(s.id)||s.cover?.asset,status:inv.covers.has(s.id)?'OWNER_UPLOAD_READY':s.cover?.status}};
+    return {...withCover,episodes:contiguous?max:(s.episodes||nums.length),episodeCountVerified:contiguous||s.episodeCountVerified,verifiedEpisodes:[...new Set([...(s.verifiedEpisodes||[]),...nums])].sort((a,b)=>a-b),freeEpisodes:Math.max(Number(s.freeEpisodes||0),contiguous?max:nums.length),episodeTitles:titles,cover:{...(s.cover||{}),asset:inv.covers.get(s.id)||s.cover?.asset,status:inv.covers.has(s.id)?'OWNER_UPLOAD_READY':s.cover?.status}};
   }).sort((a,b)=>String(a.title||'').localeCompare(String(b.title||''),'id'));
   return out;
 }
