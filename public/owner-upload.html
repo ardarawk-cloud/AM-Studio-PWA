@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#05070b">
+  <title>AM STUDIO — Owner Upload</title>
+  <style>
+    :root{color-scheme:dark;--bg:#05070b;--card:#0d131d;--line:#2a3546;--text:#f7f9fc;--muted:#97a3b5;--ok:#72e7ad;--bad:#ff9d97}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+    main{max-width:680px;margin:auto;padding:14px 12px 100px}.top{position:sticky;top:0;z-index:4;background:#05070bf2;backdrop-filter:blur(14px);padding:10px 0 12px}.title{font-size:24px;font-weight:950}.sub{font-size:12px;color:var(--muted);margin-top:2px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;margin:10px 0}.label{display:block;font-size:10px;font-weight:900;letter-spacing:.08em;color:#bdc6d3;margin:12px 0 6px}.row{display:flex;gap:9px;align-items:center}.grow{flex:1;min-width:0}
+    input,select,button,.pick{width:100%;border:1px solid #344155;background:#121a26;color:#fff;border-radius:14px;padding:13px;font:inherit}button,.pick{font-weight:900;cursor:pointer}.primary{background:#fff;color:#090c11;border-color:#fff;font-size:16px;padding:15px}.ghost{background:#141b26}.danger{color:#ffaaa4;border-color:#65373c}.small{width:auto;padding:9px 11px}
+    .auth-ok{color:var(--ok)}.auth-bad{color:var(--bad)}.note{font-size:11px;line-height:1.45;color:var(--muted)}.status{white-space:pre-wrap;font-size:12px;line-height:1.55}
+    .drop{display:block;text-align:center;border:1.5px dashed #53627a;border-radius:18px;padding:19px 14px;background:#091019;cursor:pointer}.drop b{display:block;font-size:16px}.drop span{display:block;font-size:11px;color:#9ba6b7;margin-top:5px}
+    #pagesInput,#coverInput{display:none}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}.media{position:relative;aspect-ratio:3/4;border:1px solid #2d394a;border-radius:14px;overflow:hidden;background:#070b10}.media img{width:100%;height:100%;object-fit:cover}.num{position:absolute;left:6px;top:6px;background:#05070bdc;border:1px solid #ffffff2d;border-radius:999px;padding:4px 7px;font-size:10px;font-weight:900}.x{position:absolute;right:6px;top:6px;width:28px;height:28px;padding:0;border:0;background:#d9272e;border-radius:999px;font-size:18px}
+    .mv{position:absolute;left:5px;right:5px;bottom:5px;display:flex;gap:4px}.mv button{padding:4px 0;border-radius:8px;background:#05070bdc}.summary{display:flex;justify-content:space-between;gap:8px;align-items:center;background:#111926;border:1px solid #2c3849;border-radius:14px;padding:10px 12px;margin-top:11px}.summary b{font-size:13px}.summary span{display:block;font-size:10px;color:var(--muted)}
+    .bar{height:9px;border-radius:999px;background:#1c2634;overflow:hidden;margin-top:10px}.bar i{display:block;height:100%;width:0;background:#72e7ad;transition:width .18s}.success{border-color:#2b644a;background:#0b1913}
+    @media(max-width:420px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="top"><div class="title">Upload Komik</div><div class="sub">AM STUDIO Owner • browser only</div></div>
+
+  <section class="card">
+    <div class="row"><div class="grow"><b>Owner Access</b><div id="authState" class="note auth-bad">Belum unlock</div></div><button id="unlock" class="small ghost">UNLOCK</button></div>
+  </section>
+
+  <section class="card">
+    <label class="label">KOMIK</label>
+    <select id="series"></select>
+    <div class="row">
+      <div style="width:110px"><label class="label">EPISODE</label><input id="episode" type="number" min="1" max="999" value="1"></div>
+      <div class="grow"><label class="label">JUDUL — opsional</label><input id="title" placeholder="Episode 001"></div>
+    </div>
+    <label class="label">COVER — opsional</label>
+    <label class="pick ghost" for="coverInput" id="coverPick">PILIH COVER</label>
+    <input id="coverInput" type="file" accept="image/jpeg,image/png,image/webp,image/avif">
+  </section>
+
+  <section class="card">
+    <label class="drop" for="pagesInput"><b>＋ PILIH SEMUA PAGE</b><span>Bisa pilih banyak sekaligus. Urutan angka nama file akan dibaca otomatis.</span></label>
+    <input id="pagesInput" type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif">
+    <div class="summary"><div><b id="count">Belum ada page</b><span id="order">Preview urutan tampil di bawah.</span></div><button id="reset" class="small ghost">RESET</button></div>
+    <div id="grid" class="grid"></div>
+    <button id="publish" class="primary" style="margin-top:15px">PUBLISH EPISODE</button>
+    <div class="note" style="text-align:center;margin-top:8px">Tidak akan ditulis “berhasil” sebelum semua page benar-benar ditemukan kembali di R2.</div>
+  </section>
+
+  <section class="card" id="statusCard"><b>Status</b><div class="status" id="status" style="margin-top:7px">Siap.</div><div class="bar"><i id="bar"></i></div></section>
+</main>
+<script>
+(()=>{
+  const $=s=>document.querySelector(s),series=$('#series'),episode=$('#episode'),title=$('#title'),pagesInput=$('#pagesInput'),coverInput=$('#coverInput'),grid=$('#grid'),count=$('#count'),order=$('#order'),status=$('#status'),bar=$('#bar'),publish=$('#publish'),authState=$('#authState'),statusCard=$('#statusCard'),coverPick=$('#coverPick');
+  let catalog={series:[]},queue=[],coverFile=null,busy=false,urls=[];
+  const pad=(n,w=3)=>String(n).padStart(w,'0');
+  const key=()=>sessionStorage.getItem('am_admin_key')||'';
+  const cleanUrls=()=>{urls.forEach(URL.revokeObjectURL);urls=[]};
+  const ext=file=>file.type==='image/png'?'png':file.type==='image/webp'?'webp':file.type==='image/avif'?'avif':'jpg';
+  const numberFromName=name=>{const m=String(name||'').match(/(?:page|pg|halaman|p)?[ _.-]*0*(\d{1,3})(?!.*\d)/i);return m?Number(m[1]):null};
+  function sortFiles(files){
+    const rows=files.map((file,i)=>({file,i,n:numberFromName(file.name)}));
+    if(rows.every(x=>Number.isInteger(x.n)))rows.sort((a,b)=>a.n-b.n||a.i-b.i);
+    return rows.map(x=>x.file);
+  }
+  function setAuth(){const ok=!!key();authState.textContent=ok?'✓ UNLOCKED':'Belum unlock';authState.className='note '+(ok?'auth-ok':'auth-bad')}
+  async function json(url,opt={}){const r=await fetch(url,{cache:'no-store',...opt});let x={};try{x=await r.json()}catch{}if(!r.ok||x.ok===false)throw new Error(x.error||('HTTP '+r.status));return x}
+  async function unlock(){
+    const k=prompt('Masukkan AM STUDIO Admin Key');if(!k)return false;
+    sessionStorage.setItem('am_admin_key',k.trim());
+    try{await json('/api/assets/list?prefix=comics%2F',{headers:{'x-am-studio-admin-key':key()}});setAuth();return true}catch(e){sessionStorage.removeItem('am_admin_key');setAuth();alert('Admin Key salah / tidak aktif.');return false}
+  }
+  async function loadCatalog(){
+    const r=await fetch('/catalog.json?channel=beta&t='+Date.now(),{cache:'no-store'});catalog=await r.json();
+    series.innerHTML=(catalog.series||[]).map(s=>'<option value="'+s.id+'">'+s.title+'</option>').join('');
+  }
+  function render(){
+    cleanUrls();count.textContent=queue.length?(queue.length+' PAGE SIAP'):'Belum ada page';
+    order.textContent=queue.length?'Urutan publish: Page 01 → '+pad(queue.length,2):'Preview urutan tampil di bawah.';
+    grid.innerHTML='';
+    queue.forEach((file,i)=>{
+      const u=URL.createObjectURL(file);urls.push(u);
+      const el=document.createElement('div');el.className='media';
+      el.innerHTML='<img src="'+u+'" alt="Page '+(i+1)+'"><span class="num">PAGE '+pad(i+1,2)+'</span><button type="button" class="x" data-x="'+i+'">×</button><div class="mv"><button type="button" data-l="'+i+'">‹</button><button type="button" data-r="'+i+'">›</button></div>';
+      grid.appendChild(el);
+    });
+    grid.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{queue.splice(Number(b.dataset.x),1);render()});
+    grid.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.l);if(i>0){[queue[i-1],queue[i]]=[queue[i],queue[i-1]];render()}});
+    grid.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.r);if(i<queue.length-1){[queue[i+1],queue[i]]=[queue[i],queue[i+1]];render()}});
+  }
+  async function uploadFile(file,assetKey){
+    let last;
+    for(let attempt=1;attempt<=3;attempt++){
+      try{
+        return await json('/api/assets/upload?key='+encodeURIComponent(assetKey),{method:'POST',headers:{'x-am-studio-admin-key':key(),'content-type':file.type||'image/jpeg'},body:file});
+      }catch(e){last=e;if(attempt<3)await new Promise(r=>setTimeout(r,500*attempt))}
+    }
+    throw last||new Error('UPLOAD_FAILED');
+  }
+  async function saveMeta(seriesId,ep,episodeTitle,pageCount){
+    return json('/api/assets/meta',{method:'POST',headers:{'x-am-studio-admin-key':key(),'content-type':'application/json'},body:JSON.stringify({seriesId,episode:ep,title:episodeTitle,pageCount,ownerApproved:true})});
+  }
+  async function trim(seriesId,ep,pageCount){
+    return json('/api/assets/series/'+encodeURIComponent(seriesId)+'/episodes/'+ep+'/trim/'+pageCount,{method:'DELETE',headers:{'x-am-studio-admin-key':key(),'x-am-delete-confirmation':seriesId+':'+ep+':trim:'+pageCount}});
+  }
+  async function verify(seriesId,ep,pageCount){
+    const prefix='comics/'+seriesId+'/ep'+pad(ep)+'/';
+    const x=await json('/api/assets/list?prefix='+encodeURIComponent(prefix),{headers:{'x-am-studio-admin-key':key()}});
+    const nums=[...new Set((x.objects||[]).map(o=>{const m=String(o.key||'').match(/\/page-(\d{2,3})\.(?:jpg|jpeg|png|webp|avif)$/i);return m?Number(m[1]):null}).filter(Number.isInteger))].sort((a,b)=>a-b);
+    const expected=Array.from({length:pageCount},(_,i)=>i+1);
+    const missing=expected.filter(n=>!nums.includes(n)),extra=nums.filter(n=>n>pageCount);
+    return {missing,extra,actual:nums};
+  }
+  $('#unlock').onclick=unlock;
+  $('#reset').onclick=()=>{queue=[];coverFile=null;coverInput.value='';coverPick.textContent='PILIH COVER';render();status.textContent='Pilihan dikosongkan.'};
+  coverInput.onchange=()=>{coverFile=coverInput.files?.[0]||null;coverPick.textContent=coverFile?('COVER: '+coverFile.name):'PILIH COVER'};
+  pagesInput.onchange=()=>{const files=[...(pagesInput.files||[])];if(files.length)queue.push(...sortFiles(files));pagesInput.value='';render()};
+  publish.onclick=async()=>{
+    if(busy)return;
+    if(!key()&&!(await unlock()))return;
+    const seriesId=series.value,ep=Number(episode.value),pageCount=queue.length;
+    const selected=(catalog.series||[]).find(s=>String(s.id)===String(seriesId));
+    const episodeTitle=title.value.trim()||('Episode '+pad(ep));
+    if(!seriesId||!Number.isInteger(ep)||ep<1)return alert('Pilih komik dan episode.');
+    if(!pageCount)return alert('Pilih page dulu.');
+    if(!confirm('Publish '+(selected?.title||seriesId)+' • Episode '+ep+' • '+pageCount+' page?'))return;
+
+    busy=true;publish.disabled=true;statusCard.classList.remove('success');bar.style.width='0%';
+    const steps=pageCount+(coverFile?1:0)+3;let done=0;
+    const tick=t=>{done++;bar.style.width=Math.min(100,Math.round(done/steps*100))+'%';status.textContent=t};
+    try{
+      if(coverFile){await uploadFile(coverFile,'comics/'+seriesId+'/cover.'+ext(coverFile));tick('✓ Cover tersimpan')}
+      for(let i=0;i<pageCount;i++){
+        const file=queue[i],assetKey='comics/'+seriesId+'/ep'+pad(ep)+'/page-'+pad(i+1,2)+'.'+ext(file);
+        await uploadFile(file,assetKey);tick('Uploading Page '+(i+1)+'/'+pageCount+'…');
+      }
+      await saveMeta(seriesId,ep,episodeTitle,pageCount);tick('✓ Metadata tersimpan');
+      await trim(seriesId,ep,pageCount);tick('✓ Sisa page lama dibersihkan');
+      const check=await verify(seriesId,ep,pageCount);
+      if(check.missing.length||check.extra.length)throw new Error('VERIFY_FAILED • missing: '+(check.missing.join(',')||'-')+' • extra: '+(check.extra.join(',')||'-'));
+      tick('✓ Semua page terverifikasi');
+      status.textContent='✓ PUBLISHED\n'+(selected?.title||seriesId)+' • Episode '+pad(ep)+'\n'+pageCount+'/'+pageCount+' page terverifikasi di R2.';
+      statusCard.classList.add('success');
+      queue=[];coverFile=null;coverInput.value='';coverPick.textContent='PILIH COVER';render();
+    }catch(e){
+      status.textContent='PUBLISH GAGAL\n'+String(e.message||e)+'\n\nTidak dianggap berhasil. File yang sudah dipilih tetap aman di browser; tekan PUBLISH lagi untuk retry.';
+    }finally{busy=false;publish.disabled=false}
+  };
+  setAuth();loadCatalog().catch(e=>status.textContent='Gagal membaca catalog: '+e.message);
+})();
+</script>
+</body>
+</html>
