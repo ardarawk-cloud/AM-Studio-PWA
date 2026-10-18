@@ -5,6 +5,8 @@ const EPISODE_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)\/episodes\/(\d{1,3})$/
 const TRIM_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)\/episodes\/(\d{1,3})\/trim\/(\d{1,3})$/i;
 const PAGE_ROUTE=/^\/api\/assets\/series\/([a-z0-9-]+)\/episodes\/(\d{1,3})\/pages\/(\d{1,3})$/i;
 const META_KEY=/^comics\/([a-z0-9-]+)\/ep(\d{3})\/meta\.json$/i;
+const SERIES_META_KEY=/^comics\/([a-z0-9-]+)\/series\.json$/i;
+const SERIES_META_ROUTE='/api/assets/series-meta';
 const CACHE_TTL_MS=30000;
 let inventoryCache=null;
 let inventoryCacheAt=0;
@@ -23,20 +25,30 @@ async function listAll(env,prefix){
 }
 
 async function buildInventoryFresh(env){
-  if(!env?.COMIC_ASSETS)return {covers:new Set(),episodes:[]};
-  const objects=await listAll(env,'comics/'),covers=new Set(),groups=new Map(),metaKeys=[];
+  if(!env?.COMIC_ASSETS)return {covers:new Set(),episodes:[],seriesMeta:new Map()};
+  const objects=await listAll(env,'comics/'),covers=new Set(),groups=new Map(),metaKeys=[],seriesMetaKeys=[],seriesMeta=new Map();
   for(const o of objects){
     const c=String(o.key||'').match(/^comics\/([a-z0-9-]+)\/cover\./i);if(c){covers.add(c[1]);continue}
     const p=String(o.key||'').match(/^comics\/([a-z0-9-]+)\/ep(\d{3})\/page-(\d{2,3})\.(?:jpg|jpeg|png|webp|avif)$/i);
     if(p){const k=`${p[1]}:${Number(p[2])}`;if(!groups.has(k))groups.set(k,{seriesId:p[1],episode:Number(p[2]),pages:new Map(),meta:null});groups.get(k).pages.set(Number(p[3]),`/media/${o.key}`);continue}
-    if(META_KEY.test(String(o.key||'')))metaKeys.push(o.key);
+    if(META_KEY.test(String(o.key||''))){metaKeys.push(o.key);continue}
+    if(SERIES_META_KEY.test(String(o.key||'')))seriesMetaKeys.push(o.key);
   }
   await Promise.all(metaKeys.map(async key=>{
     const m=key.match(META_KEY);if(!m)return;const k=`${m[1]}:${Number(m[2])}`;
     if(!groups.has(k))groups.set(k,{seriesId:m[1],episode:Number(m[2]),pages:new Map(),meta:null});
     try{const obj=await env.COMIC_ASSETS.get(key);if(obj)groups.get(k).meta=JSON.parse(await obj.text())}catch{}
   }));
-  return {covers,episodes:[...groups.values()].sort((a,b)=>a.seriesId.localeCompare(b.seriesId)||a.episode-b.episode)};
+  await Promise.all(seriesMetaKeys.map(async key=>{
+    const m=key.match(SERIES_META_KEY);if(!m)return;
+    try{
+      const obj=await env.COMIC_ASSETS.get(key);
+      if(!obj)return;
+      const meta=JSON.parse(await obj.text());
+      if(meta&&typeof meta==='object'&&meta.id===m[1]&&meta.title)seriesMeta.set(m[1],meta);
+    }catch{}
+  }));
+  return {covers,episodes:[...groups.values()].sort((a,b)=>a.seriesId.localeCompare(b.seriesId)||a.episode-b.episode),seriesMeta};
 }
 
 async function inventory(env){
@@ -76,11 +88,49 @@ function mergeReader(staticRegistry,inv){
 function mergeCatalog(catalog,inv){
   const out=structuredClone(catalog||{studio:{},series:[]}),bySeries=new Map();
   for(const g of inv.episodes){if(!g.pages.size)continue;if(!bySeries.has(g.seriesId))bySeries.set(g.seriesId,[]);bySeries.get(g.seriesId).push(g)}
-  out.series=(out.series||[]).map(s=>{
+
+  const existing=new Map((out.series||[]).map(s=>[String(s.id),s]));
+  for(const [id,meta] of (inv.seriesMeta||new Map()).entries()){
+    if(existing.has(id)){
+      existing.set(id,{...existing.get(id),...meta,id,cover:{...(existing.get(id)?.cover||{}),...(meta.cover||{})}});
+    }else{
+      existing.set(id,{
+        id,
+        code:String(meta.code||id).slice(0,12).toUpperCase(),
+        title:String(meta.title||id),
+        tag:String(meta.tag||'AM STUDIO Original'),
+        genre:String(meta.genre||'Comic'),
+        episodes:null,
+        episodeCountVerified:false,
+        verifiedEpisodes:[],
+        freeEpisodes:0,
+        season:meta.season||null,
+        status:'ONGOING',
+        productionFormat:'PROFESSIONAL_MULTI_PAGE_EPISODE',
+        cover:{required:true,status:inv.covers.has(id)?'OWNER_UPLOAD_READY':'OWNER_UPLOAD_OPTIONAL'},
+        desc:String(meta.desc||'AM STUDIO original comic.'),
+        episodeTitles:[],
+        qc:'OWNER_UPLOAD'
+      });
+    }
+  }
+
+  for(const id of bySeries.keys()){
+    if(existing.has(id))continue;
+    existing.set(id,{
+      id,code:id.slice(0,12).toUpperCase(),title:id,tag:'AM STUDIO Original',genre:'Comic',
+      episodes:null,episodeCountVerified:false,verifiedEpisodes:[],freeEpisodes:0,status:'ONGOING',
+      productionFormat:'PROFESSIONAL_MULTI_PAGE_EPISODE',
+      cover:{required:true,status:inv.covers.has(id)?'OWNER_UPLOAD_READY':'OWNER_UPLOAD_OPTIONAL'},
+      desc:'AM STUDIO original comic.',episodeTitles:[],qc:'OWNER_UPLOAD'
+    });
+  }
+
+  out.series=[...existing.values()].map(s=>{
     const groups=(bySeries.get(s.id)||[]).sort((a,b)=>a.episode-b.episode);if(!groups.length)return s;
     const nums=groups.map(g=>g.episode),max=Math.max(...nums),contiguous=nums.length===max&&nums.every((n,i)=>n===i+1),titles=Array.from({length:max},(_,i)=>groups.find(g=>g.episode===i+1)?.meta?.title||s.episodeTitles?.[i]||`Episode ${pad(i+1)}`);
-    return {...s,episodes:contiguous?max:s.episodes,episodeCountVerified:contiguous||s.episodeCountVerified,verifiedEpisodes:[...new Set([...(s.verifiedEpisodes||[]),...nums])].sort((a,b)=>a-b),episodeTitles:titles,cover:{...(s.cover||{}),status:inv.covers.has(s.id)?'OWNER_UPLOAD_READY':s.cover?.status}};
-  });
+    return {...s,episodes:contiguous?max:(s.episodes||nums.length),episodeCountVerified:contiguous||s.episodeCountVerified,verifiedEpisodes:[...new Set([...(s.verifiedEpisodes||[]),...nums])].sort((a,b)=>a-b),freeEpisodes:Math.max(Number(s.freeEpisodes||0),contiguous?max:nums.length),episodeTitles:titles,cover:{...(s.cover||{}),status:inv.covers.has(s.id)?'OWNER_UPLOAD_READY':s.cover?.status}};
+  }).sort((a,b)=>String(a.title||'').localeCompare(String(b.title||''),'id'));
   return out;
 }
 
@@ -91,6 +141,34 @@ async function liteJson(request,env,kind){
   let data;try{data=await r.json()}catch{return r}
   const inv=await inventory(env),merged=kind==='reader'?mergeReader(data,inv):mergeCatalog(data,inv);
   return Response.json(merged,{headers:{'cache-control':'no-store','x-am-runtime':'owner-lite'}});
+}
+
+async function saveSeriesMeta(request,env){
+  if(!adminOK(request,env))return deny();
+  if(!env?.COMIC_ASSETS)return Response.json({ok:false,error:'COMIC_ASSETS_NOT_CONFIGURED'},{status:503});
+  let body={};try{body=await request.json()}catch{return Response.json({ok:false,error:'INVALID_JSON'},{status:400})}
+  const id=cleanSeries(body.id),title=String(body.title||'').trim();
+  if(!id||title.length<2||title.length>160)return Response.json({ok:false,error:'INVALID_SERIES_META'},{status:400});
+  const key=`comics/${id}/series.json`;
+  let previous=null;
+  try{const old=await env.COMIC_ASSETS.get(key);if(old)previous=JSON.parse(await old.text())}catch{}
+  const meta={
+    ...(previous||{}),
+    id,
+    title,
+    code:String(body.code||previous?.code||id).replace(/[^a-z0-9]/gi,'').slice(0,12).toUpperCase()||id.slice(0,12).toUpperCase(),
+    tag:String(body.tag||previous?.tag||'AM STUDIO Original').slice(0,120),
+    genre:String(body.genre||previous?.genre||'Comic').slice(0,80),
+    desc:String(body.desc||previous?.desc||'AM STUDIO original comic.').slice(0,500),
+    ownerCreated:true,
+    updatedAt:new Date().toISOString()
+  };
+  await env.COMIC_ASSETS.put(key,JSON.stringify(meta),{
+    httpMetadata:{contentType:'application/json',cacheControl:'no-store'},
+    customMetadata:{source:'OWNER_SERIES_META',seriesTitle:meta.title,updatedAt:meta.updatedAt}
+  });
+  invalidateInventory();
+  return Response.json({ok:true,key,series:meta},{headers:{'cache-control':'no-store'}});
 }
 
 async function deleteObjects(env,objects){let n=0;for(const x of objects){await env.COMIC_ASSETS.delete(x.key);n++}return n}
@@ -194,6 +272,7 @@ export default{
     const url=new URL(request.url);
     if(request.method==='GET'&&url.pathname==='/reader-assets.json')return liteJson(request,env,'reader');
     if(request.method==='GET'&&url.pathname==='/catalog.json')return liteJson(request,env,'catalog');
+    if(request.method==='POST'&&url.pathname===SERIES_META_ROUTE)return saveSeriesMeta(request,env);
     const pm=url.pathname.match(PAGE_ROUTE);if(pm&&request.method==='DELETE')return deletePage(request,env,pm[1],pm[2],pm[3]);
     const tm=url.pathname.match(TRIM_ROUTE);if(tm&&request.method==='DELETE')return trimEpisode(request,env,tm[1],tm[2],tm[3]);
     const em=url.pathname.match(EPISODE_ROUTE);if(em&&request.method==='DELETE')return deleteEpisode(request,env,em[1],em[2]);
