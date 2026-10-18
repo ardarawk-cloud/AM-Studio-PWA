@@ -45,6 +45,7 @@
     <label class="label">COVER — opsional</label>
     <label class="pick ghost" for="coverInput" id="coverPick">＋ PILIH COVER</label>
     <input id="coverInput" type="file" accept="image/jpeg,image/png,image/webp,image/avif">
+    <button id="saveCover" type="button" class="primary" style="margin-top:12px">SIMPAN COVER SAJA</button>
   </section>
 
   <section class="card">
@@ -60,7 +61,7 @@
 </main>
 <script>
 (()=>{
-  const $=s=>document.querySelector(s),series=$('#series'),episode=$('#episode'),title=$('#title'),pagesInput=$('#pagesInput'),coverInput=$('#coverInput'),grid=$('#grid'),count=$('#count'),order=$('#order'),status=$('#status'),bar=$('#bar'),publish=$('#publish'),authState=$('#authState'),statusCard=$('#statusCard'),coverPick=$('#coverPick'),newSeriesToggle=$('#newSeriesToggle'),newSeriesBox=$('#newSeriesBox'),newSeriesTitle=$('#newSeriesTitle');
+  const $=s=>document.querySelector(s),series=$('#series'),episode=$('#episode'),title=$('#title'),pagesInput=$('#pagesInput'),coverInput=$('#coverInput'),grid=$('#grid'),count=$('#count'),order=$('#order'),status=$('#status'),bar=$('#bar'),publish=$('#publish'),saveCover=$('#saveCover'),authState=$('#authState'),statusCard=$('#statusCard'),coverPick=$('#coverPick'),newSeriesToggle=$('#newSeriesToggle'),newSeriesBox=$('#newSeriesBox'),newSeriesTitle=$('#newSeriesTitle');
   let catalog={series:[]},queue=[],coverFile=null,busy=false,urls=[],newSeriesMode=false;
   const pad=(n,w=3)=>String(n).padStart(w,'0');
   const key=()=>sessionStorage.getItem('am_admin_key')||'';
@@ -138,6 +139,29 @@
   $('#reset').onclick=()=>{queue=[];coverFile=null;coverInput.value='';coverPick.textContent='＋ PILIH COVER';render();status.textContent='Pilihan dikosongkan.'};
   coverInput.onchange=()=>{coverFile=coverInput.files?.[0]||null;coverPick.textContent=coverFile?('COVER: '+coverFile.name) :'＋ PILIH COVER'};
   pagesInput.onchange=()=>{const files=[...(pagesInput.files||[])];if(files.length)queue.push(...sortFiles(files));pagesInput.value='';render()};
+  saveCover.onclick=async()=>{
+    if(busy)return;
+    if(!coverFile)return alert('Pilih gambar cover dulu.');
+    if(!key()&&!(await unlock()))return;
+    const requestedTitle=newSeriesMode?newSeriesTitle.value.trim():'';
+    const seriesId=newSeriesMode?slugify(requestedTitle):series.value;
+    if(newSeriesMode&&requestedTitle.length<2)return alert('Isi judul komik baru.');
+    if(!seriesId)return alert('Pilih komik.');
+    if(newSeriesMode&&(catalog.series||[]).some(s=>s.id===seriesId))return alert('Judul sudah ada. Pilih komik lama.');
+    if(!confirm('Simpan cover untuk '+(requestedTitle||(catalog.series||[]).find(s=>s.id===seriesId)?.title||seriesId)+'?'))return;
+    busy=true;saveCover.disabled=true;publish.disabled=true;statusCard.classList.remove('success');
+    try{
+      await uploadFile(coverFile,'comics/'+seriesId+'/cover.'+ext(coverFile));
+      const objects=await json('/api/assets/list?prefix='+encodeURIComponent('comics/'+seriesId+'/'),{headers:{'x-am-studio-admin-key':key()}});
+      if(!(objects.objects||[]).some(o=>o.key==='comics/'+seriesId+'/cover.'+ext(coverFile)))throw new Error('COVER_VERIFY_FAILED');
+      if(newSeriesMode)await saveSeriesMeta(seriesId,requestedTitle);
+      status.textContent='✓ COVER TERSIMPAN DI R2\\n'+(requestedTitle||seriesId)+'\\nTidak perlu episode.';
+      statusCard.classList.add('success');bar.style.width='100%';
+      coverFile=null;coverInput.value='';coverPick.textContent='＋ PILIH COVER';
+      if(newSeriesMode){await loadCatalog(seriesId);setNewSeriesMode(false);newSeriesTitle.value=''}
+    }catch(e){status.textContent='GAGAL SIMPAN COVER\\n'+String(e.message||e)}
+    finally{busy=false;saveCover.disabled=false;publish.disabled=false}
+  };
   publish.onclick=async()=>{
     if(busy)return;
     if(!key()&&!(await unlock()))return;
