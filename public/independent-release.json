@@ -7,5 +7,9 @@
   "distribution": "DIRECT_APK",
   "adminTools": false,
   "googlePlayBilling": false,
-  "requiredPermissions": ["android.permission.INTERNET"]
+  "requiredPermissions": [
+    "android.permission.INTERNET"
+  ],
+  "signingAuthority": "R2_PRIVATE_GITHUB_OIDC",
+  "releaseRevision": 2
 }
