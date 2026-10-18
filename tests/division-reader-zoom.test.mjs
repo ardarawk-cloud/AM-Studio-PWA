@@ -7,7 +7,7 @@ const firewall=fs.readFileSync(new URL('../src/play-firewall-runtime.js',import.
 
 test('Play HTML injects the dedicated continuous comic Zoom Reader',()=>{
   assert.match(firewall,/am-reader-zoom-server/);
-  assert.match(firewall,/\/reader-zoom\.js\?v=1/);
+  assert.match(firewall,/\/reader-zoom\.js\?v=2/);
   assert.match(firewall,/x-am-reader-zoom/);
 });
 
