@@ -22,11 +22,5 @@
       "binding": "COMIC_ASSETS",
       "bucket_name": "am-studio-comics"
     }
-  ],
-  "vars": {
-    "GOOGLE_PLAY_PACKAGE_NAME": "com.ardacore.amstudio",
-    "GOOGLE_PLAY_SUBSCRIPTION_PRODUCT_ID": "am_studio_premium",
-    "GOOGLE_PLAY_MONTHLY_BASE_PLAN_ID": "monthly",
-    "GOOGLE_PLAY_YEARLY_BASE_PLAN_ID": "yearly"
-  }
+  ]
 }
