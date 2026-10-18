@@ -11,5 +11,5 @@
     "android.permission.INTERNET"
   ],
   "signingAuthority": "R2_PRIVATE_GITHUB_OIDC",
-  "releaseRevision": 2
+  "releaseRevision": 3
 }
