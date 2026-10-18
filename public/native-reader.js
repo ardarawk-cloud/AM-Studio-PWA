@@ -182,27 +182,20 @@
   function renderPublicProfile(){
     const active=document.querySelector('[data-nav="profile"].active,[data-tab="profile"].active');
     const shell=document.querySelector('#app.shell')||document.querySelector('#app .shell');
-    if(!active||!shell||shell.querySelector('#amNativePublicProfile'))return;
+    if(!active||!shell)return;
+    if(shell.querySelector('#amNativePublicProfile'))return;
     shell.innerHTML=`
       <div id="amNativePublicProfile">
         <div class="top">
-          <div class="brand"><img class="logo" src="/icon.svg" alt="AM STUDIO"><div><h1>AM STUDIO</h1><div class="tiny">Official Comics Reader</div></div></div>
-          <span class="pill" style="color:var(--green,#66e3a4)">PUBLIC READER</span>
+          <div class="brand"><img class="logo" src="/icon.svg" alt="AM STUDIO"><div><h1>AM STUDIO</h1><div class="tiny">Comics Reader</div></div></div>
+          <span class="pill" style="color:var(--green,#66e3a4)">AM STUDIO</span>
         </div>
         <div class="box">
-          <span class="eyebrow">ABOUT</span>
-          <h2>AM STUDIO Reader</h2>
-          <p>Baca komik original AM STUDIO, simpan progres bacaan, dan ikuti universe resmi dari perangkat ini.</p>
-          <div class="row"><span class="pill">Version ${version()}</span><span class="pill">Reader only</span></div>
-        </div>
-        <div class="box">
-          <b>Privasi</b>
-          <p>Reader publik tidak memerlukan akun. Progres baca disimpan lokal pada perangkat.</p>
-          <p><a class="btn ghost" href="/privacy-policy.html" style="display:inline-block;text-decoration:none">Kebijakan Privasi</a></p>
-        </div>
-        <div class="box">
-          <b>Release Policy</b>
-          <p>Poster owner-approved dapat tampil sebagai Coming Soon. Episode publik tetap wajib CANON FINAL + QC PASS dan seluruh aset reader harus lengkap. Draft, recovery parsial, panel Admin, dan alat produksi internal tidak tersedia pada build Play Store.</p>
+          <h2 style="margin-top:0">AM STUDIO Reader</h2>
+          <div class="row" style="align-items:center">
+            <a class="btn ghost" href="/privacy-policy.html" style="display:inline-block;text-decoration:none">Kebijakan Privasi</a>
+            <span class="pill">v${version()}</span>
+          </div>
         </div>
       </div>`;
   }
