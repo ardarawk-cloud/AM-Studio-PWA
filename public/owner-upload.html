@@ -53,7 +53,9 @@
     <input id="pagesInput" type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif">
     <div class="summary"><div><b id="count">Belum ada page</b><span id="order">Preview urutan tampil di bawah.</span></div><button id="reset" class="small ghost">RESET</button></div>
     <div id="grid" class="grid"></div>
-    <button id="publish" class="primary" style="margin-top:15px">PUBLISH EPISODE</button>
+    <button id="publish" class="primary" style="margin-top:15px">UPLOAD HALAMAN</button>
+    <button id="managePages" type="button" class="ghost" style="margin-top:10px;width:100%">KELOLA / HAPUS HALAMAN TERUPLOAD</button>
+    <div id="uploadedPages" class="grid"></div>
     <div class="note" style="text-align:center;margin-top:8px">Tidak akan ditulis “berhasil” sebelum semua page benar-benar ditemukan kembali di R2.</div>
   </section>
 
@@ -61,7 +63,7 @@
 </main>
 <script>
 (()=>{
-  const $=s=>document.querySelector(s),series=$('#series'),episode=$('#episode'),title=$('#title'),pagesInput=$('#pagesInput'),coverInput=$('#coverInput'),grid=$('#grid'),count=$('#count'),order=$('#order'),status=$('#status'),bar=$('#bar'),publish=$('#publish'),saveCover=$('#saveCover'),authState=$('#authState'),statusCard=$('#statusCard'),coverPick=$('#coverPick'),newSeriesToggle=$('#newSeriesToggle'),newSeriesBox=$('#newSeriesBox'),newSeriesTitle=$('#newSeriesTitle');
+  const $=s=>document.querySelector(s),series=$('#series'),episode=$('#episode'),title=$('#title'),pagesInput=$('#pagesInput'),coverInput=$('#coverInput'),grid=$('#grid'),count=$('#count'),order=$('#order'),status=$('#status'),bar=$('#bar'),publish=$('#publish'),saveCover=$('#saveCover'),managePages=$('#managePages'),uploadedPages=$('#uploadedPages'),authState=$('#authState'),statusCard=$('#statusCard'),coverPick=$('#coverPick'),newSeriesToggle=$('#newSeriesToggle'),newSeriesBox=$('#newSeriesBox'),newSeriesTitle=$('#newSeriesTitle');
   let catalog={series:[]},queue=[],coverFile=null,busy=false,urls=[],newSeriesMode=false;
   const pad=(n,w=3)=>String(n).padStart(w,'0');
   const key=()=>sessionStorage.getItem('am_admin_key')||'';
@@ -134,6 +136,33 @@
     const missing=expected.filter(n=>!nums.includes(n)),extra=nums.filter(n=>n>pageCount);
     return {missing,extra,actual:nums};
   }
+  async function manageUploadedPages(){
+    if(!key()&&!(await unlock()))return;
+    const id=series.value,ep=Number(episode.value);
+    if(newSeriesMode)return alert('Simpan komik baru terlebih dahulu.');
+    if(!id||!Number.isInteger(ep)||ep<1)return alert('Pilih komik dan episode.');
+    const prefix='comics/'+id+'/ep'+pad(ep)+'/';
+    const data=await json('/api/assets/list?prefix='+encodeURIComponent(prefix),{headers:{'x-am-studio-admin-key':key()}});
+    const files=(data.objects||[]).map(o=>{const m=String(o.key||'').match(/\\/page-(\\d{2,3})\\.(jpg|jpeg|png|webp|avif)$/i);return m?{n:Number(m[1]),key:o.key}:null}).filter(Boolean).sort((a,b)=>a.n-b.n);
+    uploadedPages.innerHTML='';
+    if(!files.length){uploadedPages.textContent='Belum ada halaman tersimpan.';return}
+    for(const file of files){
+      const el=document.createElement('div');el.className='media';
+      const img=document.createElement('img');img.src='/media/'+file.key;img.alt='Page '+file.n;
+      const label=document.createElement('span');label.className='num';label.textContent='PAGE '+pad(file.n,2);
+      const del=document.createElement('button');del.className='x';del.textContent='×';del.type='button';
+      del.onclick=async()=>{
+        if(!confirm('Hapus Page '+file.n+'? Halaman berikutnya akan bergeser otomatis.'))return;
+        try{
+          await json('/api/assets/series/'+encodeURIComponent(id)+'/episodes/'+ep+'/pages/'+file.n,{method:'DELETE',headers:{'x-am-studio-admin-key':key(),'x-am-delete-confirmation':id+':'+ep+':page:'+file.n}});
+          status.textContent='Page '+file.n+' dihapus. Memeriksa ulang...';
+          await manageUploadedPages();
+        }catch(e){status.textContent='Gagal hapus: '+e.message}
+      };
+      el.append(img,label,del);uploadedPages.append(el);
+    }
+  }
+  managePages.onclick=()=>manageUploadedPages().catch(e=>status.textContent='Gagal membuka halaman: '+e.message);
   $('#unlock').onclick=unlock;
   newSeriesToggle.onclick=()=>setNewSeriesMode(!newSeriesMode);
   $('#reset').onclick=()=>{queue=[];coverFile=null;coverInput.value='';coverPick.textContent='＋ PILIH COVER';render();status.textContent='Pilihan dikosongkan.'};
@@ -178,7 +207,7 @@
     }
     const episodeTitle=title.value.trim()||('Episode '+pad(ep));
     if(!seriesId||!Number.isInteger(ep)||ep<1)return alert('Pilih komik dan episode.');
-    if(!pageCount)return alert('Pilih page dulu.');
+    if(!pageCount)return alert('Pilih minimal satu gambar halaman.');
     if(!confirm('Publish '+(selected?.title||seriesId)+' • Episode '+ep+' • '+pageCount+' page?'))return;
 
     busy=true;publish.disabled=true;statusCard.classList.remove('success');bar.style.width='0%';
