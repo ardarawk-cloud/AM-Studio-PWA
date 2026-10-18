@@ -32,7 +32,7 @@ test('Marketing links remain inside the public Play firewall',()=>{
 
 test('Growth Build injects only after the Play firewall and never enables owner tools',()=>{
   assert.match(firewall,/am-growth-reader-server/);
-  assert.match(firewall,/growth-reader\.js\?v=1/);
+  assert.match(firewall,/growth-reader\.js\?v=2/);
   assert.match(firewall,/x-am-play-firewall/);
   assert.doesNotMatch(growth,/admin-panel\.js|page-control\.js|private-production\.js/);
 });
