@@ -26,9 +26,9 @@ async function listAll(env,prefix){
 
 async function buildInventoryFresh(env){
   if(!env?.COMIC_ASSETS)return {covers:new Set(),episodes:[],seriesMeta:new Map()};
-  const objects=await listAll(env,'comics/'),covers=new Set(),groups=new Map(),metaKeys=[],seriesMetaKeys=[],seriesMeta=new Map();
+  const objects=await listAll(env,'comics/'),covers=new Map(),groups=new Map(),metaKeys=[],seriesMetaKeys=[],seriesMeta=new Map();
   for(const o of objects){
-    const c=String(o.key||'').match(/^comics\/([a-z0-9-]+)\/cover\./i);if(c){covers.add(c[1]);continue}
+    const c=String(o.key||'').match(/^comics\/([a-z0-9-]+)\/cover\./i);if(c){covers.set(c[1],`/media/${o.key}`);continue}
     const p=String(o.key||'').match(/^comics\/([a-z0-9-]+)\/ep(\d{3})\/page-(\d{2,3})\.(?:jpg|jpeg|png|webp|avif)$/i);
     if(p){const k=`${p[1]}:${Number(p[2])}`;if(!groups.has(k))groups.set(k,{seriesId:p[1],episode:Number(p[2]),pages:new Map(),meta:null});groups.get(k).pages.set(Number(p[3]),`/media/${o.key}`);continue}
     if(META_KEY.test(String(o.key||''))){metaKeys.push(o.key);continue}
@@ -64,7 +64,7 @@ function dynamicEntry(g,covers){
   const ownerDeleteState=Boolean(meta.pageDeletedByOwner||meta.trimmedByOwner||meta.compactedAfterDelete);
   const pageCount=ownerDeleteState?actualHighest:Math.max(Number(meta.pageCount)||0,actualHighest),missing=[];
   for(let i=1;i<=pageCount;i++)if(!g.pages.has(i))missing.push(i);
-  return {seriesId:g.seriesId,episode:g.episode,title:meta.title||`Episode ${pad(g.episode)}`,canonState:'CANON_FINAL',qc:'QC_PASS',publicationState:'OWNER_MANUAL_RECOVERY',productionFormat:'PROFESSIONAL_MULTI_PAGE_EPISODE',coverAsset:covers.has(g.seriesId)?`/media/comics/${g.seriesId}/cover.jpg`:undefined,pageCount,availablePageCount:pages.length,pages,missingReaderPages:missing,readerState:missing.length?'PARTIAL_ASSET_RECOVERY':'READER_COMPLETE',assetQuality:'OWNER_ADMIN_UPLOAD',evidence:{type:'OWNER_ADMIN_UPLOAD',verifiedAt:meta.updatedAt||null}};
+  return {seriesId:g.seriesId,episode:g.episode,title:meta.title||`Episode ${pad(g.episode)}`,canonState:'CANON_FINAL',qc:'QC_PASS',publicationState:'OWNER_MANUAL_RECOVERY',productionFormat:'PROFESSIONAL_MULTI_PAGE_EPISODE',coverAsset:covers.get(g.seriesId),pageCount,availablePageCount:pages.length,pages,missingReaderPages:missing,readerState:missing.length?'PARTIAL_ASSET_RECOVERY':'READER_COMPLETE',assetQuality:'OWNER_ADMIN_UPLOAD',evidence:{type:'OWNER_ADMIN_UPLOAD',verifiedAt:meta.updatedAt||null}};
 }
 
 function mergeReader(staticRegistry,inv){
@@ -107,7 +107,7 @@ function mergeCatalog(catalog,inv){
         season:meta.season||null,
         status:'ONGOING',
         productionFormat:'PROFESSIONAL_MULTI_PAGE_EPISODE',
-        cover:{required:true,status:inv.covers.has(id)?'OWNER_UPLOAD_READY':'OWNER_UPLOAD_OPTIONAL'},
+        cover:{required:true,asset:inv.covers.get(id),status:inv.covers.has(id)?'OWNER_UPLOAD_READY':'OWNER_UPLOAD_OPTIONAL'},
         desc:String(meta.desc||'AM STUDIO original comic.'),
         episodeTitles:[],
         qc:'OWNER_UPLOAD'
@@ -129,7 +129,7 @@ function mergeCatalog(catalog,inv){
   out.series=[...existing.values()].map(s=>{
     const groups=(bySeries.get(s.id)||[]).sort((a,b)=>a.episode-b.episode);if(!groups.length)return s;
     const nums=groups.map(g=>g.episode),max=Math.max(...nums),contiguous=nums.length===max&&nums.every((n,i)=>n===i+1),titles=Array.from({length:max},(_,i)=>groups.find(g=>g.episode===i+1)?.meta?.title||s.episodeTitles?.[i]||`Episode ${pad(i+1)}`);
-    return {...s,episodes:contiguous?max:(s.episodes||nums.length),episodeCountVerified:contiguous||s.episodeCountVerified,verifiedEpisodes:[...new Set([...(s.verifiedEpisodes||[]),...nums])].sort((a,b)=>a-b),freeEpisodes:Math.max(Number(s.freeEpisodes||0),contiguous?max:nums.length),episodeTitles:titles,cover:{...(s.cover||{}),status:inv.covers.has(s.id)?'OWNER_UPLOAD_READY':s.cover?.status}};
+    return {...s,episodes:contiguous?max:(s.episodes||nums.length),episodeCountVerified:contiguous||s.episodeCountVerified,verifiedEpisodes:[...new Set([...(s.verifiedEpisodes||[]),...nums])].sort((a,b)=>a-b),freeEpisodes:Math.max(Number(s.freeEpisodes||0),contiguous?max:nums.length),episodeTitles:titles,cover:{...(s.cover||{}),asset:inv.covers.get(s.id)||s.cover?.asset,status:inv.covers.has(s.id)?'OWNER_UPLOAD_READY':s.cover?.status}};
   }).sort((a,b)=>String(a.title||'').localeCompare(String(b.title||''),'id'));
   return out;
 }
