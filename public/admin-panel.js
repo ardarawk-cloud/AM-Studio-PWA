@@ -112,7 +112,7 @@
   const $=s=>panel.querySelector(s);
   const series=$('#amaSeries'),episode=$('#amaEpisode'),title=$('#amaTitle'),total=$('#amaTotal'),cover=$('#amaCover'),preview=$('#amaPreview'),seriesName=$('#amaSeriesName'),seriesState=$('#amaSeriesState'),pagesInput=$('#amaPages'),grid=$('#amaMediaGrid'),picked=$('#amaPicked'),status=$('#amaStatus'),bar=$('#amaBar'),upload=$('#amaUpload'),seeLibrary=$('#amaSeeLibrary'),auth=$('#amaAuth');
 
-  let catalog={series:[]},registry={episodes:[]},queue=[],coverFile=null,busy=false;
+  let catalog={series:[]},registry={episodes:[]},queue=[],coverFile=null,coverPreviewUrl=null,busy=false;
   const objectUrls=new Set();
   const pad=(n,w=2)=>String(n).padStart(w,'0');
   const adminKey=()=>sessionStorage.getItem('am_admin_key')||'';
@@ -198,9 +198,9 @@
   $('#amaUnlock').onclick=unlock;
   $('#amaClose').onclick=()=>panel.classList.remove('open');
   launch.onclick=async()=>{panel.classList.add('open');setAuth();try{await loadData()}catch(e){status.textContent='Gagal membaca Library: '+e.message}};
-  series.onchange=()=>{queue=[];coverFile=null;renderQueue();syncSeries()};
+  series.onchange=()=>{queue=[];coverFile=null;if(coverPreviewUrl){URL.revokeObjectURL(coverPreviewUrl);coverPreviewUrl=null}renderQueue();syncSeries()};
   episode.onchange=()=>{queue=[];renderQueue();syncEpisode()};
-  cover.onchange=()=>{coverFile=cover.files?.[0]||null;if(coverFile){const u=URL.createObjectURL(coverFile);objectUrls.add(u);preview.style.backgroundImage=`url('${u}')`}};
+  cover.onchange=()=>{coverFile=cover.files?.[0]||null;if(coverPreviewUrl){URL.revokeObjectURL(coverPreviewUrl);coverPreviewUrl=null}if(coverFile){coverPreviewUrl=URL.createObjectURL(coverFile);preview.style.backgroundImage=`url('${coverPreviewUrl}')`}};
   pagesInput.onchange=()=>{
     const files=[...(pagesInput.files||[])];
     if(files.length)queue.push(...files);
@@ -238,7 +238,7 @@
       await loadData();
       status.innerHTML=`<span class="ama-ok">✓ PUBLISHED</span>\n${s.title} • Episode ${pad(ep,3)}\n${count}/${count} page terverifikasi di storage. Reader siap.`;
       $('#amaStatusCard').classList.add('ama-published');
-      queue=[];coverFile=null;cover.value='';renderQueue();seeLibrary.classList.remove('ama-hidden');
+      queue=[];coverFile=null;cover.value='';if(coverPreviewUrl){URL.revokeObjectURL(coverPreviewUrl);coverPreviewUrl=null}renderQueue();seeLibrary.classList.remove('ama-hidden');
       window.dispatchEvent(new Event('am-admin-assets-changed'));
     }catch(e){
       status.innerHTML=`<span class="ama-bad">PUBLISH GAGAL</span>\n${String(e.message||e)}\n\nTidak dinyatakan berhasil. Pilih page lalu Publish lagi.`;
