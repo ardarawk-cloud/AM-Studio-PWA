@@ -185,7 +185,7 @@
     const head=document.querySelector('.reader-head');if(!head)return;
     const s=currentSeries();if(!s)return;
     const episode=Number(sessionStorage.getItem('am_current_episode')||0);
-    head.querySelectorAll('.eyebrow').forEach(x=>{if(/CANON FINAL|QC PASS/i.test(x.textContent||''))x.textContent='AM STUDIO OFFICIAL'});
+    head.querySelectorAll('.eyebrow').forEach(x=>{if(/CANON FINAL|QC PASS|AM STUDIO OFFICIAL/i.test(x.textContent||''))x.remove()});
     if(!head.querySelector('.ag-share')){const b=document.createElement('button');b.className='btn ghost ag-share';b.dataset.agShare=s.id;if(episode)b.dataset.agEpisode=String(episode);b.textContent='BAGIKAN';head.appendChild(b)}
   }
 
@@ -222,14 +222,11 @@
   }
 
   function updateCollection(){
-    const active=document.querySelector('[data-tab="collection"].active,[data-nav="collection"].active');if(!active)return;
-    const section=document.querySelector('#app .section');if(section&&!document.getElementById('amGrowthCollectionNote')){const n=document.createElement('div');n.id='amGrowthCollectionNote';n.className='ag-inline-note';n.textContent='Koleksi dan progres tersimpan lokal di perangkat ini.';section.after(n)}
+    document.getElementById('amGrowthCollectionNote')?.remove();
   }
 
   function updateProfile(){
-    const profile=document.getElementById('amNativePublicProfile');if(!profile||profile.querySelector('#amGrowthProfile'))return;
-    const box=document.createElement('div');box.className='box';box.id='amGrowthProfile';box.innerHTML='<div class="ag-kicker">AM STUDIO</div><h2>Stories • Comics • Universes</h2><p>Versi publik saat ini fokus pada pengalaman membaca, koleksi, progres, release resmi, dan discovery. Fitur berbayar serta Creator Platform tidak ditampilkan sebelum siap dan lolos review.</p>';
-    profile.appendChild(box);
+    document.getElementById('amGrowthProfile')?.remove();
   }
 
   function bindActions(){
