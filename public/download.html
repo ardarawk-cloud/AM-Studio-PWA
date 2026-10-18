@@ -19,9 +19,9 @@
     <div class="brand">ARDA CORE CORPORATION</div>
     <h1 class="title">AM STUDIO</h1>
     <p class="tag">Stories • Comics • Universes</p>
-    <p class="copy">Masuk ke dunia original AM STUDIO, temukan cerita dan comic universe resmi, lalu lanjutkan bacaan dari satu tempat.</p>
-    <a class="cta" id="install-cta" href="/?channel=play&utm_source=am_studio_story_promo&utm_medium=acquisition_gateway&utm_campaign=growth_v1">BUKA AM STUDIO</a>
-    <div class="note" id="install-note">Link promosi permanen AM STUDIO. Tujuan instalasi dapat dialihkan ke APK resmi atau Google Play tanpa mengganti link yang sudah tersebar.</div>
+    <p class="copy">Download aplikasi resmi AM STUDIO untuk membaca comic universe langsung dari Android.</p>
+    <a class="cta" id="install-cta" href="https://github.com/ardarawk-cloud/AM-Studio-PWA/releases/latest/download/AM-STUDIO.apk">DOWNLOAD AM STUDIO APK</a>
+    <div class="note" id="install-note">APK resmi • signed release • public reader • permission minimal. Android dapat meminta izin instalasi dari browser karena distribusi dilakukan langsung.</div>
     <div class="package">Android identity: com.ardacore.amstudio</div>
   </main>
   <script>
@@ -31,7 +31,6 @@
         if(!cfg)return;
         const mode=String(cfg.mode||'PRELAUNCH_READER').toUpperCase();
         if(mode==='DIRECT_APK'&&cfg.directApkUrl){cta.href=cfg.directApkUrl;cta.textContent='DOWNLOAD AM STUDIO APK';note.textContent='Download APK resmi AM STUDIO.';return;}
-        if(mode==='GOOGLE_PLAY'&&cfg.playStoreUrl){cta.href=cfg.playStoreUrl;cta.textContent='INSTALL DARI GOOGLE PLAY';note.textContent='Install AM STUDIO dari Google Play.';return;}
         if(cfg.readerFallbackUrl)cta.href=cfg.readerFallbackUrl;
       }).catch(()=>{});
     })();
