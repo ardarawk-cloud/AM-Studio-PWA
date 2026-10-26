@@ -10,9 +10,13 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "test": "node --test tests/division-*.test.mjs"
+    "test": "node --test tests/division-*.test.mjs",
+    "test:membership": "node --test tests/membership-*.test.mjs"
   },
   "devDependencies": {
     "wrangler": "4.28.1"
+  },
+  "dependencies": {
+    "qrcode-generator": "2.0.4"
   }
 }

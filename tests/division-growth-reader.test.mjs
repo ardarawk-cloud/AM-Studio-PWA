@@ -37,9 +37,10 @@ test('Growth Build injects only after the Play firewall and never enables owner 
   assert.doesNotMatch(growth,/admin-panel\.js|page-control\.js|private-production\.js/);
 });
 
-test('Monetization and Creator Economy remain gated until real infrastructure exists',()=>{
+test('Membership pricing is public while checkout and other monetization remain gated',()=>{
   assert.equal(config.monetization.rewardedAds.publicEntry,false);
-  assert.equal(config.monetization.premiumSubscription.publicEntry,false);
+  assert.equal(config.monetization.premiumSubscription.publicEntry,true);
+  assert.equal(config.monetization.premiumSubscription.checkoutLive,false);
   assert.equal(config.monetization.oneTimeProducts.publicEntry,false);
   assert.equal(config.monetization.creatorPlatform.publicEntry,false);
   assert.equal(config.data.networkAnalytics,false);
@@ -59,3 +60,4 @@ test('Local growth attribution is disclosed and no network analytics is claimed'
   assert.match(privacy,/atribusi kampanye lokal/i);
   assert.match(privacy,/tidak mengirimkan favorit, progres, event growth lokal, atau atribusi kampanye lokal tersebut ke server analytics/i);
 });
+

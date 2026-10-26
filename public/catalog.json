@@ -6,8 +6,9 @@
     "publicPromotion": false,
     "freeDefault": 10,
     "pass": {
-      "name": "AM STUDIO PASS",
-      "status": "blocked_until_canon_verified"
+      "name": "AM STUDIO Comics Member",
+      "status": "ACCOUNT_READY_PROVIDER_PENDING",
+      "membershipUrl": "/membership"
     },
     "publishingRule": "COVER_FIRST_THEN_EPISODES",
     "visualRule": "MASTER_BIBLE_AND_APPROVED_REFERENCE_REQUIRED",

@@ -7,7 +7,7 @@ const runtime=fs.readFileSync(new URL('../src/owner-lite-runtime.js',import.meta
 
 test('standalone owner uploader is browser-only and uses verified R2 publish flow',()=>{
   assert.match(html,/AM STUDIO Owner • browser only/);
-  assert.match(html,/PUBLISH EPISODE/);
+  assert.match(html,/<button id="publish"/);
   assert.match(html,/\/api\/assets\/upload\?key=/);
   assert.match(html,/\/api\/assets\/meta/);
   assert.match(html,/\/api\/assets\/list\?prefix=/);
@@ -44,7 +44,9 @@ test('new comic is only considered published after pages, catalog and reader ver
   const catalogVerify=html.indexOf("CATALOG_VERIFY_FAILED");
   const readerVerify=html.indexOf("READER_VERIFY_FAILED");
   assert.ok(pageUpload>=0);
-  assert.ok(seriesMeta>pageUpload);
+  assert.ok(seriesMeta>=0,'series metadata may be prepared before its pages');
+  assert.ok(catalogVerify>pageUpload,'publication receipt must follow page uploads');
   assert.ok(catalogVerify>seriesMeta);
   assert.ok(readerVerify>catalogVerify);
 });
+

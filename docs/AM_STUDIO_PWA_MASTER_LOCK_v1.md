@@ -56,3 +56,8 @@ Phase 5 ACC OS X Marketing Engine: series-specific Facebook promo → deep link 
 - Character and visual continuity must use locked references.
 - ACC OS X publishing connector remains separate from AM Studio Page/Canon synchronization.
 - Monetization implementation waits until Phase 1 material/canon audit is complete.
+
+
+## Addendum L — 26 October 2026
+
+The explicit owner direction in `AM_STUDIO_COMICS_ENTERPRISE_ADDENDUM_L.md` supersedes earlier monetization deferral and broad-payment roadmap clauses. The one membership product uses QRIS only, IDR 9,900 monthly / IDR 99,000 for 12 months. Existing canon, comic IDs, individual passports, free content and unpublished-content gates remain in force. Checkout remains disabled pending verified merchant/API integration.

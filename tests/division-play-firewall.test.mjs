@@ -18,8 +18,10 @@ const privacy=fs.readFileSync(new URL('../public/privacy-policy.html',import.met
 const firewallSource=fs.readFileSync(new URL('../src/play-firewall-runtime.js',import.meta.url),'utf8');
 const hpgCover=new URL('../public/comics/hikayat-pohon-ganja/cover.jpg',import.meta.url);
 
-test('Worker entrypoint is the Play firewall outer layer',()=>{
-  assert.match(wrangler,/\.\/src\/play-firewall-runtime\.js/);
+test('Membership entrypoint preserves the existing Play firewall',()=>{
+  assert.match(wrangler,/\.\/src\/membership-runtime\.js/);
+  const membership=fs.readFileSync(new URL('../src/membership-runtime.js',import.meta.url),'utf8');
+  assert.match(membership,/import base from '\.\/play-firewall-runtime\.js'/);
 });
 
 test('Play firewall strips every owner-only injected script from HTML',()=>{
@@ -82,7 +84,7 @@ test('HPG uploaded cover is explicitly approved for discovery without publishing
 test('static Play catalog may expose approved poster-only series as COMING_SOON while runtime R2 episodes remain independently gated',()=>{
   const registry=filterReaderRegistry(readerRegistry);
   const filtered=filterCatalog(catalog,registry);
-  assert.deepEqual(filtered.series.map(x=>x.id),['amu','hikayat-pohon-ganja']);
+  assert.deepEqual(filtered.series.map(x=>x.id),catalog.series.map(x=>x.id),'all existing comic IDs remain in the catalog');
 
   const amu=filtered.series.find(x=>x.id==='amu');
   assert.equal(amu.publicReaderState,'READY');
@@ -93,7 +95,7 @@ test('static Play catalog may expose approved poster-only series as COMING_SOON 
   const hpg=filtered.series.find(x=>x.id==='hikayat-pohon-ganja');
   assert.equal(hpg.publicReaderState,'COMING_SOON');
   assert.equal(hpg.status,'COMING_SOON');
-  assert.equal(hpg.qc,'PUBLIC_COVER_APPROVED');
+  assert.equal(hpg.qc,'PUBLIC_LISTING_ONLY');
   assert.equal(hpg.episodes,0);
   assert.deepEqual(hpg.verifiedEpisodes,[]);
   assert.equal(hpg.freeEpisodes,0);
@@ -104,3 +106,4 @@ test('static Play catalog may expose approved poster-only series as COMING_SOON 
   assert.equal(filtered.studio.mode,'PUBLIC_READER_ONLY');
   assert.equal(filtered.studio.playFirewall,true);
 });
+

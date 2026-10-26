@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "am-studio-pwa",
-  "main": "./src/play-firewall-runtime.js",
+  "main": "./src/membership-runtime.js",
   "compatibility_date": "2026-08-11",
   "triggers": {
     "crons": [
@@ -22,5 +22,23 @@
       "binding": "COMIC_ASSETS",
       "bucket_name": "am-studio-comics"
     }
-  ]
+  ],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "d1_databases": [
+    {
+      "binding": "MEMBERSHIP_DB",
+      "database_name": "am-studio-comics-membership",
+      "database_id": "ba50fde4-ef67-4bb9-8446-630976c40f82",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "vars": {
+    "BILLING_ENVIRONMENT": "PRODUCTION"
+  }
 }

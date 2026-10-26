@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "product": {
     "name": "AM STUDIO",
-    "positioning": "Stories • Comics • Universes",
-    "futurePositioning": "Stories • Comics • Universes • Creators",
+    "positioning": "Stories \u2022 Comics \u2022 Universes",
+    "futurePositioning": "Stories \u2022 Comics \u2022 Universes \u2022 Creators",
     "publicPromise": "Baca universe original AM STUDIO, simpan koleksi, lanjutkan progres, dan ikuti release resmi dalam satu aplikasi."
   },
   "growth": {
@@ -56,9 +56,13 @@
       "reason": "Requires AdMob app/ad-unit setup, consent/privacy review, Data Safety update, and explicit reward entitlement design."
     },
     "premiumSubscription": {
-      "status": "DISABLED_BY_OWNER_DIRECTION",
-      "publicEntry": false,
-      "reason": "Google Play Billing is not used. AM STUDIO public distribution is independent direct APK; paid access will use an independent entitlement/payment flow."
+      "status": "FOUNDATION_READY_PROVIDER_SETUP_REQUIRED",
+      "publicEntry": true,
+      "checkoutLive": false,
+      "membershipUrl": "/membership",
+      "name": "AM STUDIO Comics Member",
+      "paymentMethod": "QRIS_ONLY",
+      "reason": "Addendum L: account and billing core installed; verified provider API and merchant linkage required before enabling checkout."
     },
     "oneTimeProducts": {
       "status": "INDEPENDENT_PAYMENT_FUTURE",
@@ -76,7 +80,8 @@
     "localGrowthEvents": true,
     "localCampaignAttribution": true,
     "deviceIdentifierCreated": false,
-    "advertisingIdUsed": false
+    "advertisingIdUsed": false,
+    "memberAccountData": "Server-side accounts, invoices, subscriptions, reading progress and favorites; see /membership/privacy"
   },
   "releaseRule": "Growth features must never bypass the Play firewall or make unavailable paid/creator features appear live."
 }

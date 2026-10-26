@@ -1,0 +1,30 @@
+name: Comics Membership Validation
+on:
+  push:
+    branches: [main]
+    paths:
+      - src/**
+      - migrations/**
+      - tests/**
+      - public/catalog.json
+      - public/growth-config.json
+      - package*.json
+      - wrangler.jsonc
+      - .github/workflows/comics-membership-validation.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run test:membership
+      - run: node --test tests/private-production.test.mjs tests/blackjack-auto-pipeline.test.mjs
+      - run: npx wrangler deploy --dry-run --outdir /tmp/comics-membership-build
