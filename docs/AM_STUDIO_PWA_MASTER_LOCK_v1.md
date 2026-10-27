@@ -61,3 +61,9 @@ Phase 5 ACC OS X Marketing Engine: series-specific Facebook promo → deep link 
 ## Addendum L — 26 October 2026
 
 The explicit owner direction in `AM_STUDIO_COMICS_ENTERPRISE_ADDENDUM_L.md` supersedes earlier monetization deferral and broad-payment roadmap clauses. The one membership product uses QRIS only, IDR 9,900 monthly / IDR 99,000 for 12 months. Existing canon, comic IDs, individual passports, free content and unpublished-content gates remain in force. Checkout remains disabled pending verified merchant/API integration.
+
+## Preview and Universal Publisher — 27 October 2026
+
+The owner specifies complete free reading through episode 9. Episode 10 onward uses the same catalog membership, with audited administrator FREE exceptions. The boundary is database-backed and applies to future publisher releases automatically. The 96-object existing inventory contained no episode 10 or later.
+
+`UNIVERSAL_COMICS_PUBLISHER_v1.md` and `public/publisher-registry.json` extend this same system with fifteen isolated channel passports. They preserve all existing Comic IDs and the current canon locks. The publisher accepts only owner-approved original bytes and records verified receipts; missing or ambiguous pages remain unpublished.

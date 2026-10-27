@@ -1,0 +1,429 @@
+{
+  "version": "1.0",
+  "catalog_scope": "AM_STUDIO_CATALOG",
+  "website": "https://comics.nadmo.id",
+  "owner_directive_date": "2026-10-27",
+  "preview": {
+    "free_through_episode": 9,
+    "premium_from_episode": 10,
+    "source": "DATABASE_CATALOG_ACCESS_SETTINGS"
+  },
+  "profiles": [
+    {
+      "comic_id": "13",
+      "channel_id": "ch-13-pintu",
+      "profile_code": "SR-201",
+      "title": "13 Pintu Neraka",
+      "aliases": [
+        "13-pintu-neraka"
+      ],
+      "status": "REGISTERED",
+      "genre": "Supernatural Mystery",
+      "passport_url": "/publisher/passports/13.json",
+      "canon_context": "/divisions/13-pintu-neraka/context-manifest.json",
+      "source": {
+        "type": "RECOVERED_CHANNEL_PASSPORT",
+        "version": 3,
+        "source_name": "13 Pintu Neraka",
+        "legacy_status": "ACTIVE",
+        "archive_date": "2026-08-08"
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    },
+    {
+      "comic_id": "amu",
+      "channel_id": "ch-amu",
+      "profile_code": "SR-202",
+      "title": "Arda Moron Universe",
+      "aliases": [
+        "arda-moron",
+        "arda-moron-universe"
+      ],
+      "status": "REGISTERED",
+      "genre": "Cyberpunk Superhero",
+      "passport_url": "/publisher/passports/amu.json",
+      "canon_context": "/divisions/amu/context-manifest.json",
+      "source": {
+        "type": "RECOVERED_CHANNEL_PASSPORT",
+        "version": 3,
+        "source_name": "Arda Moron Universe",
+        "legacy_status": "ACTIVE",
+        "archive_date": "2026-08-08"
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    },
+    {
+      "comic_id": "sg-journey",
+      "channel_id": "ch-sun-gokong-journey",
+      "profile_code": "SR-203",
+      "title": "Sun Gokong — Versi Perjalanan",
+      "aliases": [
+        "sun-gokong-journey"
+      ],
+      "status": "REGISTERED",
+      "genre": "Journey Fantasy",
+      "passport_url": "/publisher/passports/sg-journey.json",
+      "canon_context": null,
+      "source": {
+        "type": "RECOVERED_CHANNEL_PASSPORT",
+        "version": 3,
+        "source_name": "Sun Gokong — Versi Perjalanan",
+        "legacy_status": "ACTIVE",
+        "archive_date": "2026-08-08"
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    },
+    {
+      "comic_id": "sg-battle",
+      "channel_id": "ch-sun-gokong-battle",
+      "profile_code": "SR-204",
+      "title": "Sun Gokong — Versi Pertempuran",
+      "aliases": [
+        "sun-gokong-battle"
+      ],
+      "status": "REGISTERED",
+      "genre": "Chinese Fantasy Action",
+      "passport_url": "/publisher/passports/sg-battle.json",
+      "canon_context": null,
+      "source": {
+        "type": "RECOVERED_CHANNEL_PASSPORT",
+        "version": 3,
+        "source_name": "Sun Gokong — Versi Pertarungan",
+        "legacy_status": "ACTIVE",
+        "archive_date": "2026-08-08"
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    },
+    {
+      "comic_id": "royal-gambler",
+      "channel_id": "ch-royal-gambler",
+      "profile_code": "SR-205",
+      "title": "Royal Gambler",
+      "aliases": [],
+      "status": "REGISTERED",
+      "genre": "Casino Dark Fantasy",
+      "passport_url": "/publisher/passports/royal-gambler.json",
+      "canon_context": null,
+      "source": {
+        "type": "RECOVERED_CHANNEL_PASSPORT",
+        "version": 3,
+        "source_name": "Royal Gambler / Blackjack",
+        "legacy_status": "LINKED",
+        "archive_date": "2026-08-08"
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    },
+    {
+      "comic_id": "ld",
+      "channel_id": "ch-legendary-decks",
+      "profile_code": "SR-206",
+      "title": "The Legendary Decks",
+      "aliases": [
+        "legendary-decks",
+        "blackjack"
+      ],
+      "status": "REGISTERED",
+      "genre": "Casino Dark Fantasy",
+      "passport_url": "/publisher/passports/ld.json",
+      "canon_context": "/divisions/blackjack/context-manifest.json",
+      "source": {
+        "type": "RECOVERED_CHANNEL_PASSPORT",
+        "version": 3,
+        "source_name": "The Legendary Decks Universe",
+        "legacy_status": "ACTIVE",
+        "archive_date": "2026-08-08"
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    },
+    {
+      "comic_id": "hy",
+      "channel_id": "ch-han-you",
+      "profile_code": "SR-207",
+      "title": "Han You — Pewaris Api Abadi",
+      "aliases": [
+        "han-you"
+      ],
+      "status": "REGISTERED",
+      "genre": "Artifact Fantasy",
+      "passport_url": "/publisher/passports/hy.json",
+      "canon_context": null,
+      "source": {
+        "type": "RECOVERED_CHANNEL_PASSPORT",
+        "version": 3,
+        "source_name": "Han You — Pewaris Api Abadi",
+        "legacy_status": "ACTIVE",
+        "archive_date": "2026-08-08"
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    },
+    {
+      "comic_id": "hk",
+      "channel_id": "ch-han-kera",
+      "profile_code": "SR-208",
+      "title": "Han Kera",
+      "aliases": [
+        "han-kera"
+      ],
+      "status": "REGISTERED",
+      "genre": "Monkey Warrior",
+      "passport_url": "/publisher/passports/hk.json",
+      "canon_context": null,
+      "source": {
+        "type": "RECOVERED_CHANNEL_PASSPORT",
+        "version": 3,
+        "source_name": "Han Kera",
+        "legacy_status": "ACTIVE",
+        "archive_date": "2026-08-08"
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    },
+    {
+      "comic_id": "arda-personal-fb",
+      "channel_id": "ch-personal-comic",
+      "profile_code": "SR-209",
+      "title": "Arda Comics",
+      "aliases": [
+        "personal-comic",
+        "animasi-fb"
+      ],
+      "status": "REGISTERED",
+      "genre": "Personal Series",
+      "passport_url": "/publisher/passports/arda-personal-fb.json",
+      "canon_context": null,
+      "source": {
+        "type": "RECOVERED_CHANNEL_PASSPORT",
+        "version": 3,
+        "source_name": "Animasi FB / Arda Comics Studio",
+        "legacy_status": "ACTIVE",
+        "archive_date": "2026-08-08"
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    },
+    {
+      "comic_id": "lt",
+      "channel_id": "ch-ling-tian",
+      "profile_code": "SR-210",
+      "title": "Legenda Ling Tian",
+      "aliases": [
+        "ling-tian"
+      ],
+      "status": "REGISTERED",
+      "genre": "Cinematic Wuxia",
+      "passport_url": "/publisher/passports/lt.json",
+      "canon_context": null,
+      "source": {
+        "type": "RECOVERED_CHANNEL_PASSPORT",
+        "version": 3,
+        "source_name": "Legenda Ling Tian Universe",
+        "legacy_status": "ACTIVE",
+        "archive_date": "2026-08-08"
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    },
+    {
+      "comic_id": "animasi-konoha",
+      "channel_id": "ch-konoha",
+      "profile_code": "SR-211",
+      "title": "Animasi Konoha",
+      "aliases": [
+        "konoha"
+      ],
+      "status": "REGISTERED",
+      "genre": "Animated Satire",
+      "passport_url": "/publisher/passports/animasi-konoha.json",
+      "canon_context": null,
+      "source": {
+        "type": "RECOVERED_CHANNEL_PASSPORT",
+        "version": 3,
+        "source_name": "Animasi Konoha",
+        "legacy_status": "ACTIVE",
+        "archive_date": "2026-08-08"
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    },
+    {
+      "comic_id": "wr",
+      "channel_id": "ch-warung-republik",
+      "profile_code": "SR-212",
+      "title": "Warung Republik",
+      "aliases": [
+        "warung-republik",
+        "otonk-lennon"
+      ],
+      "status": "REGISTERED",
+      "genre": "Current-Issue Satire",
+      "passport_url": "/publisher/passports/wr.json",
+      "canon_context": null,
+      "source": {
+        "type": "RECOVERED_CHANNEL_PASSPORT",
+        "version": 3,
+        "source_name": "Otonk Lennon / Warung Republik",
+        "legacy_status": "ACTIVE",
+        "archive_date": "2026-08-08"
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    },
+    {
+      "comic_id": "arda-family",
+      "channel_id": "ch-arda-family",
+      "profile_code": "SR-213",
+      "title": "Arda Family",
+      "aliases": [],
+      "status": "REGISTERED",
+      "genre": "Animated Family",
+      "passport_url": "/publisher/passports/arda-family.json",
+      "canon_context": null,
+      "source": {
+        "type": "RECOVERED_CHANNEL_PASSPORT",
+        "version": 3,
+        "source_name": "Arda Family",
+        "legacy_status": "ACTIVE",
+        "archive_date": "2026-08-08"
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    },
+    {
+      "comic_id": "wukong-rebooted",
+      "channel_id": "ch-wukong-rebooted",
+      "profile_code": null,
+      "title": "Wukong: Rebooted",
+      "aliases": [],
+      "status": "REGISTERED",
+      "genre": "Cyberpunk",
+      "passport_url": "/publisher/passports/wukong-rebooted.json",
+      "canon_context": null,
+      "source": {
+        "type": "OWNER_PROJECT_DIRECTIVE",
+        "note": "Existing project; publishing channel key registered without inventing a legacy SR code."
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    },
+    {
+      "comic_id": "hikayat-pohon-ganja",
+      "channel_id": "ch-hikayat-pohon-ganja",
+      "profile_code": null,
+      "title": "Hikayat Pohon Ganja",
+      "aliases": [],
+      "status": "REGISTERED",
+      "genre": "Research Comic",
+      "passport_url": "/publisher/passports/hikayat-pohon-ganja.json",
+      "canon_context": "/divisions/hikayat-pohon-ganja/context-manifest.json",
+      "source": {
+        "type": "OWNER_PROJECT_DIRECTIVE",
+        "note": "Existing project; publishing channel key registered without inventing a legacy SR code."
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
+    }
+  ],
+  "rules": [
+    "Preserve existing canonical Comic IDs; aliases never create another comic.",
+    "Royal Gambler and The Legendary Decks are separate publishing destinations.",
+    "Registration does not claim an episode has been produced or published.",
+    "Membership covers the entire catalog; no subscription per title."
+  ]
+}

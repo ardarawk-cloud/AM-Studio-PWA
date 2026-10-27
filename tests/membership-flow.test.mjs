@@ -12,7 +12,7 @@ import {assetIdentity,mayRead} from '../src/membership-access.js';
 // Actual SQLite constraints, triggers, and transactions are used. The provider
 // transport below is a local test double: these are not provider sandbox tests.
 class D1 {
-  constructor(){this.sql=new DatabaseSync(':memory:');this.sql.exec(fs.readFileSync(new URL('../migrations/0001_membership.sql',import.meta.url),'utf8'))}
+  constructor(){this.sql=new DatabaseSync(':memory:');for(const name of fs.readdirSync(new URL('../migrations/',import.meta.url)).filter(n=>n.endsWith('.sql')).sort())this.sql.exec(fs.readFileSync(new URL('../migrations/'+name,import.meta.url),'utf8'))}
   prepare(sql){const db=this.sql;let args=[];const p={bind(...v){args=v;return p},async first(){return db.prepare(sql).get(...args)||null},async all(){return {results:db.prepare(sql).all(...args)}},runSync(){const r=db.prepare(sql).run(...args);return {meta:{changes:Number(r.changes)}}},async run(){return p.runSync()}};return p}
   async batch(list){this.sql.exec('BEGIN IMMEDIATE');try{const r=list.map(p=>p.runSync());this.sql.exec('COMMIT');return r}catch(e){this.sql.exec('ROLLBACK');throw e}}
 }
@@ -20,6 +20,9 @@ const origin='https://comics.nadmo.id';
 function fixture(){
   const db=new D1(),keys=generateKeyPairSync('rsa',{modulusLength:2048}),env={MEMBERSHIP_DB:db,AM_STUDIO_ADMIN_KEY:'test-owner-key-only',BILLING_ENVIRONMENT:'SANDBOX',SHOPEEPAY_MODE:'SANDBOX',SHOPEEPAY_SANDBOX_VERIFIED:'true',SHOPEEPAY_CLIENT_ID:'fixture-client',SHOPEEPAY_CLIENT_SECRET:'fixture-secret',SHOPEEPAY_PRIVATE_KEY:keys.privateKey.export({type:'pkcs8',format:'pem'}),SHOPEEPAY_PUBLIC_KEY:keys.publicKey.export({type:'spki',format:'pem'}),SHOPEEPAY_MERCHANT_ID:'fixture-merchant',SHOPEEPAY_STORE_ID:'fixture-store',SHOPEEPAY_BASE_URL:'https://api.uat.wallet.airpay.co.id',SHOPEEPAY_CALLBACK_URL:origin+CALLBACK_PATH};
   db.sql.exec("UPDATE billing_settings SET checkout_enabled=1,api_mode='SANDBOX',legal_entity_status='VERIFIED',premium_storage_verified=1");
+  // The older per-page policy cases below remain isolated from the newer
+  // catalog rule. Separate boundary tests enable the owner's nine-episode rule.
+  db.sql.exec("UPDATE catalog_access_settings SET enabled=0");
   const state={creates:0,payments:new Map()},provider={
     async create(_env,i){state.creates++;state.payments.set(i.order_id,{order_id:i.order_id,provider_transaction_id:'tx-'+i.order_id,merchant_id:i.merchant_id,store_id:i.store_id,amount_idr:i.amount_idr,currency:'IDR',paid_at:new Date().toISOString(),status:'PENDING',fee_idr:null,payload_hash:'local-fixture-'+i.id});return {qr_content:'000201010212LOCAL_QRIS_FIXTURE'}},
     async query(_env,i){return state.payments.get(i.order_id)},verifyCallback:shopeepay.verifyCallback

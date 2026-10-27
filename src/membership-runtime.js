@@ -3,8 +3,11 @@ import qrcode from 'qrcode-generator';
 import {MemberError,iso,hash,equal,json,bodyJson,sameOrigin,rate,passwordHash,passwordValid,newSession,session,optionalMember,auditStatement,subscriptionState,sessionCookie} from './membership-auth.js';
 import {billingConfig,makeInvoice,reconcile,finance,csv} from './membership-billing.js';
 import {shopeepay,providerReadiness,CALLBACK_PATH} from './shopeepay-qris.js';
-import {protectAsset,mayRead,configureAccess,publisherPolicy,membershipServiceWorker} from './membership-access.js';
+import {protectAsset,mayRead,configureAccess,publisherPolicy,membershipServiceWorker,catalogAccess,resolveAccess} from './membership-access.js';
 import {memberDocument,readerClient} from './membership-ui.js';
+import {publisherRegistry,publisherPassport,mergeRegisteredCatalog} from './publisher-registry.js';
+import {publisherStatus,uploadPublisherSource,processPublisherRelease,unpublishedEpisodes} from './universal-publisher.js';
+import {publicationDocument,ownerPreviewClient} from './publisher-ui.js';
 import growthConfig from '../public/growth-config.json' with {type:'json'};
 
 const PAGES=new Set(['/membership','/register','/login','/checkout','/payment-status','/member','/member/history','/admin/billing','/membership/terms','/membership/privacy','/membership/refund']);
@@ -33,16 +36,32 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
         if(['/privacy-policy','/privacy-policy.html'].includes(path)&&method==='GET')return memberDocument('/membership/privacy');
         if(path==='/growth-config.json'&&method==='GET')return json(growthConfig);
         if(path==='/membership-reader.js'&&method==='GET')return new Response(readerClient,{headers:{'content-type':'text/javascript; charset=utf-8','cache-control':'no-store'}});
+        if(path==='/publisher-owner.js'&&method==='GET')return new Response(ownerPreviewClient,{headers:{'content-type':'text/javascript; charset=utf-8','cache-control':'no-store'}});
+        if(path==='/publisher/status'&&method==='GET')return publicationDocument();
+        if((path==='/api/publisher/registry'||path==='/publisher-registry.json')&&method==='GET')return json(publisherRegistry());
+        const passport=path.match(/^\/publisher\/passports\/([a-z0-9-]+)\.json$/);
+        if(passport&&method==='GET')return json(publisherPassport(passport[1]));
         if(path==='/sw.js'&&method==='GET')return new Response(membershipServiceWorker,{headers:{'content-type':'text/javascript; charset=utf-8','cache-control':'no-store','service-worker-allowed':'/'}});
-        const isApi=path.startsWith('/api/member/')||path.startsWith('/api/membership')||path.startsWith('/api/admin/billing')||path.startsWith('/api/billing/')||path.startsWith('/api/publisher/access');
+        const isApi=path.startsWith('/api/member/')||path.startsWith('/api/membership')||path.startsWith('/api/admin/billing')||path.startsWith('/api/billing/')||path.startsWith('/api/publisher/');
         if(isApi&&!db)throw new MemberError('MEMBERSHIP_DATABASE_UNAVAILABLE',503);
         if(path==='/api/membership'&&method==='GET') {
           const c=await billingConfig(db),r=providerReadiness(env,c.settings);
-          return json({ok:true,plan:c.plan,prices:c.prices.filter(p=>p.enabled),currency:'IDR',payment_method:'QRIS',checkout_available:r.ready,payment_status:r.ready?'AVAILABLE':'PREPARING',renewal:'MANUAL_QRIS',legal_version:c.settings.legal_version});
+          return json({ok:true,plan:c.plan,prices:c.prices.filter(p=>p.enabled),currency:'IDR',payment_method:'QRIS',checkout_available:r.ready,payment_status:r.ready?'AVAILABLE':'PREPARING',renewal:'MANUAL_QRIS',legal_version:c.settings.legal_version,preview:await catalogAccess(db)});
         }
         if(path==='/api/membership/health'&&method==='GET') {
           const c=await billingConfig(db),r=providerReadiness(env,c.settings);
-          return json({ok:true,membership:'ACCOUNT_AND_BILLING_CORE',database:'READY',payment_method:'QRIS',provider:'SHOPEEPAY',checkout_available:r.ready,automatic_activation:r.ready?'AWAITING_END_TO_END_VERIFICATION':'BLOCKED_PROVIDER_SETUP',legacy_content:'UNCHANGED_UNLESS_EXPLICITLY_VERIFIED'});
+          return json({ok:true,membership:'ACCOUNT_AND_BILLING_CORE',database:'READY',payment_method:'QRIS',provider:'SHOPEEPAY',checkout_available:r.ready,automatic_activation:r.ready?'AWAITING_END_TO_END_VERIFICATION':'BLOCKED_PROVIDER_SETUP',preview:await catalogAccess(db),publisher_profiles:publisherRegistry().profiles.length});
+        }
+        const publication=path.match(/^\/api\/publisher\/(releases|uploads|process)\/([a-f0-9-]{36})(?:\/(\d{1,3}))?$/i);
+        if(publication){
+          const [,action,id,index]=publication;
+          if(action==='releases'&&method==='GET'&&index===undefined)return json(await publisherStatus(env,id));
+          if(method==='POST'&&['uploads','process'].includes(action)){
+            sameOrigin(req);await rate(db,req,'publisher-'+action,action==='uploads'?30:80,60000);
+            if(action==='uploads'&&index!==undefined)return json(await uploadPublisherSource(req,env,id,Number(index)));
+            if(action==='process'&&index===undefined){const result=await processPublisherRelease(req,env,legacy,ctx,id);return json(result,result.status==='PUBLISHED'?200:202)}
+          }
+          return json({ok:false,error:'PUBLISHER_ROUTE_NOT_FOUND'},404);
         }
         if(['/api/member/register','/api/member/login'].includes(path)&&method==='POST') {
           sameOrigin(req);await rate(db,req,'auth-ip',20);
@@ -152,7 +171,15 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
           const events=(await db.prepare('SELECT * FROM payment_events ORDER BY received_at DESC LIMIT 100').all()).results;
           const audits=(await db.prepare('SELECT * FROM audit_logs ORDER BY created_at DESC LIMIT 100').all()).results;
           const policies=(await db.prepare('SELECT * FROM comic_access ORDER BY comic_id,episode').all()).results;
-          return json({ok:true,csrf:s.csrf,config,readiness:providerReadiness(env,config.settings),finance:await finance(db),members,invoices,payments,events,audits,policies});
+          return json({ok:true,csrf:s.csrf,config,preview:await catalogAccess(db),readiness:providerReadiness(env,config.settings),finance:await finance(db),members,invoices,payments,events,audits,policies});
+        }
+        if(path==='/api/admin/billing/preview'&&method==='POST'){
+          await admin(db,req,true);const b=await bodyJson(req),why=reason(b),before=await catalogAccess(db);
+          if(!Number.isInteger(b.free_through_episode)||b.free_through_episode<0||b.free_through_episode>999||b.preview_verified!==true)throw new MemberError('CATALOG_PREVIEW_INVALID');
+          const settings=await db.prepare('SELECT premium_storage_verified FROM billing_settings WHERE id=1').first();
+          if(settings?.premium_storage_verified!==1)throw new MemberError('PREMIUM_STORAGE_NOT_VERIFIED',409);
+          await db.batch([db.prepare('UPDATE catalog_access_settings SET enabled=1,free_through_episode=?,verified=1,updated_at=? WHERE id=1').bind(b.free_through_episode,iso()),auditStatement(db,'OWNER','CATALOG_PREVIEW_UPDATED','AM_STUDIO_CATALOG',before,{free_through_episode:b.free_through_episode},why)]);
+          return json({ok:true,preview:await catalogAccess(db)});
         }
         if(path==='/api/admin/billing/prices'&&method==='POST') {
           await admin(db,req,true);const b=await bodyJson(req),why=reason(b),before=await billingConfig(db);
@@ -204,8 +231,26 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
         if(db)await publisherPolicy(req,env,legacy,ctx);
         const response=await legacy.fetch(req,env,ctx);
         if(method==='GET'&&path==='/catalog.json'&&response.ok) {
-          const data=await response.json();data.studio={...(data.studio||{}),pass:{name:'AM STUDIO Comics Member',status:'ACCOUNT_READY_PROVIDER_PENDING',membershipUrl:'/membership'}};
+          const data=mergeRegisteredCatalog(await response.json()),preview=await catalogAccess(db);
+          const overrides=(await db.prepare('SELECT * FROM comic_access').all()).results;
+          const pending=new Set((await unpublishedEpisodes(db)).map(p=>p.comic_id+':'+p.episode));
+          data.series=data.series.map(s=>{
+            const episodes=(s.verifiedEpisodes||[]).filter(n=>!pending.has(s.id+':'+n));
+            const access=Object.fromEntries(episodes.map(n=>[n,resolveAccess(s.id,n,overrides.find(p=>p.comic_id===s.id&&p.episode===n),preview).visibility]));
+            return {...s,verifiedEpisodes:episodes,episodes:Math.max(0,...episodes),episodeCountVerified:episodes.every((n,i)=>n===i+1),freeEpisodes:preview.enabled?preview.free_through_episode:s.freeEpisodes,previewThroughEpisode:preview.free_through_episode,accessByEpisode:access,...(!episodes.length?{status:'COMING_SOON',publicReaderState:'COMING_SOON'}:{})};
+          });
+          data.studio={...(data.studio||{}),preview,pass:{name:'AM STUDIO Comics Member',status:'ACCOUNT_READY_PROVIDER_PENDING',membershipUrl:'/membership'}};
           return json(data);
+        }
+        if(method==='GET'&&path==='/reader-assets.json'&&response.ok){
+          const data=await response.json(),preview=await catalogAccess(db),overrides=(await db.prepare('SELECT * FROM comic_access').all()).results;
+          const pending=new Set((await unpublishedEpisodes(db)).map(p=>p.comic_id+':'+p.episode));
+          data.episodes=(data.episodes||[]).filter(e=>!pending.has(e.seriesId+':'+e.episode)).map(e=>({...e,access:resolveAccess(e.seriesId,e.episode,overrides.find(p=>p.comic_id===e.seriesId&&p.episode===e.episode),preview)}));
+          return json(data);
+        }
+        if(method==='GET'&&['/owner-upload','/owner-upload.html'].includes(path)&&response.ok&&response.headers.get('content-type')?.includes('text/html')){
+          const html=await response.text(),headers=new Headers(response.headers);headers.set('cache-control','no-store');headers.delete('content-length');
+          return new Response(html.replace('</body>','<script src="/publisher-owner.js?v=1" defer></script></body>'),{status:response.status,headers});
         }
         if(gate?.premium) {const h=new Headers(response.headers);h.set('cache-control','private, no-store');h.set('vary','Cookie');h.delete('etag');return new Response(method==='HEAD'?null:response.body,{status:response.status,headers:h})}
         if(method==='GET'&&(path==='/'||path==='/index.html')&&response.ok&&response.headers.get('content-type')?.includes('text/html')) {

@@ -1,4 +1,5 @@
 import {MemberError,iso,memberActive,optionalMember,json,equal,auditStatement} from './membership-auth.js';
+import {mergeRegisteredCatalog} from './publisher-registry.js';
 
 export function assetIdentity(path) {
   let p;try{p=decodeURIComponent(path)}catch{throw new MemberError('INVALID_ASSET_PATH',400)}
@@ -8,10 +9,28 @@ export function assetIdentity(path) {
   const page=m[3].match(/^page-(\d{2,3})\.(?:jpe?g|png|webp|avif)$/i);
   return {comic_id:m[1].toLowerCase(),episode:Number(m[2]),page:page?Number(page[1]):null};
 }
+export async function catalogAccess(db) {
+  const policy=await db.prepare('SELECT * FROM catalog_access_settings WHERE id=1').first();
+  if(!policy)throw new MemberError('CATALOG_ACCESS_NOT_CONFIGURED',503);
+  return {...policy,premium_from_episode:policy.free_through_episode+1,scope:'AM_STUDIO_CATALOG'};
+}
+export function resolveAccess(comic,episode,explicit,catalog) {
+  const defaults={comic_id:comic,episode,visibility:'FREE',preview_pages:'[]',verified:0,source:'LEGACY_FREE'};
+  if(catalog?.enabled&&catalog.verified===1&&episode<=catalog.free_through_episode)return {...defaults,verified:1,source:'CATALOG_PREVIEW'};
+  if(explicit)return {...explicit,source:'EPISODE_OVERRIDE'};
+  if(catalog?.enabled){
+    if(catalog.verified!==1)throw new MemberError('CATALOG_PREVIEW_NOT_VERIFIED',503);
+    return {...defaults,visibility:'PREMIUM',verified:1,source:'CATALOG_MEMBERSHIP'};
+  }
+  return defaults;
+}
 export async function accessPolicy(db,comic,episode) {
-  return await db.prepare('SELECT * FROM comic_access WHERE comic_id=? AND episode=?').bind(comic,episode).first()||{comic_id:comic,episode,visibility:'FREE',preview_pages:'[]',verified:0};
+  const explicit=await db.prepare('SELECT * FROM comic_access WHERE comic_id=? AND episode=?').bind(comic,episode).first();
+  return resolveAccess(comic,episode,explicit,await catalogAccess(db));
 }
 export async function mayRead(db,req,id) {
+  const lock=await db.prepare("SELECT r.status FROM publisher_locks l JOIN publisher_releases r ON r.id=l.release_id WHERE l.comic_id=? AND l.episode=? AND r.status!='PUBLISHED'").bind(id.comic_id,id.episode).first();
+  if(lock)return {allowed:false,premium:false,publishing:true};
   const policy=await accessPolicy(db,id.comic_id,id.episode);
   if(policy.visibility!=='PREMIUM')return {allowed:true,premium:false};
   if(policy.verified!==1)throw new MemberError('PREMIUM_POLICY_INVALID',503);
@@ -25,7 +44,7 @@ export async function protectAsset(req,env) {
   const id=assetIdentity(new URL(req.url).pathname);if(!id)return null;
   if(!env.MEMBERSHIP_DB)return json({ok:false,error:'MEMBERSHIP_DATABASE_UNAVAILABLE'},503);
   const decision=await mayRead(env.MEMBERSHIP_DB,req,id);
-  if(!decision.allowed)return json({ok:false,error:'MEMBERSHIP_REQUIRED',membership_url:'/membership',...id},402);
+  if(!decision.allowed)return json({ok:false,error:decision.publishing?'EPISODE_PUBLICATION_PENDING':'MEMBERSHIP_REQUIRED',membership_url:'/membership',...id},decision.publishing?404:402);
   return {premium:decision.premium};
 }
 export async function configureAccess(db,body,actor,base,req,env,ctx,preparing=false) {
@@ -35,6 +54,8 @@ export async function configureAccess(db,body,actor,base,req,env,ctx,preparing=f
   if(!Array.isArray(pages)||pages.length>999||pages.some(n=>!Number.isInteger(n)||n<1||n>999)||new Set(pages).size!==pages.length)throw new MemberError('PREVIEW_PAGES_INVALID');
   if(typeof body.reason!=='string'||body.reason.trim().length<10)throw new MemberError('AUDIT_REASON_REQUIRED');
   if(visibility==='PREMIUM'&&body.preview_verified!==true)throw new MemberError('PREVIEW_VERIFICATION_REQUIRED',409);
+  const catalog=await catalogAccess(db);
+  if(visibility==='PREMIUM'&&catalog.enabled&&episode<=catalog.free_through_episode)throw new MemberError('EPISODE_IS_PUBLIC_PREVIEW',409);
   const settings=await db.prepare('SELECT premium_storage_verified FROM billing_settings WHERE id=1').first();
   if(visibility==='PREMIUM'&&!settings?.premium_storage_verified)throw new MemberError('PREMIUM_STORAGE_NOT_VERIFIED',409);
   if(visibility==='PREMIUM'&&!preparing) {
@@ -44,8 +65,8 @@ export async function configureAccess(db,body,actor,base,req,env,ctx,preparing=f
     if(!available.size||inventory.truncated||pages.some(n=>!available.has(n)))throw new MemberError('PREMIUM_ASSET_OR_PREVIEW_NOT_VERIFIED',409);
   }
   const response=await base.fetch(new Request(new URL('/catalog.json?channel=owner',req.url)),env,ctx);
-  const catalog=await response.json();
-  if(!catalog.series?.some(s=>s.id===comic))throw new MemberError('COMIC_ID_NOT_IN_EXISTING_CATALOG',404);
+  const listing=mergeRegisteredCatalog(await response.json());
+  if(!listing.series?.some(s=>s.id===comic))throw new MemberError('COMIC_ID_NOT_IN_EXISTING_CATALOG',404);
   const before=await accessPolicy(db,comic,episode),now=iso();
   const after={comic_id:comic,episode,visibility,preview_pages:JSON.stringify([...pages].sort((a,b)=>a-b)),verified:1,updated_at:now};
   await db.batch([db.prepare('INSERT INTO comic_access VALUES(?,?,?,?,?,?) ON CONFLICT(comic_id,episode) DO UPDATE SET visibility=excluded.visibility,preview_pages=excluded.preview_pages,verified=excluded.verified,updated_at=excluded.updated_at').bind(...Object.values(after)),auditStatement(db,actor,'COMIC_ACCESS_UPDATED',`${comic}:${episode}`,before,after,body.reason)]);

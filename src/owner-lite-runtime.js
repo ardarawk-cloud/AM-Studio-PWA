@@ -17,6 +17,7 @@ function deny(){return Response.json({ok:false,error:'ADMIN_AUTH_REQUIRED'},{sta
 function cleanSeries(value=''){const x=String(value).trim().toLowerCase();return /^[a-z0-9-]+$/.test(x)?x:null}
 function pad(n,w=3){return String(n).padStart(w,'0')}
 function invalidateInventory(){inventoryCache=null;inventoryCacheAt=0;inventoryPromise=null}
+export function invalidatePublisherInventory(){invalidateInventory()}
 
 async function listAll(env,prefix){
   const objects=[];let cursor;
@@ -283,3 +284,4 @@ export default{
   },
   async scheduled(controller,env,ctx){if(base.scheduled)return base.scheduled(controller,env,ctx)}
 };
+
