@@ -121,7 +121,7 @@
   }
 
   function updateHeader(){
-    document.querySelectorAll('.top .tiny,.topbar small').forEach(x=>x.textContent='Stories • Comics • Universes');
+    document.querySelectorAll('.top .tiny,.topbar small').forEach(x=>{if(x.textContent!=='Stories • Comics • Universes')x.textContent='Stories • Comics • Universes'});
     const pill=document.querySelector('.top .pill,.topbar .pill');if(pill&&/PUBLIC READER|PRIVATE BETA/i.test(pill.textContent||'')){pill.textContent='AM STUDIO';pill.style.color='var(--green,#66e3a4)'}
   }
 
