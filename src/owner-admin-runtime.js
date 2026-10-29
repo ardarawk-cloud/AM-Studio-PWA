@@ -69,7 +69,7 @@ export default{
     const play=isPlay(request);
     if(request.method==='GET'&&url.pathname==='/catalog.json'&&!play)response=await patchOwnerCatalog(response,request,env,ctx);
     if(request.method==='GET'&&(url.pathname==='/'||url.pathname.endsWith('.html'))){
-      const scripts=['/cover-assets.js?v=20260916a'];
+      const scripts=['/cover-assets.js?v=20261030b'];
       if(!play&&ownerNative(request))scripts.push('/owner-mode.js?v=20260916a');
       response=await injectScripts(response,scripts);
     }
