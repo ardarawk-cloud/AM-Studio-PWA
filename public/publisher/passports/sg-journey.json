@@ -1,0 +1,47 @@
+{
+  "version": "1.0",
+  "comic_id": "sg-journey",
+  "channel_id": "ch-sun-gokong-journey",
+  "title": "Sun Gokong — Versi Perjalanan",
+  "universe": "INDEPENDENT",
+  "status": "REGISTERED",
+  "profile_code": "SR-203",
+  "genre": "Journey Fantasy",
+  "aliases": [
+    "sun-gokong-journey"
+  ],
+  "isolation": "ONE_COMIC_ONE_CHANNEL",
+  "canon_context": null,
+  "website": "https://comics.nadmo.id/",
+  "repository": "ardarawk-cloud/AM-Studio-PWA",
+  "branch": "main",
+  "storage": {
+    "bucket": "am-studio-comics",
+    "prefix": "comics/sg-journey/",
+    "cover_target": "comics/sg-journey/cover.{ext}",
+    "episode_target_pattern": "comics/sg-journey/ep{NNN}/"
+  },
+  "publication_requirements": [
+    "OWNER_APPROVED",
+    "CANON_FINAL",
+    "QC_PASS",
+    "ORIGINAL_ASSETS",
+    "VERIFIED_RECEIPT"
+  ],
+  "cover": {
+    "approval_state": "APPROVED_REFERENCE_EXISTS",
+    "publication_state": "LEGACY_R2_ASSET_AUDIT_REQUIRED"
+  },
+  "current_state": {
+    "catalog": "FB_CANON_AUDIT_PENDING",
+    "episodes": null,
+    "legacy_r2_assets": {
+      "cover_present": true,
+      "episode_001_pages_present": 8,
+      "status": "AUDIT_REQUIRED",
+      "note": "Legacy R2 objects predate current professional publisher workflow; .jpg keys report image/png MIME and must not be treated as final publisher assets without owner approval, hash verification, receipt, and reader QC."
+    },
+    "next_production": "AUDIT_OWNER_APPROVED_COVER_AND_EPISODE_001_ORIGINALS",
+    "next_story": "Episode 002 — Pengawal yang Tidak Patuh"
+  }
+}
