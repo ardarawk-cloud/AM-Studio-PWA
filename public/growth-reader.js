@@ -146,7 +146,7 @@
 
   function renderNewBanner(root){
     if(!root||state.newReleaseCount<1||document.getElementById('amGrowthNew'))return;
-    const el=document.createElement('div');el.id='amGrowthNew';el.innerHTML=`<div class="ag-kicker">NEW DROP</div><b>${state.newReleaseCount} release baru tersedia</b><div class="ag-copy">Ada bacaan baru sejak kunjungan terakhir.</div>`;
+    const el=document.createElement('div');el.id='amGrowthNew';el.innerHTML=`<div class="ag-kicker">NEW DROP</div><b>${state.newReleaseCount} release baru tersedia</b><div class="ag-copy">Ada bacaan baru sejak kunjungan terakhir.</div><div class="ag-row"><button class="btn ghost" type="button" data-ag-library>LIHAT RILIS</button></div>`;
     const hero=root.querySelector('.hero');(hero?hero.after(el):root.prepend(el));
   }
 
@@ -234,6 +234,8 @@
   function bindActions(){
     if(document.documentElement.dataset.amGrowthBound==='1')return;document.documentElement.dataset.amGrowthBound='1';
     document.addEventListener('click',event=>{
+      const library=event.target.closest?.('[data-ag-library]');
+      if(library){event.preventDefault();document.querySelector('.nav [data-tab="library"],.nav [data-nav="library"]')?.click();return}
       const open=event.target.closest?.('[data-ag-open]');if(open){openEpisode(open.dataset.agOpen,Number(open.dataset.agEpisode||0)||null);return}
       const sh=event.target.closest?.('[data-ag-share]');if(sh){share(sh.dataset.agShare,Number(sh.dataset.agEpisode||0)||null);return}
       const card=event.target.closest?.('.card[data-open],.card[data-series]');if(card){const seriesId=card.dataset.open||card.dataset.series;sessionStorage.setItem('am_current_series',seriesId);track('series_card_open',{seriesId})}
