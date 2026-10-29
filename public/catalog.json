@@ -320,12 +320,14 @@
       "title": "Li Xuan — Pendekar Penyeberang Malam",
       "tag": "Wuxia • Supernatural Horror • Mystery",
       "genre": "Wuxia Supernatural Horror",
-      "episodes": 0,
+      "episodes": 1,
       "episodeCountVerified": true,
-      "verifiedEpisodes": [],
-      "freeEpisodes": 0,
+      "verifiedEpisodes": [
+        1
+      ],
+      "freeEpisodes": 1,
       "season": "Perjalanan Penyeberang Malam",
-      "status": "COMING_SOON",
+      "status": "PUBLISHED",
       "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
       "cover": {
         "required": true,
@@ -334,8 +336,17 @@
         "sha256": "c3a09029722b7b2ee334947d74ba39936fab491f2866b2fe94398eb26dbcc98f"
       },
       "desc": "Li Xuan, pendekar pengembara pemburu hantu, siluman, dan iblis, menyingkap misteri gaib dari desa ke desa sambil memburu kebenaran di balik kehancuran Paviliun Tianmen.",
-      "episodeTitles": [],
-      "qc": "OWNER_APPROVED_COVER_EPISODE_PENDING"
+      "episodeTitles": [
+        "Pengantin Merah"
+      ],
+      "qc": "OWNER_APPROVED_EPISODE_PARTIAL_2_OF_24",
+      "currentEpisode": {
+        "number": 1,
+        "title": "Pengantin Merah",
+        "publishedPages": 2,
+        "targetPages": 24,
+        "status": "IN_PROGRESS"
+      }
     }
   ],
   "excludedProjects": [

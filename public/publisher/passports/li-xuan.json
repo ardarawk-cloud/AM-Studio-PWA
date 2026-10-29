@@ -39,9 +39,15 @@
     "reader_qc": "PASS"
   },
   "current_state": {
-    "catalog": "COMING_SOON",
-    "episodes": 0,
-    "next_production": "EPISODE_001_MASTER_STORY",
-    "next_story": "Pengantin Merah"
+    "catalog": "PUBLISHED",
+    "episodes": 1,
+    "current_episode": 1,
+    "current_episode_title": "Pengantin Merah",
+    "published_pages": 2,
+    "target_pages": 24,
+    "episode_state": "PARTIAL_PUBLISHED",
+    "episode_release_id": "7f2d3a91-3b54-4db7-9f61-cc4d8a6e2102",
+    "reader_qc": "PASS",
+    "next_production": "EPISODE_001_PAGE_03"
   }
 }

@@ -1,7 +1,7 @@
 {
   "registry": {
     "name": "AM STUDIO Reader Asset Registry",
-    "version": 5,
+    "version": 6,
     "policy": "CANON_FINAL_OR_OWNER_APPROVED_PUBLICATION_RECOVERY",
     "publicBase": "/media/comics",
     "readerMode": "VERTICAL_LONGFORM",
@@ -53,12 +53,56 @@
         "verifiedAt": "2026-08-16",
         "note": "Arda confirmed Episode 001 is complete at 22 pages. Reader registry synchronized to Page 1 through Page 22."
       }
+    },
+    {
+      "seriesId": "li-xuan",
+      "episode": 1,
+      "title": "Pengantin Merah",
+      "canonState": "CANON_FINAL",
+      "qc": "QC_PASS",
+      "publicationState": "OWNER_MANUAL_RECOVERY",
+      "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
+      "coverAsset": "/media/comics/li-xuan/cover.png",
+      "pageCount": 2,
+      "availablePageCount": 2,
+      "pages": [
+        "/media/comics/li-xuan/ep001/page-01.png",
+        "/media/comics/li-xuan/ep001/page-02.png"
+      ],
+      "missingReaderPages": [],
+      "readerState": "READER_COMPLETE",
+      "assetQuality": "OWNER_ADMIN_UPLOAD",
+      "evidence": {
+        "type": "OWNER_ADMIN_UPLOAD",
+        "verifiedAt": "2026-10-29T21:05:47.169Z",
+        "releaseId": "7f2d3a91-3b54-4db7-9f61-cc4d8a6e2102",
+        "note": "Owner explicitly requested publishing Page 01 and Page 02 first; Episode 001 remains in production toward 24 pages."
+      },
+      "access": {
+        "comic_id": "li-xuan",
+        "episode": 1,
+        "visibility": "FREE",
+        "preview_pages": "[]",
+        "verified": 1,
+        "source": "CATALOG_PREVIEW"
+      }
     }
   ],
   "schema": {
-    "required": ["seriesId","episode","canonState","qc","pageCount","pages"],
-    "canonState": ["CANON_FINAL"],
-    "qc": ["QC_PASS"],
+    "required": [
+      "seriesId",
+      "episode",
+      "canonState",
+      "qc",
+      "pageCount",
+      "pages"
+    ],
+    "canonState": [
+      "CANON_FINAL"
+    ],
+    "qc": [
+      "QC_PASS"
+    ],
     "pageExample": "/media/comics/amu/ep001/page-01.jpg"
   },
   "rules": {
