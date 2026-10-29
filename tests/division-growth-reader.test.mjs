@@ -61,3 +61,13 @@ test('Local growth attribution is disclosed and no network analytics is claimed'
   assert.match(privacy,/tidak mengirimkan favorit, progres, event growth lokal, atau atribusi kampanye lokal tersebut ke server analytics/i);
 });
 
+
+test('Play home does not render duplicated, non-clickable marketing chips',()=>{
+  assert.doesNotMatch(growth,/FREE TO START|OFFICIAL RELEASES|LOCAL PROGRESS/);
+  assert.doesNotMatch(growth,/createElement\('div'\);strip\.className='ag-strip'/);
+  assert.match(growth,/querySelectorAll\('\.ag-strip'\)\.forEach\(el=>el\.remove\(\)\)/);
+  assert.match(growth,/if\(h2&&h2\.innerHTML!==/);
+  assert.match(growth,/if\(x\.textContent!=='Stories • Comics • Universes'\)/);
+  assert.match(growth,/\[data-ag-open\]/);
+  assert.match(growth,/openEpisode\(open\.dataset\.agOpen/);
+});
