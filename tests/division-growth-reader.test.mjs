@@ -32,7 +32,7 @@ test('Marketing links remain inside the public Play firewall',()=>{
 
 test('Growth Build injects only after the Play firewall and never enables owner tools',()=>{
   assert.match(firewall,/am-growth-reader-server/);
-  assert.match(firewall,/growth-reader\.js\?v=2/);
+  assert.match(firewall,/growth-reader\.js\?v=3/);
   assert.match(firewall,/x-am-play-firewall/);
   assert.doesNotMatch(growth,/admin-panel\.js|page-control\.js|private-production\.js/);
 });
@@ -70,4 +70,6 @@ test('Play home does not render duplicated, non-clickable marketing chips',()=>{
   assert.match(growth,/if\(x\.textContent!=='Stories • Comics • Universes'\)/);
   assert.match(growth,/\[data-ag-open\]/);
   assert.match(growth,/openEpisode\(open\.dataset\.agOpen/);
+  assert.match(growth,/data-ag-library>LIHAT RILIS/);
+  assert.match(growth,/querySelector\('\.nav \[data-tab="library"\]/);
 });
