@@ -268,7 +268,9 @@
       "profile_code": "SR-210",
       "title": "Legenda Ling Tian",
       "aliases": [
-        "ling-tian"
+        "ling-tian",
+        "tombak-petir-ungu",
+        "lei-huang-tombak-petir-ungu"
       ],
       "status": "REGISTERED",
       "genre": "Cinematic Wuxia",
@@ -428,37 +430,12 @@
         "li-xuan-pendekar-penyeberang-malam"
       ],
       "status": "REGISTERED",
-      "genre": "Wuxia • Dark Supernatural",
+      "genre": "Supernatural Horror • Ghost Hunter",
       "passport_url": "/publisher/passports/li-xuan.json",
       "canon_context": null,
       "source": {
         "type": "OWNER_PROJECT_DIRECTIVE",
-        "note": "Independent AM STUDIO comic. Owner requested pre-publication catalog registration on 30 Oct 2026."
-      },
-      "isolation": "ONE_COMIC_ONE_CHANNEL",
-      "publication_requirements": [
-        "OWNER_APPROVED",
-        "CANON_FINAL",
-        "QC_PASS",
-        "ORIGINAL_ASSETS",
-        "VERIFIED_RECEIPT"
-      ]
-    },
-    {
-      "comic_id": "tombak-petir-ungu",
-      "channel_id": "ch-tombak-petir-ungu",
-      "profile_code": null,
-      "title": "Tombak Petir Ungu",
-      "aliases": [
-        "lei-huang-tombak-petir-ungu"
-      ],
-      "status": "REGISTERED",
-      "genre": "Artifact Fantasy • Wuxia",
-      "passport_url": "/publisher/passports/tombak-petir-ungu.json",
-      "canon_context": null,
-      "source": {
-        "type": "OWNER_PROJECT_DIRECTIVE",
-        "note": "Independent AM STUDIO comic associated with Lei Huang. Owner requested pre-publication catalog registration on 30 Oct 2026."
+        "note": "Li Xuan is a ghost hunter (pemburu hantu). Owner canon correction on 30 Oct 2026. Independent AM STUDIO comic, not part of Ling Tian."
       },
       "isolation": "ONE_COMIC_ONE_CHANNEL",
       "publication_requirements": [
