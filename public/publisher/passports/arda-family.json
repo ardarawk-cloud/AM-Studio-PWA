@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "comic_id": "arda-family",
+  "channel_id": "ch-arda-family",
+  "title": "Arda Family",
+  "universe": "INDEPENDENT",
+  "status": "REGISTERED",
+  "profile_code": "SR-213",
+  "genre": "Animated Family",
+  "aliases": [],
+  "isolation": "ONE_COMIC_ONE_CHANNEL",
+  "canon_context": null,
+  "website": "https://comics.nadmo.id/",
+  "repository": "ardarawk-cloud/AM-Studio-PWA",
+  "branch": "main",
+  "storage": {
+    "bucket": "am-studio-comics",
+    "prefix": "comics/arda-family/",
+    "cover_target": "comics/arda-family/cover.{ext}",
+    "episode_target_pattern": "comics/arda-family/ep{NNN}/"
+  },
+  "publication_requirements": [
+    "OWNER_APPROVED",
+    "CANON_FINAL",
+    "QC_PASS",
+    "ORIGINAL_ASSETS",
+    "VERIFIED_RECEIPT"
+  ],
+  "cover": {
+    "approval_state": "QC_REQUIRED",
+    "publication_state": "RECEIPT_UNVERIFIED"
+  },
+  "current_state": {
+    "catalog": "FB_CANON_AUDIT_PENDING",
+    "episodes": null,
+    "archived_owner_approved_episodes": [
+      1,
+      2,
+      3
+    ],
+    "next_production": "EPISODE_004_PENDING_CANON_VERIFICATION",
+    "master_story": "UNKNOWN",
+    "continuity": "HOLD_PENDING_SOURCE_VERIFICATION"
+  }
+}
