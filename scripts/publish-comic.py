@@ -132,7 +132,8 @@ def prepare(spec, out, existing=None):
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
     plan_path = out / 'upload-plan.json'
     plan_path.write_text(json.dumps({'manifest': manifest, 'files': sources}, ensure_ascii=False, indent=2), encoding='utf-8')
-    emit({'status': 'PREPARED', 'id': manifest['id'], 'comic_id': comic, 'manifest': str(manifest_path.resolve()), 'plan': str(plan_path.resolve()), 'next': 'Write this approved manifest through authenticated Cloudflare, then run upload with this plan'})
+    next_step = 'Keep the existing private manifest unchanged; run upload with this plan' if existing else 'Write this approved manifest through authenticated Cloudflare, then run upload with this plan'
+    emit({'status': 'PREPARED', 'id': manifest['id'], 'comic_id': comic, 'manifest': str(manifest_path.resolve()), 'plan': str(plan_path.resolve()), 'next': next_step})
     return {'manifest': manifest, 'files': sources}
 
 
