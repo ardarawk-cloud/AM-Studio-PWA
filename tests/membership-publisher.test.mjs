@@ -80,11 +80,11 @@ test('an audited free exception after episode nine remains readable',async()=>{
   assert.equal((await f.call('/api/admin/billing/access',{comic_id:'royal-gambler',episode:10,visibility:'FREE',preview_pages:[],preview_verified:true,reason:'Owner approved a free special episode'},admin)).status,200);
   assert.equal((await f.call('/api/member/access?comic_id=royal-gambler&episode=10&page=3')).status,200);
 });
-test('all fifteen channels have isolated passports and existing canonical IDs are retained',async()=>{
-  const f=fixture(),r=publisherRegistry();assert.equal(r.profiles.length,15);assert.equal(new Set(r.profiles.map(p=>p.comic_id)).size,15);assert.equal(new Set(r.profiles.map(p=>p.channel_id)).size,15);
+test('all registered channels have isolated passports and existing canonical IDs are retained',async()=>{
+  const f=fixture(),r=publisherRegistry();assert.ok(r.profiles.length>=15);assert.equal(new Set(r.profiles.map(p=>p.comic_id)).size,r.profiles.length);assert.equal(new Set(r.profiles.map(p=>p.channel_id)).size,r.profiles.length);
   assert.equal(publishingProfile('13-pintu-neraka').comic_id,'13');assert.equal(publishingProfile('arda-moron').comic_id,'amu');
   assert.throws(()=>publishingProfile('royal-gambler','ch-legendary-decks'),/CHANNEL_MISMATCH/);
-  const catalog=await (await f.call('/catalog.json')).json();assert.equal(catalog.series.length,15);assert.equal(catalog.series.find(s=>s.id==='wukong-rebooted').episodes,0);assert.equal(catalog.excludedProjects.length,0);
+  const catalog=await (await f.call('/catalog.json')).json();assert.equal(catalog.series.length,r.profiles.length);assert.ok(catalog.series.some(s=>s.id==='li-xuan'));assert.ok(catalog.series.some(s=>s.id==='tombak-petir-ungu'));assert.equal(catalog.series.find(s=>s.id==='wukong-rebooted').episodes,0);assert.equal(catalog.excludedProjects.length,0);
   for(const p of r.profiles)assert.equal((await f.call(p.passport_url)).status,200);
 });
 test('agent discovery exposes direct upload with the canonical target and required Origin',async()=>{
