@@ -1,0 +1,32 @@
+# WUKONG: REBOOTED — continuing a PUBLISHED episode (verified)
+Date: 30 Oct 2026 (WITA)
+
+## Verified append
+Comic `wukong-rebooted`; channel `ch-wukong-rebooted`; Episode 001 `Manusia yang Dilupakan`. Owner approved new Page 004 in the production chat after prior release's three pages were published.
+
+- Immutable initial episode release: `bee59508-d077-4f19-a472-5bf25c4f8178` (3 pages, original receipt preserved)
+- Separate append record: `wukong-rebooted-ep001-p04-20261030` (approved Page 004 append)
+- PNG: `comics/wukong-rebooted/ep001/page-04.png`
+- Original byte size: `2813307`
+- SHA-256: `b4f4e0d6c95c5e2f0f2ec3259806ed79ec2406436718b86b3673073dc042eb8f`
+- Metadata: `comics/wukong-rebooted/ep001/meta.json`, `pageCount: 4`, `lastGeneratedPage: 4`
+- Auditable append receipt: `system/publisher/append-receipts/wukong-rebooted-ep001-p04-20261030.json` (private R2)
+- Public reader verified rendering `4 PAGES`, `PAGE 04 / 04` and correct `page-04.png` image URL
+- Existing Pages 001–003 retained with exact hashes.
+
+## Procedure for the next approved page
+**Do not attempt to re-run the initial immutable episode release** to add new artwork. The original release remains PUBLISHED with original page count and should never be silently changed.
+
+1. Confirm current comic passport `wukong-rebooted` and Owner approval for the *new* page. Never regenerate existing approved art to solve upload errors.
+2. Obtain original bytes and compute SHA-256, MIME and size. Check latest R2 page inventory and `meta.json`, including last published page number. Reject any overwrite or out-of-order append.
+3. Transport originals using direct authorized path if available. If unavailable, use the verified temporary connector chunk approach in `docs/CONVERSATION_UPLOAD_BRIDGE_VERIFIED.md`: 196608-byte chunks, authenticated R2 private staging, short-lived limited Cloudflare Worker to assemble bytes and verify SHA.
+4. Validate existing prior page hashes, episode identity and metadata. Store the new page under `comics/wukong-rebooted/ep001/page-NN.png` with `sha256` and approval info in object metadata; **do not modify earlier pages**.
+5. Update `meta.json` `pageCount`, `lastGeneratedPage` and append-history (only after the final new page passes SHA and R2 existence verification). Preserve original releaseId/canon/approval. Write a separate private R2 append audit JSON: `system/publisher/append-receipts/{unique-append-id}.json`.
+6. Verify R2 final inventory and actual public reader page count, heading, numbered page labels and image sources. Verify content media is reachable. Mark append successful only after these checks.
+7. Clean up only temporary chunk objects, transfer copies and temporary Worker. Preserve approved master art, public page files, original publisher release receipt, episode metadata and append audit.
+8. Report separate statuses precisely: the original episode receipt covers the original page set; new pages have *append receipts*. Do not falsely claim the old immutable official receipt expanded.
+
+## Workflow note
+The owner-visible one-word approval `nice gaskan` directly after a page was produced and explicitly awaiting approval was interpreted as consent to publish **that page**. Future turns should preserve previously defined production intent and constraints.
+
+The 2026-10-30 Page 004 append is a tested **agent-operated fallback**, not yet a fully automated permanent append API in `src/universal-publisher.js`. Prefer a properly authenticated, versioned append API if/when implemented; do not expose broad or unauthenticated upload endpoints.
