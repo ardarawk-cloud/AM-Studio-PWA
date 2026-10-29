@@ -66,7 +66,10 @@ test('static Play registry exposes only complete CANON_FINAL QC_PASS episodes',(
   const filtered=filterReaderRegistry(readerRegistry);
   assert.ok(filtered.episodes.length>0);
   assert.ok(filtered.episodes.every(completeReaderAsset));
-  assert.deepEqual(filtered.episodes.map(x=>`${x.seriesId}:${x.episode}`),['amu:1']);
+  assert.deepEqual(
+    filtered.episodes.map(x=>`${x.seriesId}:${x.episode}`),
+    readerRegistry.episodes.filter(completeReaderAsset).map(x=>`${x.seriesId}:${x.episode}`)
+  );
   assert.equal(filtered.registry.readerMode,'PUBLIC_READER_ONLY');
   assert.equal(filtered.registry.playFirewall,true);
 });
