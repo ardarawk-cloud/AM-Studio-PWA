@@ -1,6 +1,6 @@
 import runtime from './runtime.js';
 
-const BOOTSTRAP='<script id="am-reader-bootstrap" src="/reader-bootstrap.js?v=20260916a"></script>';
+const BOOTSTRAP='<script id="am-reader-bootstrap" src="/reader-bootstrap.js?v=20261030c"></script>';
 
 async function injectBootstrap(response){
   const ct=response.headers.get('content-type')||'';
