@@ -7,7 +7,10 @@
       const cover=card.querySelector('.cover');
       if(!id||!cover||cover.dataset.amR2Cover==='1')return;
       cover.dataset.amR2Cover='1';
-      cover.style.backgroundImage=`linear-gradient(180deg,rgba(5,7,11,.02) 28%,rgba(5,7,11,.88) 100%),url('/media/comics/${encodeURIComponent(id)}/cover.jpg')`;
+      // The catalog's approved asset URL takes precedence over any fallback.
+      if(cover.style.backgroundImage.includes('/media/comics/'))return;
+      const ext=id==='wukong-rebooted'?'png':'jpg';
+      cover.style.backgroundImage=`linear-gradient(180deg,rgba(5,7,11,.02) 28%,rgba(5,7,11,.88) 100%),url('/media/comics/${encodeURIComponent(id)}/cover.${ext}')`;
       cover.style.backgroundSize='cover';
       cover.style.backgroundPosition='center';
       cover.style.backgroundRepeat='no-repeat';
