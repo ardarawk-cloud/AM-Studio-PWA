@@ -13,6 +13,7 @@ const episodePrefix=(comic,episode)=>'comics/'+comic+'/ep'+String(episode).padSt
 
 export function validateManifest(value,id){
   if(!UUID.test(id)||!value||value.version!==1||value.id!==id)throw new MemberError('PUBLISHER_MANIFEST_INVALID',422);
+  if(typeof value.channel_id!=='string'||!value.channel_id)throw new MemberError('PUBLISHER_CHANNEL_REQUIRED',422);
   const profile=publishingProfile(value.comic_id,value.channel_id);
   if(profile.comic_id!==value.comic_id)throw new MemberError('PUBLISHER_USE_CANONICAL_COMIC_ID',422);
   if(value.owner_approved!==true||value.canon_state!=='CANON_FINAL'||value.qc!=='QC_PASS')throw new MemberError('PUBLISHER_APPROVAL_AND_QC_REQUIRED',409);
@@ -70,13 +71,21 @@ export async function publisherStatus(env,id){
   return {ok:true,id,comic_id:manifest.comic_id,channel_id:manifest.channel_id,title:manifest.title,episode:manifest.episode,status:row?.status||'AWAITING_UPLOAD',next_asset:row?.next_asset||0,assets,error:row?.error_code||null};
 }
 
+// Agent requests pin both IDs. Keep existing owner-browser clients compatible.
+function assertRequestTarget(req,release){
+  const comic=req.headers.get('x-am-comic-id'),channel=req.headers.get('x-am-channel-id');
+  if((comic!==null||channel!==null)&&(comic!==release.comic_id||channel!==release.channel_id))throw new MemberError('PUBLISHER_REQUEST_TARGET_MISMATCH',409);
+}
+
 // No public endpoint can create an approval or choose a destination. The inbox
 // is written through the owner's authenticated Cloudflare/R2 connector. An
 // upload must match the exact size, SHA-256 and image type approved there.
 export async function uploadPublisherSource(req,env,id,index){
-  const {manifest}=await approvedJob(env,id),a=manifest.assets[index];
+  const {manifest,manifestHash}=await approvedJob(env,id),a=manifest.assets[index];
+  assertRequestTarget(req,manifest);
   if(!a||a.reuse_existing)throw new MemberError('PUBLISHER_ASSET_NOT_UPLOADABLE',404);
   const row=await releaseRow(env.MEMBERSHIP_DB,id);
+  if(row&&row.manifest_sha256!==manifestHash)throw new MemberError('PUBLISHER_MANIFEST_CHANGED',409);
   if(row?.status==='PUBLISHED')throw new MemberError('PUBLISHER_RELEASE_ALREADY_PUBLISHED',409);
   const claimed=Number(req.headers.get('content-length')||0);
   if(claimed&&claimed!==a.size)throw new MemberError('PUBLISHER_SOURCE_SIZE_MISMATCH',422);
@@ -98,8 +107,9 @@ async function verifyFinalAssets(env,manifest){
 
 export async function processPublisherRelease(req,env,legacy,ctx,id){
   const db=env.MEMBERSHIP_DB,old=await releaseRow(db,id);
-  if(old?.status==='PUBLISHED')return JSON.parse(old.receipt_json);
+  if(old?.status==='PUBLISHED'){const receipt=JSON.parse(old.receipt_json);assertRequestTarget(req,receipt);return receipt}
   const {manifest,manifestHash}=await approvedJob(env,id);
+  assertRequestTarget(req,manifest);
   if(old&&old.manifest_sha256!==manifestHash)throw new MemberError('PUBLISHER_MANIFEST_CHANGED',409);
   const now=iso(),lease=randomUUID(),until=new Date(Date.now()+60000).toISOString();
   await db.prepare("INSERT OR IGNORE INTO publisher_releases(id,channel_id,comic_id,episode,manifest_sha256,status,created_at,updated_at) VALUES(?,?,?,?,?,'PROCESSING',?,?)").bind(id,manifest.channel_id,manifest.comic_id,manifest.episode,manifestHash,now,now).run();

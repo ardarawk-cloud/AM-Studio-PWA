@@ -44,6 +44,11 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
         if(path==='/sw.js'&&method==='GET')return new Response(membershipServiceWorker,{headers:{'content-type':'text/javascript; charset=utf-8','cache-control':'no-store','service-worker-allowed':'/'}});
         const isApi=path.startsWith('/api/member/')||path.startsWith('/api/membership')||path.startsWith('/api/admin/billing')||path.startsWith('/api/billing/')||path.startsWith('/api/publisher/');
         if(isApi&&!db)throw new MemberError('MEMBERSHIP_DATABASE_UNAVAILABLE',503);
+        if(path==='/api/publisher/health'&&method==='GET'){
+          if(!env.COMIC_ASSETS)throw new MemberError('PRIVATE_COMIC_STORAGE_REQUIRED',503);
+          await db.prepare('SELECT id FROM publisher_releases LIMIT 1').first();
+          return json({ok:true,version:'1.1',service:'AM_STUDIO_COMICS_PUBLISHER',transport:'DIRECT_ORIGINAL_BYTES',approval:'PRIVATE_R2_MANIFEST',registry_url:'/api/publisher/registry',profiles:publisherRegistry().profiles.length,origin_required:new URL(req.url).origin});
+        }
         if(path==='/api/membership'&&method==='GET') {
           const c=await billingConfig(db),r=providerReadiness(env,c.settings);
           return json({ok:true,plan:c.plan,prices:c.prices.filter(p=>p.enabled),currency:'IDR',payment_method:'QRIS',checkout_available:r.ready,payment_status:r.ready?'AVAILABLE':'PREPARING',renewal:'MANUAL_QRIS',legal_version:c.settings.legal_version,preview:await catalogAccess(db)});
