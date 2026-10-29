@@ -97,11 +97,11 @@
       #amGrowthOnboarding .ag-sheet{width:min(660px,100%);border:1px solid #303a4d;background:linear-gradient(155deg,#20151b,#0b1017 58%);border-radius:28px;padding:22px;box-shadow:0 30px 80px #000b}
       #amGrowthOnboarding h2{font-size:31px;line-height:1.02;margin:8px 0 12px}#amGrowthOnboarding p{color:#c8ced8;line-height:1.55}
       .ag-kicker{font-size:10px;font-weight:900;letter-spacing:.15em;color:#ff776f}.ag-benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
-      .ag-benefit,.ag-strip span{border:1px solid #293345;background:#0d131c;border-radius:15px;padding:11px;font-size:11px;color:#d8dde6}.ag-actions{display:flex;gap:9px}.ag-actions button{flex:1}
+      .ag-benefit{border:1px solid #293345;background:#0d131c;border-radius:15px;padding:11px;font-size:11px;color:#d8dde6}.ag-actions{display:flex;gap:9px}.ag-actions button{flex:1}
       #amGrowthFeatured,#amGrowthContinue,#amGrowthNew{border:1px solid #283142;border-radius:22px;background:linear-gradient(145deg,#171d27,#0c1118);padding:15px;margin:14px 0}
       #amGrowthFeatured .ag-feature{display:grid;grid-template-columns:92px 1fr;gap:14px;align-items:center}.ag-feature-cover{width:92px;aspect-ratio:2/3;border-radius:14px;background:#131923 center/cover no-repeat;border:1px solid #30394a}
       #amGrowthFeatured h3,#amGrowthContinue h3{margin:4px 0 6px}.ag-copy{font-size:12px;color:#aeb7c6;line-height:1.45}.ag-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.ag-chip{display:inline-flex;border:1px solid #344054;border-radius:999px;padding:6px 9px;font-size:9px;font-weight:850;color:#cbd3df}
-      .ag-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0 18px}.ag-strip span{text-align:center;padding:9px 6px}.ag-share{margin-left:auto}.ag-inline-note{font-size:11px;color:#8f99aa;margin-top:8px}
+      .ag-share{margin-left:auto}.ag-inline-note{font-size:11px;color:#8f99aa;margin-top:8px}
       @media(max-width:480px){.ag-benefits{grid-template-columns:1fr}.ag-strip{grid-template-columns:1fr 1fr 1fr}#amGrowthFeatured .ag-feature{grid-template-columns:78px 1fr}.ag-feature-cover{width:78px}}
     `;document.head.appendChild(style);
   }
@@ -129,13 +129,15 @@
     const active=document.querySelector('[data-tab="home"].active,[data-nav="home"].active');if(!active)return;
     const hero=document.querySelector('.hero');if(!hero)return;
     const eyebrow=hero.querySelector('.eyebrow'),h2=hero.querySelector('h2'),p=hero.querySelector('p');
-    if(eyebrow)eyebrow.textContent='AM STUDIO ORIGINALS';
-    if(h2)h2.innerHTML='Stories. Comics.<br>Universes.';
-    if(p)p.textContent='Baca universe original AM STUDIO dalam satu aplikasi. Mulai gratis, simpan koleksi, dan kembali langsung ke cerita yang belum selesai.';
-    const buttons=hero.querySelectorAll('button');if(buttons[0])buttons[0].textContent='MULAI BACA';if(buttons[1])buttons[1].textContent='MY COLLECTION';
-    if(!hero.nextElementSibling?.classList?.contains('ag-strip')){
-      const strip=document.createElement('div');strip.className='ag-strip';strip.innerHTML='<span>FREE TO START</span><span>OFFICIAL RELEASES</span><span>LOCAL PROGRESS</span>';hero.after(strip);
-    }
+    if(eyebrow&&eyebrow.textContent!=='AM STUDIO ORIGINALS')eyebrow.textContent='AM STUDIO ORIGINALS';
+    if(h2&&h2.innerHTML!=='Stories. Comics.<br>Universes.')h2.innerHTML='Stories. Comics.<br>Universes.';
+    const summary='Baca universe original AM STUDIO dalam satu aplikasi. Mulai gratis, simpan koleksi, dan kembali langsung ke cerita yang belum selesai.';
+    if(p&&p.textContent!==summary)p.textContent=summary;
+    const buttons=hero.querySelectorAll('button');
+    if(buttons[0]&&buttons[0].textContent!=='MULAI BACA')buttons[0].textContent='MULAI BACA';
+    if(buttons[1]&&buttons[1].textContent!=='MY COLLECTION')buttons[1].textContent='MY COLLECTION';
+    // Remove existing duplicate promotional chips; these were inert spans, not controls.
+    document.querySelectorAll('.ag-strip').forEach(el=>el.remove());
     renderNewBanner(hero.parentElement||document.querySelector('#app'));
     renderContinue(hero.parentElement||document.querySelector('#app'));
     renderFeatured(hero.parentElement||document.querySelector('#app'));
