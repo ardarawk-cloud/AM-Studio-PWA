@@ -313,6 +313,46 @@
       "desc": "Sebuah perjalanan menelusuri sejarah, manusia, dan kisah di balik pohon ganja.",
       "episodeTitles": [],
       "qc": "RESEARCH_DOSSIER_REQUIRED"
+    },
+    {
+      "id": "li-xuan",
+      "code": "LX",
+      "title": "Li Xuan — Pendekar Penyeberang Malam",
+      "tag": "Wuxia • Dark Supernatural",
+      "genre": "Wuxia",
+      "episodes": 0,
+      "episodeCountVerified": true,
+      "verifiedEpisodes": [],
+      "freeEpisodes": 0,
+      "status": "COMING_SOON",
+      "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
+      "cover": {
+        "required": true,
+        "status": "AWAITING_APPROVED_ASSET"
+      },
+      "desc": "Kisah Li Xuan, pendekar di dunia wuxia gelap dengan ancaman supernatural.",
+      "episodeTitles": [],
+      "qc": "PREPUBLICATION_LISTING_ONLY"
+    },
+    {
+      "id": "tombak-petir-ungu",
+      "code": "TPU",
+      "title": "Tombak Petir Ungu",
+      "tag": "Artifact Fantasy • Wuxia",
+      "genre": "Artifact Fantasy",
+      "episodes": 0,
+      "episodeCountVerified": true,
+      "verifiedEpisodes": [],
+      "freeEpisodes": 0,
+      "status": "COMING_SOON",
+      "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
+      "cover": {
+        "required": true,
+        "status": "AWAITING_APPROVED_ASSET"
+      },
+      "desc": "Kisah Lei Huang dan Tombak Petir Ungu dalam dunia fantasi persilatan.",
+      "episodeTitles": [],
+      "qc": "PREPUBLICATION_LISTING_ONLY"
     }
   ],
   "excludedProjects": [
