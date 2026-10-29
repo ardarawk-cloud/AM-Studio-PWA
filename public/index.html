@@ -37,7 +37,7 @@ body{background:radial-gradient(ellipse at 50% 0,rgba(65,25,38,.16),transparent 
 .card:hover,.card:focus-visible{transform:translateY(-3px);border-color:#607184;box-shadow:0 17px 36px #0005}
 .card .cover{width:100%;height:auto;aspect-ratio:16/10;padding:12px;align-items:flex-start;justify-content:flex-start;background-size:cover;background-position:50% 44%;background-repeat:no-repeat;isolation:isolate;overflow:hidden}
 .card .cover:after{background:linear-gradient(180deg,rgba(0,0,0,.22) 0%,transparent 30%,transparent 65%,rgba(2,6,13,.24) 100%);pointer-events:none}
-.card .cover-code{display:inline-flex;align-self:flex-start;max-width:calc(100% - 4px);font-size:10px;font-weight:850;letter-spacing:.1em;line-height:1.1;color:#f9fafc;background:rgba(8,13,22,.65);border:1px solid #ffffff40;padding:7px 9px;border-radius:7px;backdrop-filter:blur(8px);box-shadow:0 3px 14px #0004;text-shadow:none}
+
 .card .meta{flex:1;display:flex;flex-direction:column;gap:8px;padding:15px 16px 16px}
 .card-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 .card-heading h4{margin:0;font-size:17px;line-height:1.28;letter-spacing:-.03em;font-weight:800;overflow-wrap:anywhere}
@@ -68,7 +68,7 @@ body{background:radial-gradient(ellipse at 50% 0,rgba(65,25,38,.16),transparent 
 .nav .active{color:#fff}
 @media(min-width:1024px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:19px}}
 @media(max-width:740px){.shell{padding:16px 15px 120px}.top{margin-bottom:17px;padding-bottom:14px}.hero{border-radius:19px;padding:24px}.hero h2{font-size:clamp(32px,7.2vw,47px)}.section{margin:25px 0 12px}.grid{gap:12px}.card .meta{padding:12px;gap:7px}.card-heading h4{font-size:15px}.episodes{grid-template-columns:1fr}.nav{width:100%;bottom:0;border-radius:15px 15px 0 0;border-bottom:0;border-left:0;border-right:0;box-shadow:0 -12px 32px #0006;padding-bottom:calc(7px + env(safe-area-inset-bottom))}}
-@media(max-width:440px){.shell{padding:13px 12px 115px}.top>.pill{font-size:9px;padding:7px 9px}.brand h1{font-size:17px}.logo{width:39px;height:39px}.grid{gap:10px}.card{border-radius:13px}.card .cover{aspect-ratio:4/3;padding:7px}.card .cover-code{font-size:8px;padding:5px 6px;border-radius:5px}.card .meta{padding:10px;gap:6px}.card-heading h4{font-size:13px;line-height:1.27}.card-arrow{font-size:14px}.card .card-genre{font-size:10px;line-height:1.45}.card-footer{flex-direction:column;align-items:flex-start;gap:7px;padding-top:9px}.episode-stat{font-size:10px}.status-chip{font-size:8px;padding:5px 7px}.hero{padding:21px}.hero p{font-size:13px}.btn{min-height:40px;padding:10px 13px;font-size:12px}}
+@media(max-width:440px){.shell{padding:13px 12px 115px}.top>.pill{font-size:9px;padding:7px 9px}.brand h1{font-size:17px}.logo{width:39px;height:39px}.grid{gap:10px}.card{border-radius:13px}.card .cover{aspect-ratio:4/3;padding:7px}.card .meta{padding:10px;gap:6px}.card-heading h4{font-size:13px;line-height:1.27}.card-arrow{font-size:14px}.card .card-genre{font-size:10px;line-height:1.45}.card-footer{flex-direction:column;align-items:flex-start;gap:7px;padding-top:9px}.episode-stat{font-size:10px}.status-chip{font-size:8px;padding:5px 7px}.hero{padding:21px}.hero p{font-size:13px}.btn{min-height:40px;padding:10px 13px;font-size:12px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card,.card-arrow,.btn,.ep{transition:none}.card:hover{transform:none}}
 </style>
 </head>
@@ -88,7 +88,6 @@ const displayStatus=s=>({COMING_SOON:'COMING SOON',ONGOING:'ONGOING',DEVELOPMENT
 const shortCount=s=>s.episodeCountVerified?(Number(s.episodes)>0?`${Number(s.episodes)} episode${Number(s.episodes)===1?'':'s'}`:'Belum ada episode'):'Episode dalam QC';
 const card=s=>`<article class="card" data-open="${s.id}" tabindex="0" role="button" aria-label="Buka ${s.title}">
   <div class="cover c-${s.id}" ${s.cover?.asset?`style="background-image:linear-gradient(180deg,rgba(5,7,11,.04),rgba(5,7,11,.40)),url(&quot;${encodeURI(s.cover.asset)}&quot;);background-size:${s.id==='sg-battle'?'100% 100%, contain':'cover'};background-position:center;background-repeat:no-repeat;background-color:#080b10"`:""}>
-    <span class="cover-code">${s.code||'AM'}</span>
   </div>
   <div class="meta">
     <div class="card-heading"><h4>${s.title}${st.fav.includes(s.id)?' <span class="favorite-mark" aria-label="Favorit">♥</span>':''}</h4><span class="card-arrow" aria-hidden="true">↗</span></div>
