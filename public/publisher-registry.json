@@ -268,9 +268,7 @@
       "profile_code": "SR-210",
       "title": "Legenda Ling Tian",
       "aliases": [
-        "ling-tian",
-        "tombak-petir-ungu",
-        "lei-huang-tombak-petir-ungu"
+        "ling-tian"
       ],
       "status": "REGISTERED",
       "genre": "Cinematic Wuxia",
@@ -411,31 +409,6 @@
       "source": {
         "type": "OWNER_PROJECT_DIRECTIVE",
         "note": "Existing project; publishing channel key registered without inventing a legacy SR code."
-      },
-      "isolation": "ONE_COMIC_ONE_CHANNEL",
-      "publication_requirements": [
-        "OWNER_APPROVED",
-        "CANON_FINAL",
-        "QC_PASS",
-        "ORIGINAL_ASSETS",
-        "VERIFIED_RECEIPT"
-      ]
-    },
-    {
-      "comic_id": "li-xuan",
-      "channel_id": "ch-li-xuan",
-      "profile_code": null,
-      "title": "Li Xuan — Pendekar Penyeberang Malam",
-      "aliases": [
-        "li-xuan-pendekar-penyeberang-malam"
-      ],
-      "status": "REGISTERED",
-      "genre": "Supernatural Horror • Ghost Hunter",
-      "passport_url": "/publisher/passports/li-xuan.json",
-      "canon_context": null,
-      "source": {
-        "type": "OWNER_PROJECT_DIRECTIVE",
-        "note": "Li Xuan is a ghost hunter (pemburu hantu). Owner canon correction on 30 Oct 2026. Independent AM STUDIO comic, not part of Ling Tian."
       },
       "isolation": "ONE_COMIC_ONE_CHANNEL",
       "publication_requirements": [
