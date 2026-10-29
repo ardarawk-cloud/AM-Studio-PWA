@@ -1,0 +1,67 @@
+{
+  "version": "1.0",
+  "comic_id": "li-xuan",
+  "title": "Li Xuan — Pendekar Penyeberang Malam",
+  "canon_status": "MASTER_BIBLE_V1_LOCKED",
+  "production_mode": "PROFESSIONAL_STUDIO",
+  "creative_director": "KAI ZERO / NIHIL",
+  "final_authority": "OWNER",
+  "primary_character": {
+    "name": "Li Xuan",
+    "chinese_name": "李玄",
+    "title": "Pendekar Penyeberang Malam",
+    "age": 28,
+    "role": "Pendekar pengembara / pemburu hantu, siluman, dan iblis",
+    "former_order": "Paviliun Tianmen"
+  },
+  "core_premise": "Li Xuan berkelana dari satu wilayah ke wilayah lain; setiap tempat yang disinggahi dapat menyimpan kasus gaib baru yang diselidiki dan diselesaikan sebelum ia kembali melanjutkan perjalanan.",
+  "story_engine": [
+    "DATANG",
+    "MERASA ADA YANG SALAH",
+    "MENYELIDIKI",
+    "KEBENARAN TERBUKA",
+    "KONFRONTASI",
+    "KEPUTUSAN MORAL",
+    "PERGI"
+  ],
+  "moral_rule": "Tidak semua yang mati menjadi jahat. Dan tidak semua yang hidup masih pantas disebut manusia.",
+  "visual_lock": {
+    "style": "Realistic Wuxia + Chinese Supernatural Horror",
+    "reject": [
+      "generic cultivation anime",
+      "excessive energy effects",
+      "game-RPG monster styling"
+    ],
+    "motifs": [
+      "kuil tua",
+      "hutan bambu berkabut",
+      "desa Tiongkok kuno",
+      "jimat kuning",
+      "lentera merah",
+      "malam biru gelap",
+      "pedang",
+      "hujan",
+      "makam",
+      "kabut"
+    ]
+  },
+  "power_system": "Zhenhun Dao",
+  "main_artifact": {
+    "name": "Pedang Qihun",
+    "meaning": "Pedang Tujuh Jiwa",
+    "canon": "Tujuh lambang pada bilah adalah tujuh segel; pedang merupakan penjara spiritual."
+  },
+  "main_mystery": {
+    "tragedy": "Malam Tanpa Lonceng",
+    "destroyed_order": "Paviliun Tianmen",
+    "antagonist_network": "Istana Dupa Hitam",
+    "imprisoned_entity": "Wu Ming"
+  },
+  "current_state": {
+    "phase": "PREPRODUCTION",
+    "cover": "OWNER_APPROVED_VISUAL_REFERENCE",
+    "episode_001": "Pengantin Merah",
+    "episode_pages_produced": 0,
+    "next": "EPISODE_001_MASTER_STORY"
+  }
+}

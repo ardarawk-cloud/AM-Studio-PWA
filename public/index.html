@@ -103,7 +103,8 @@ const bindCards=()=>document.querySelectorAll('[data-open]').forEach(x=>{x.oncli
 // The publisher registry, R2 assets and owner workflow are unchanged.
 const visibleComic=s=>s.id!=='arda-personal-fb'&&Boolean(
   s.cover?.asset||s.cover?.publicReaderAsset||
-  (s.episodeCountVerified&&Number(s.episodes)>0)
+  (s.episodeCountVerified&&Number(s.episodes)>0)||
+  (s.status==='COMING_SOON'&&s.qc==='PREPUBLICATION_LISTING_ONLY')
 );
 const publicSeries=()=>C.series.filter(visibleComic);
 const featuredSeries=()=>publicSeries().sort((a,b)=>Number(b.id==='wukong-rebooted')-Number(a.id==='wukong-rebooted'));

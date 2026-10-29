@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "comic_id": "li-xuan",
+  "channel_id": "ch-li-xuan",
+  "title": "Li Xuan — Pendekar Penyeberang Malam",
+  "universe": "INDEPENDENT",
+  "status": "REGISTERED",
+  "profile_code": null,
+  "genre": "Wuxia Supernatural Horror",
+  "aliases": [
+    "pendekar-penyeberang-malam"
+  ],
+  "isolation": "ONE_COMIC_ONE_CHANNEL",
+  "canon_context": "/divisions/li-xuan/context-manifest.json",
+  "website": "https://comics.nadmo.id/",
+  "repository": "ardarawk-cloud/AM-Studio-PWA",
+  "branch": "main",
+  "storage": {
+    "bucket": "am-studio-comics",
+    "prefix": "comics/li-xuan/",
+    "cover_target": "comics/li-xuan/cover.{ext}",
+    "episode_target_pattern": "comics/li-xuan/ep{NNN}/"
+  },
+  "publication_requirements": [
+    "OWNER_APPROVED",
+    "CANON_FINAL",
+    "QC_PASS",
+    "ORIGINAL_ASSETS",
+    "VERIFIED_RECEIPT"
+  ],
+  "cover": {
+    "approval_state": "OWNER_APPROVED_VISUAL_REFERENCE",
+    "publication_state": "PENDING_UPLOAD_COMMAND"
+  },
+  "current_state": {
+    "catalog": "COMING_SOON",
+    "episodes": 0,
+    "next_production": "EPISODE_001_MASTER_STORY",
+    "next_story": "Pengantin Merah"
+  }
+}

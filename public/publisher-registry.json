@@ -418,6 +418,31 @@
         "ORIGINAL_ASSETS",
         "VERIFIED_RECEIPT"
       ]
+    },
+    {
+      "comic_id": "li-xuan",
+      "channel_id": "ch-li-xuan",
+      "profile_code": null,
+      "title": "Li Xuan — Pendekar Penyeberang Malam",
+      "aliases": [
+        "pendekar-penyeberang-malam"
+      ],
+      "status": "REGISTERED",
+      "genre": "Wuxia Supernatural Horror",
+      "passport_url": "/publisher/passports/li-xuan.json",
+      "canon_context": "/divisions/li-xuan/context-manifest.json",
+      "source": {
+        "type": "OWNER_PROJECT_DIRECTIVE",
+        "note": "New independent comic registered from approved Master Bible v1.0 and locked Li Xuan character/cover reference. No legacy SR code invented."
+      },
+      "isolation": "ONE_COMIC_ONE_CHANNEL",
+      "publication_requirements": [
+        "OWNER_APPROVED",
+        "CANON_FINAL",
+        "QC_PASS",
+        "ORIGINAL_ASSETS",
+        "VERIFIED_RECEIPT"
+      ]
     }
   ],
   "rules": [

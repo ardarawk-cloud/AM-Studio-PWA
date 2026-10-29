@@ -313,6 +313,27 @@
       "desc": "Sebuah perjalanan menelusuri sejarah, manusia, dan kisah di balik pohon ganja.",
       "episodeTitles": [],
       "qc": "RESEARCH_DOSSIER_REQUIRED"
+    },
+    {
+      "id": "li-xuan",
+      "code": "LX",
+      "title": "Li Xuan — Pendekar Penyeberang Malam",
+      "tag": "Wuxia • Supernatural Horror • Mystery",
+      "genre": "Wuxia Supernatural Horror",
+      "episodes": 0,
+      "episodeCountVerified": true,
+      "verifiedEpisodes": [],
+      "freeEpisodes": 0,
+      "season": "Perjalanan Penyeberang Malam",
+      "status": "COMING_SOON",
+      "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
+      "cover": {
+        "required": true,
+        "status": "OWNER_APPROVED_VISUAL_REFERENCE"
+      },
+      "desc": "Li Xuan, pendekar pengembara pemburu hantu, siluman, dan iblis, menyingkap misteri gaib dari desa ke desa sambil memburu kebenaran di balik kehancuran Paviliun Tianmen.",
+      "episodeTitles": [],
+      "qc": "PREPUBLICATION_LISTING_ONLY"
     }
   ],
   "excludedProjects": [
