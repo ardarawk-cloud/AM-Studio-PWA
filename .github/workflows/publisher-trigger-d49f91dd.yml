@@ -1,0 +1,34 @@
+name: AM STUDIO One-shot Publisher Trigger d49f91dd
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publisher-trigger-d49f91dd.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Process approved Sun Gokong release
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://comics.nadmo.id/api/publisher/process/d49f91dd-f92f-403c-98fd-2d49a5bbc334"
+          for attempt in 1 2 3 4; do
+            RESP="$(curl --fail-with-body -sS -X POST "$URL" \
+              -H 'Origin: https://comics.nadmo.id' \
+              -H 'Accept: application/json' \
+              -H 'x-am-comic-id: sg-battle' \
+              -H 'x-am-channel-id: ch-sun-gokong-battle')"
+            echo "$RESP"
+            if echo "$RESP" | grep -q '"status":"PUBLISHED"'; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Publisher did not reach PUBLISHED" >&2
+          exit 1
