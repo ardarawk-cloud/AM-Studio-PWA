@@ -16,6 +16,28 @@
   },
   "series": [
     {
+      "id": "wukong-rebooted",
+      "code": "WKR",
+      "title": "WUKONG: REBOOTED",
+      "tag": "Cyberpunk • Action • Sci-Fi",
+      "genre": "Cyberpunk",
+      "episodes": 0,
+      "episodeCountVerified": true,
+      "verifiedEpisodes": [],
+      "freeEpisodes": 0,
+      "season": "Kebangkitan Raja Monyet",
+      "status": "COMING_SOON",
+      "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
+      "cover": {
+        "required": true,
+        "status": "PUBLISHED",
+        "asset": "/media/comics/wukong-rebooted/cover.png"
+      },
+      "desc": "Di New Chang'an, kurir ilegal Wu Kong menemukan tongkat emas yang membangkitkan legenda lama dan menantang Heaven Protocol.",
+      "episodeTitles": [],
+      "qc": "OWNER_APPROVED_COVER_EPISODE_PENDING"
+    },
+    {
       "id": "amu",
       "code": "AMU",
       "title": "Arda Moron Universe",
