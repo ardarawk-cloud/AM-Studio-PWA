@@ -22,8 +22,9 @@
       if(cover.style.backgroundImage.includes('/media/comics/')||cover.dataset.amR2Cover==='1'){
         cover.dataset.amCover='1';return;
       }
-      const ext=id==='wukong-rebooted'?'png':'jpg';
-      cover.style.backgroundImage=`linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.18)),url('/media/comics/${encodeURIComponent(id)}/cover.${ext}')`;
+      const jpgUrl=`/media/comics/${id}/cover.jpg`;
+      const coverUrl=id==='wukong-rebooted'?`/media/comics/${id}/cover.png`:jpgUrl;
+      cover.style.backgroundImage=`linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.18)),url('${coverUrl}')`;
       cover.style.backgroundSize='cover';
       cover.style.backgroundPosition='center';
       cover.dataset.amCover='1';
