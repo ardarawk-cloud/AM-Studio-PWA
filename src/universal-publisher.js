@@ -98,6 +98,28 @@ export async function uploadPublisherSource(req,env,id,index){
   return {ok:true,id,index,size,sha256:a.sha256,staged:true};
 }
 
+// Authenticated Cloudflare R2 connector can stage bounded binary parts when a
+// production conversation's local runtime has no outbound network access.
+// Only a previously approved manifest and its exact original digest are accepted.
+export async function assemblePublisherSource(req,env,id,index){
+  const {manifest,manifestHash}=await approvedJob(env,id),a=manifest.assets[index];
+  assertRequestTarget(req,manifest);
+  if(!a||a.reuse_existing)throw new MemberError('PUBLISHER_ASSET_NOT_UPLOADABLE',404);
+  const row=await releaseRow(env.MEMBERSHIP_DB,id);
+  if(row&&row.manifest_sha256!==manifestHash)throw new MemberError('PUBLISHER_MANIFEST_CHANGED',409);
+  if(row?.status==='PUBLISHED')throw new MemberError('PUBLISHER_RELEASE_ALREADY_PUBLISHED',409);
+  const PART_BYTES=196608,parts=Math.ceil(a.size/PART_BYTES),data=new Uint8Array(a.size);
+  for(let n=0;n<parts;n++){
+    const key='system/publisher/staging-parts/'+id+'/'+index+'/'+String(n).padStart(3,'0')+'.bin';
+    const part=await env.COMIC_ASSETS.get(key),expected=Math.min(PART_BYTES,a.size-n*PART_BYTES);
+    if(!part||part.size!==expected)throw new MemberError('PUBLISHER_PART_MISSING_OR_SIZE_MISMATCH',409);
+    data.set(new Uint8Array(await part.arrayBuffer()),n*PART_BYTES);
+  }
+  await verifiedBytes({size:data.length,arrayBuffer:async()=>data.buffer},a);
+  await env.COMIC_ASSETS.put(a.staged_key,data,{httpMetadata:{contentType:a.content_type,cacheControl:'no-store'},customMetadata:{sha256:a.sha256,releaseId:id,source:'APPROVED_PUBLISHER_PART_ASSEMBLY'}});
+  return {ok:true,id,index,size:data.length,sha256:a.sha256,staged:true,parts};
+}
+
 async function verifyFinalAssets(env,manifest){
   for(const a of manifest.assets){
     const object=await env.COMIC_ASSETS.head(a.destination);
