@@ -30,7 +30,13 @@
   ],
   "cover": {
     "approval_state": "OWNER_APPROVED_VISUAL_REFERENCE",
-    "publication_state": "PENDING_UPLOAD_COMMAND"
+    "publication_state": "PUBLISHED",
+    "release_id": "c3a09029-722b-7b2e-e334-947d74ba3993",
+    "asset": "/media/comics/li-xuan/cover.png",
+    "size": 2713659,
+    "sha256": "c3a09029722b7b2ee334947d74ba39936fab491f2866b2fe94398eb26dbcc98f",
+    "verified_at": "2026-10-29T19:41:09.629Z",
+    "reader_qc": "PASS"
   },
   "current_state": {
     "catalog": "COMING_SOON",

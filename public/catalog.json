@@ -329,11 +329,13 @@
       "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
       "cover": {
         "required": true,
-        "status": "OWNER_APPROVED_VISUAL_REFERENCE"
+        "status": "PUBLISHED",
+        "asset": "/media/comics/li-xuan/cover.png",
+        "sha256": "c3a09029722b7b2ee334947d74ba39936fab491f2866b2fe94398eb26dbcc98f"
       },
       "desc": "Li Xuan, pendekar pengembara pemburu hantu, siluman, dan iblis, menyingkap misteri gaib dari desa ke desa sambil memburu kebenaran di balik kehancuran Paviliun Tianmen.",
       "episodeTitles": [],
-      "qc": "PREPUBLICATION_LISTING_ONLY"
+      "qc": "OWNER_APPROVED_COVER_EPISODE_PENDING"
     }
   ],
   "excludedProjects": [

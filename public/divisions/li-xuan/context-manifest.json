@@ -59,9 +59,13 @@
   },
   "current_state": {
     "phase": "PREPRODUCTION",
-    "cover": "OWNER_APPROVED_VISUAL_REFERENCE",
+    "cover": "PUBLISHED",
     "episode_001": "Pengantin Merah",
     "episode_pages_produced": 0,
-    "next": "EPISODE_001_MASTER_STORY"
+    "next": "EPISODE_001_MASTER_STORY",
+    "cover_release_id": "c3a09029-722b-7b2e-e334-947d74ba3993",
+    "cover_asset": "/media/comics/li-xuan/cover.png",
+    "cover_sha256": "c3a09029722b7b2ee334947d74ba39936fab491f2866b2fe94398eb26dbcc98f",
+    "reader_qc": "PASS"
   }
 }
