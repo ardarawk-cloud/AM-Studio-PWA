@@ -42,3 +42,14 @@ The 2026-10-30 Page 004 append is a tested **agent-operated fallback**, not yet 
 - Browser Rendering confirmed `Manusia yang Dilupakan`, `5 PAGES`, `PAGE 05 / 05`, and exactly five page image references on the live reader `https://comics.nadmo.id/?series=wukong-rebooted&episode=1`.
 - 15 temporary R2 chunks, the short-lived Worker and the temporary Drive transfer copy were deleted after verification. Canon-approved original and final R2 media retained.
 - **Next production checkpoint: Episode 001, Page 006.** Do not mistake this for Episode 006.
+
+## Subsequent verified append — Page 006 (30 Oct 2026 WITA)
+
+- Owner approved the corrected cyberpunk New Chang'an encounter (the earlier Page 006 draft with an unexplained celestial scene was rejected and **never published**).
+- Original approved PNG: `comics/wukong-rebooted/ep001/page-06.png`, 3,341,807 bytes, SHA-256 `94a5fefe44c8e315898e4d0b3f58cc3f81482ace51eb9d4156f74fe3ecc66587`.
+- Previous Page 001–005 hashes validated unchanged; Episode 001 retains original immutable release ID `bee59508-d077-4f19-a472-5bf25c4f8178`.
+- Private append receipt `system/publisher/append-receipts/wukong-rebooted-ep001-p06-20261030.json` returned `APPENDED_AND_VERIFIED`.
+- Final metadata `pageCount: 6`; append history now contains Pages 004, 005 and 006.
+- Live Cloudflare browser verification confirmed `Manusia yang Dilupakan`, `6 PAGES`, `PAGE 06 / 06`, and six `/media/comics/wukong-rebooted/ep001/page-NN.png` references.
+- Temporary R2 transfer chunks (17), transient Worker and temporary Drive bridge copy were deleted; final page, metadata, and append receipt retained.
+- **Next production checkpoint: Episode 001, Page 007.** Do not infer Episode 007 from this checkpoint.
