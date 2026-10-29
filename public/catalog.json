@@ -96,11 +96,7 @@
       },
       "desc": "Seorang legenda bangkit di tengah pertarungan takdir, kekuatan, dan dunia persilatan.",
       "episodeTitles": [],
-      "qc": "MASTER_REFERENCE_STRICT",
-      "artifactReferences": [
-        "Tombak Petir Ungu"
-      ],
-      "artifactContinuityNote": "Tombak Petir Ungu adalah bagian dari universe Ling Tian, bukan judul komik independen."
+      "qc": "MASTER_REFERENCE_STRICT"
     },
     {
       "id": "hk",
@@ -317,27 +313,6 @@
       "desc": "Sebuah perjalanan menelusuri sejarah, manusia, dan kisah di balik pohon ganja.",
       "episodeTitles": [],
       "qc": "RESEARCH_DOSSIER_REQUIRED"
-    },
-    {
-      "id": "li-xuan",
-      "code": "LX",
-      "title": "Li Xuan — Pendekar Penyeberang Malam",
-      "tag": "Supernatural • Ghost Hunter",
-      "genre": "Supernatural Horror",
-      "episodes": 0,
-      "episodeCountVerified": true,
-      "verifiedEpisodes": [],
-      "freeEpisodes": 0,
-      "status": "COMING_SOON",
-      "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
-      "cover": {
-        "required": true,
-        "status": "AWAITING_APPROVED_ASSET"
-      },
-      "desc": "Li Xuan adalah pemburu hantu yang menghadapi roh gentayangan dan ancaman gaib dalam dunia gelap.",
-      "episodeTitles": [],
-      "qc": "PREPUBLICATION_LISTING_ONLY",
-      "ownerCreated": true
     }
   ],
   "excludedProjects": [
