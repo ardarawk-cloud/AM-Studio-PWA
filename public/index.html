@@ -87,7 +87,7 @@ const statusClass=s=>s.status==='ONGOING'?'ok':s.status==='DEVELOPMENT'?'dev':'q
 const displayStatus=s=>({COMING_SOON:'COMING SOON',ONGOING:'ONGOING',DEVELOPMENT:'IN DEVELOPMENT',FB_CANON_AUDIT_PENDING:'CANON REVIEW',MIGRATION_PENDING:'IN PREPARATION'}[s.status]||String(s.status||'IN PREPARATION').replaceAll('_',' '));
 const shortCount=s=>s.episodeCountVerified?(Number(s.episodes)>0?`${Number(s.episodes)} episode${Number(s.episodes)===1?'':'s'}`:'Belum ada episode'):'Episode dalam QC';
 const card=s=>`<article class="card" data-open="${s.id}" tabindex="0" role="button" aria-label="Buka ${s.title}">
-  <div class="cover c-${s.id}" ${s.cover?.asset?`style="background-image:linear-gradient(180deg,rgba(5,7,11,.04),rgba(5,7,11,.40)),url(&quot;${encodeURI(s.cover.asset)}&quot;);background-size:${s.id==='sg-battle'?'100% 100%, contain':'cover'};background-position:center;background-repeat:no-repeat;background-color:#080b10"`:""}>
+  <div class="cover c-${s.id}" ${s.cover?.asset?`style="background-image:linear-gradient(180deg,rgba(5,7,11,.04),rgba(5,7,11,.40)),url(&quot;${encodeURI(s.cover.asset)}&quot;);background-size:cover;background-position:center;background-repeat:no-repeat;background-color:#080b10"`:""}>
   </div>
   <div class="meta">
     <div class="card-heading"><h4>${s.title}${st.fav.includes(s.id)?' <span class="favorite-mark" aria-label="Favorit">♥</span>':''}</h4><span class="card-arrow" aria-hidden="true">↗</span></div>
