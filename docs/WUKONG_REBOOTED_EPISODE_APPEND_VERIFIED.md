@@ -30,3 +30,15 @@ Comic `wukong-rebooted`; channel `ch-wukong-rebooted`; Episode 001 `Manusia yang
 The owner-visible one-word approval `nice gaskan` directly after a page was produced and explicitly awaiting approval was interpreted as consent to publish **that page**. Future turns should preserve previously defined production intent and constraints.
 
 The 2026-10-30 Page 004 append is a tested **agent-operated fallback**, not yet a fully automated permanent append API in `src/universal-publisher.js`. Prefer a properly authenticated, versioned append API if/when implemented; do not expose broad or unauthenticated upload endpoints.
+
+## Subsequent verified append — Page 005 (30 Oct 2026 WITA)
+- Owner approved Page 005 by replying `ok` after illustration QC.
+- Comic and release unchanged: `wukong-rebooted`, Episode 001 `Manusia yang Dilupakan`; original receipt `bee59508-d077-4f19-a472-5bf25c4f8178` remains immutable.
+- Separate append ID: `wukong-rebooted-ep001-p05-20261030`.
+- Original file: `comics/wukong-rebooted/ep001/page-05.png`, size `2944490` bytes, SHA-256 `7d1a858bd28e451cfa8e80dde91e7e916b90195e0375f880bcae153bcf45f2bc`.
+- Existing Page 001–004 SHA-256 metadata verified unchanged before append.
+- R2 `meta.json` now `pageCount: 5`, `lastGeneratedPage: 5` with appendHistory records for Pages 004 and 005.
+- Private receipt: `system/publisher/append-receipts/wukong-rebooted-ep001-p05-20261030.json`, status `APPENDED_AND_VERIFIED`.
+- Browser Rendering confirmed `Manusia yang Dilupakan`, `5 PAGES`, `PAGE 05 / 05`, and exactly five page image references on the live reader `https://comics.nadmo.id/?series=wukong-rebooted&episode=1`.
+- 15 temporary R2 chunks, the short-lived Worker and the temporary Drive transfer copy were deleted after verification. Canon-approved original and final R2 media retained.
+- **Next production checkpoint: Episode 001, Page 006.** Do not mistake this for Episode 006.
