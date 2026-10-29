@@ -87,6 +87,38 @@ test('all fifteen channels have isolated passports and existing canonical IDs ar
   const catalog=await (await f.call('/catalog.json')).json();assert.equal(catalog.series.length,15);assert.equal(catalog.series.find(s=>s.id==='wukong-rebooted').episodes,0);assert.equal(catalog.excludedProjects.length,0);
   for(const p of r.profiles)assert.equal((await f.call(p.passport_url)).status,200);
 });
+test('agent discovery exposes direct upload with the canonical target and required Origin',async()=>{
+  const f=fixture();
+  const health=await (await f.call('/api/publisher/health')).json();
+  assert.equal(health.ok,true);assert.equal(health.transport,'DIRECT_ORIGINAL_BYTES');
+  const passport=await (await f.call('/publisher/passports/wukong-rebooted.json')).json();
+  assert.equal(passport.agent_upload.manual_file_selection_required,false);
+  assert.equal(passport.agent_upload.headers.Origin,origin);
+  assert.equal(passport.agent_upload.headers['X-AM-Comic-ID'],'wukong-rebooted');
+});
+test('agent target mismatch is rejected before staging, processing and receipt reuse',async()=>{
+  const f=fixture(),j=await f.job({stage:false,type:'COVER'});
+  const headers={origin,'x-am-comic-id':'wukong-rebooted','x-am-channel-id':'ch-wukong-rebooted'};
+  for(const path of ['uploads/'+j.id+'/0','process/'+j.id]){
+    const res=await f.worker.fetch(new Request(origin+'/api/publisher/'+path,{method:'POST',headers,body:j.sources[0].bytes}),f.env,f.ctx);
+    assert.equal(res.status,409);assert.equal((await res.json()).error,'PUBLISHER_REQUEST_TARGET_MISMATCH');
+  }
+  assert.equal(await f.r2.head('system/publisher/staging/'+j.id+'/0.png'),null);
+  assert.equal(await f.db.prepare('SELECT id FROM publisher_releases WHERE id=?').bind(j.id).first(),null);
+  await f.r2.put('system/publisher/staging/'+j.id+'/0.png',j.sources[0].bytes);await f.finish(j);
+  const res=await f.worker.fetch(new Request(origin+'/api/publisher/process/'+j.id,{method:'POST',headers,body:'{}'}),f.env,f.ctx);
+  assert.equal(res.status,409);
+});
+test('missing channel and changed approved manifests cannot receive uploads',async()=>{
+  const f=fixture(),j=await f.job({stage:false});
+  delete j.manifest.channel_id;await f.r2.put(inboxKey(j.id),JSON.stringify(j.manifest));
+  assert.equal((await f.process(j)).status,422);
+  j.manifest.channel_id='ch-royal-gambler';await f.r2.put(inboxKey(j.id),JSON.stringify(j.manifest));
+  await f.process(j);
+  j.manifest.title='Changed after processing began';await f.r2.put(inboxKey(j.id),JSON.stringify(j.manifest));
+  const res=await f.worker.fetch(new Request(origin+'/api/publisher/uploads/'+j.id+'/0',{method:'POST',headers:{origin},body:j.sources[0].bytes}),f.env,f.ctx);
+  assert.equal(res.status,409);assert.equal((await res.json()).error,'PUBLISHER_MANIFEST_CHANGED');
+});
 test('public callers cannot create approval manifests or upload unapproved and mismatched bytes',async()=>{
   const f=fixture(),id=randomUUID();assert.equal((await f.call('/api/publisher/process/'+id,{})).status,404);
   const j=await f.job({stage:false});

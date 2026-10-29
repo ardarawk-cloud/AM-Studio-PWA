@@ -6,6 +6,7 @@ on:
       - src/**
       - migrations/**
       - tests/**
+      - scripts/publish-comic.py
       - public/catalog.json
       - public/growth-config.json
       - package*.json
@@ -26,5 +27,6 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run test:membership
+      - run: python3 tests/publish-comic.test.py
       - run: node --test tests/private-production.test.mjs tests/blackjack-auto-pipeline.test.mjs
       - run: npx wrangler deploy --dry-run --outdir /tmp/comics-membership-build
