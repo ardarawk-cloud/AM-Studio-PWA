@@ -98,12 +98,12 @@ const card=s=>`<article class="card" data-open="${s.id}" tabindex="0" role="butt
 </article>`;
 
 const bindCards=()=>document.querySelectorAll('[data-open]').forEach(x=>{x.onclick=()=>openSeries(x.dataset.open);x.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openSeries(x.dataset.open)}}});
-// Public reader discovery only: keep mixed Facebook promo channel SR-209
-// and unlaunched, coverless publisher profiles out of the comic grid.
-// The publisher registry, R2 assets and owner workflow are unchanged.
+// Show explicitly owner-registered COMING SOON comics even before cover
+// or episode publication. Hide unapproved coverless profiles and mixed FB.
 const visibleComic=s=>s.id!=='arda-personal-fb'&&Boolean(
   s.cover?.asset||s.cover?.publicReaderAsset||
-  (s.episodeCountVerified&&Number(s.episodes)>0)
+  (s.episodeCountVerified&&Number(s.episodes)>0)||
+  (s.ownerCreated===true&&s.status==='COMING_SOON'&&s.qc==='PREPUBLICATION_LISTING_ONLY')
 );
 const publicSeries=()=>C.series.filter(visibleComic);
 const featuredSeries=()=>publicSeries().sort((a,b)=>Number(b.id==='wukong-rebooted')-Number(a.id==='wukong-rebooted'));
