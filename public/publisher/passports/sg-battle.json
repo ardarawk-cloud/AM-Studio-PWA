@@ -1,0 +1,48 @@
+{
+  "version": "1.0",
+  "comic_id": "sg-battle",
+  "channel_id": "ch-sun-gokong-battle",
+  "title": "Sun Gokong — Versi Pertarungan",
+  "universe": "INDEPENDENT",
+  "status": "REGISTERED",
+  "profile_code": "SR-204",
+  "genre": "Chinese Fantasy Action",
+  "aliases": [
+    "sun-gokong-battle",
+    "Sun Gokong — Versi Pertempuran"
+  ],
+  "isolation": "ONE_COMIC_ONE_CHANNEL",
+  "canon_context": null,
+  "website": "https://comics.nadmo.id/",
+  "repository": "ardarawk-cloud/AM-Studio-PWA",
+  "branch": "main",
+  "storage": {
+    "bucket": "am-studio-comics",
+    "prefix": "comics/sg-battle/",
+    "cover_target": "comics/sg-battle/cover.{ext}",
+    "episode_target_pattern": "comics/sg-battle/ep{NNN}/"
+  },
+  "publication_requirements": [
+    "OWNER_APPROVED",
+    "CANON_FINAL",
+    "QC_PASS",
+    "ORIGINAL_ASSETS",
+    "VERIFIED_RECEIPT"
+  ],
+  "cover": {
+    "approval_state": "OWNER_APPROVED",
+    "publication_state": "LEGACY_R2_ASSET_PRESENT"
+  },
+  "current_state": {
+    "catalog": "LEGACY_PUBLICATION_RECOVERY",
+    "episodes": 1,
+    "legacy_r2_assets": {
+      "cover_present": true,
+      "episode_001_pages_present": 5,
+      "status": "RECOVERY_IN_PROGRESS",
+      "note": "Legacy Episode 001 assets predate Universal Comics Publisher v3.1. Page 05 is being replaced by the owner-approved original from this conversation; Pages 01–04 are reused byte-for-byte."
+    },
+    "next_production": "RECOVER_EPISODE_001_THROUGH_UNIVERSAL_PUBLISHER",
+    "next_story": "Episode 002 — Anak Liar Huaguo"
+  }
+}
