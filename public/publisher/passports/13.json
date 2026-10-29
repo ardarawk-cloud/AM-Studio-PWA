@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "comic_id": "13",
+  "channel_id": "ch-13-pintu",
+  "title": "13 Pintu Neraka",
+  "universe": "INDEPENDENT",
+  "status": "REGISTERED",
+  "profile_code": "SR-201",
+  "genre": "Supernatural Mystery",
+  "aliases": [
+    "13-pintu-neraka"
+  ],
+  "isolation": "ONE_COMIC_ONE_CHANNEL",
+  "canon_context": "/divisions/13-pintu-neraka/context-manifest.json",
+  "website": "https://comics.nadmo.id/",
+  "repository": "ardarawk-cloud/AM-Studio-PWA",
+  "branch": "main",
+  "storage": {
+    "bucket": "am-studio-comics",
+    "prefix": "comics/13/",
+    "cover_target": "comics/13/cover.{ext}",
+    "episode_target_pattern": "comics/13/ep{NNN}/"
+  },
+  "publication_requirements": [
+    "OWNER_APPROVED",
+    "CANON_FINAL",
+    "QC_PASS",
+    "ORIGINAL_ASSETS",
+    "VERIFIED_RECEIPT"
+  ],
+  "cover": {
+    "approval_state": "QC_REQUIRED",
+    "publication_state": "PENDING_OWNER_APPROVAL"
+  },
+  "current_state": {
+    "catalog": "FB_CANON_AUDIT_PENDING",
+    "episodes": null,
+    "next_production": "CONTINUE_EPISODE_001_FROM_OFFICIAL_CURRENT_STATE",
+    "next_story": "Ritual yang Salah"
+  }
+}
