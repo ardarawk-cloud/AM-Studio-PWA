@@ -11,7 +11,7 @@
     "han-kera"
   ],
   "isolation": "ONE_COMIC_ONE_CHANNEL",
-  "canon_context": null,
+  "canon_context": "/divisions/han-kera/context-manifest.json",
   "website": "https://comics.nadmo.id/",
   "repository": "ardarawk-cloud/AM-Studio-PWA",
   "branch": "main",
