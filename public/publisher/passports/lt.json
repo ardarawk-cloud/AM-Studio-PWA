@@ -37,17 +37,22 @@
     "publisher_receipt": "UNVERIFIED"
   },
   "current_state": {
-    "catalog": "FB_CANON_AUDIT_PENDING",
+    "catalog": "PUBLISHED",
     "episodes": 1,
     "current_episode": 1,
     "current_episode_title": "Awal Seorang Legenda",
-    "published_pages": 5,
-    "episode_state": "CONTINUATION_APPROVED",
-    "next_production": "EPISODE_001_PAGE_06_AND_07"
+    "published_pages": 7,
+    "episode_state": "PARTIAL_PUBLISHED",
+    "next_production": "EPISODE_001_PAGE_08",
+    "episode_release_id": "9509a24b-3274-46fd-9f72-79774eb6e63b",
+    "publisher_receipt": "PUBLISHED",
+    "verified_at": "2026-10-30T04:17:24.747Z"
   },
   "recovery": {
     "registry_source": "/publisher-registry.json",
-    "existing_r2_pages_verified": 5,
-    "story_content_reconstructed": false
+    "existing_r2_pages_verified": 7,
+    "story_content_reconstructed": false,
+    "legacy_pages_01_to_05_original_binary_preserved": true,
+    "legacy_extension_corrected_to_png": true
   }
 }
