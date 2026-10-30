@@ -1,0 +1,118 @@
+{
+  "protocolVersion": "1.0",
+  "divisionId": "ling-tian",
+  "status": "HISTORICAL_SOURCES_UNRESOLVED",
+  "safeToResolveByAI": false,
+  "provenance": [
+    {
+      "id": "VISUAL_CONCEPT_2026_07_23",
+      "type": "CONCEPT_POSTER",
+      "status": "EARLIER_VERSION_NOT_FINAL_MASTER",
+      "date": "2026-07-23",
+      "claims": [
+        "Guru Tua Mo",
+        "Zhao Feng",
+        "Ye Ming",
+        "Sekte Awan Abadi",
+        "seven-arc 200+ episode concept"
+      ],
+      "source": "Uploaded prior concept poster in project conversation/File Library"
+    },
+    {
+      "id": "MASTER_STORY_V1_2026_07_28",
+      "type": "OWNER_APPROVED_MASTER_REPORTED_IN_PRIOR_CONVERSATION",
+      "status": "APPROVAL_RECORDED_FULL_TEXT_MISSING",
+      "date": "2026-07-28",
+      "claims": [
+        "Tetua Gu Yun mentor",
+        "Mo Xuan leader of Dewan Naungan Gelap",
+        "Sekte Awan Abadi",
+        "10 Fragmen Warisan",
+        "Ling Tian, Mei Xue, Lin Feng, Xuan Xi, Bai Chen"
+      ],
+      "source": "Historical conversation recovery; exact original Master Story document not present in current GitHub/Drive/R2"
+    },
+    {
+      "id": "MASTER_STORY_V2_2026_08_02",
+      "type": "HISTORICAL_REVISION_REPORTED_IN_PRIOR_CONVERSATION",
+      "status": "SOURCE_FULL_TEXT_MISSING",
+      "date": "2026-08-02",
+      "claims": [
+        "Ling Tian is origin-era narrative",
+        "Han You appears later in universe chronology",
+        "Han Kera independent origin and delayed crossover"
+      ],
+      "source": "Historical conversation recovery; not authority for unquoted plot details"
+    },
+    {
+      "id": "EP01_REBOOT_2026_08_13",
+      "type": "HISTORICAL_PRODUCTION_RECORD",
+      "status": "REBOOT_APPROVAL_RECORDED",
+      "date": "2026-08-13",
+      "claims": [
+        "Episode 01 Awal Seorang Legenda reboot from original cover",
+        "original production checkpoint 5 sequential pages",
+        "Page 03 ends leaving Qi-testing arena",
+        "Page 04 solitary dusk training with wounded hands",
+        "Page 05 nighttime practice observed by an elder",
+        "Episode 02 Murid Tanpa Harapan planned annual Qi test"
+      ],
+      "source": "Historical conversation recovery, not replacement for full approved Story"
+    },
+    {
+      "id": "CURRENT_PUBLISHER_2026_10_30",
+      "type": "VERIFIED_RELEASE",
+      "status": "PUBLISHED_BYTES_AND_READER_MANIFEST_VERIFIED",
+      "date": "2026-10-30",
+      "claims": [
+        "Episode 01 Awal Seorang Legenda published seven pages",
+        "Page 06 and Page 07 appended after owner directives",
+        "publisher release 9509a24b-3274-46fd-9f72-79774eb6e63b"
+      ],
+      "source": "D1 Publisher receipt and Cloudflare R2"
+    },
+    {
+      "id": "AUDIT_2026_10_30",
+      "type": "TECHNICAL_AUDIT",
+      "status": "OBSERVATIONS_NOT_MASTER_STORY",
+      "date": "2026-10-30",
+      "source": "docs/LING_TIAN_CANON_PUBLISHER_AUDIT_2026-10-30.md"
+    }
+  ],
+  "conflicts": [
+    {
+      "issue": "MENTOR_IDENTITY",
+      "status": "UNRESOLVED_SOURCE_PRIORITY",
+      "detail": "Older concept poster uses Guru Tua Mo; later historical v1.0 references Tetua Gu Yun. Elder on Page 07 not identified on-page. Do not equate either figure with the on-page elder without final Character Bible."
+    },
+    {
+      "issue": "SECT_NAME",
+      "status": "UNRESOLVED_VISUAL_VS_STORY",
+      "detail": "Historical story refers to Sekte Awan Abadi; some printed published pages use Sekte Awan Langit. Preserve existing art while auditing; no silent rewrite."
+    },
+    {
+      "issue": "EPISODE_AND_TIMELINE",
+      "status": "UNRESOLVED_SOURCE_PRIORITY",
+      "detail": "Older episode roadmap 200+ episodes, 28 July story revision, historical Episode 16 pre-reboot, and 13 August episode-one reboot have different contexts. Reboot is an explicit new production timeline; do not import legacy Episode 16 as live next episode."
+    },
+    {
+      "issue": "PAGE_08_ZHANG_YUAN",
+      "status": "CONFIRMED_AI_INTRODUCED_NOT_CANON",
+      "detail": "Page 08 alternate introduces Zhang Yuan, not sourced from owner-approved Character Bible; do not publish."
+    },
+    {
+      "issue": "PAGE_08_CONTINUITY",
+      "status": "CONFIRMED_DRAFT_DRIFT",
+      "detail": "Page 08 first draft replays distant elder observation after published Page 07 shows face-to-face contact."
+    }
+  ],
+  "unknowns": [
+    "full latest owner-approved Master Story text",
+    "complete latest Character Bible and reference sheets",
+    "identity of silver-haired elder shown in published Page 07",
+    "exact full Episode 01 intended page outline after reboot",
+    "final visual bible source files"
+  ],
+  "ownerNotRequiredToRetell": true,
+  "sourceRecoveryWorkRequired": true
+}
