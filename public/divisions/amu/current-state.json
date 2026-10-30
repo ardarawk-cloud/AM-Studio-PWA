@@ -1,43 +1,65 @@
 {
-  "protocolVersion":"1.0",
-  "divisionId":"amu",
-  "seriesId":"amu",
-  "workingMemoryStatus":"AUTHORITATIVE_AFTER_LATEST_COMPLETE_EPISODE",
-  "lastCompletedEpisode":{
-    "number":1,
-    "title":"The Last Normal Day",
-    "pageCount":22,
-    "production":"COMPLETE",
-    "reader":"COMPLETE",
-    "canon":"CANON_FINAL",
-    "qc":"QC_PASS",
-    "ownerVerified":true
+  "protocolVersion": "1.0",
+  "divisionId": "amu",
+  "seriesId": "amu",
+  "workingMemoryStatus": "AUTHORITATIVE_AFTER_LATEST_COMPLETE_EPISODE",
+  "lastCompletedEpisode": {
+    "number": 1,
+    "title": "The Last Normal Day",
+    "pageCount": 22,
+    "production": "COMPLETE",
+    "reader": "COMPLETE",
+    "canon": "CANON_FINAL",
+    "qc": "QC_PASS",
+    "ownerVerified": true
   },
-  "nextProductionTarget":{
-    "number":2,
-    "title":"The First Breach",
-    "state":"READY_FOR_STORY_PRODUCTION"
+  "nextProductionTarget": {
+    "number": 2,
+    "title": "The First Breach",
+    "nextPage": 4,
+    "state": "READY_FOR_STORYBOARD_AFTER_PAGE_03"
   },
-  "continuity":{
-    "setting":"Neo Avalon 2047",
-    "protagonist":"Arda Moron, age 17",
-    "heroIdentity":"Ninja Cyber",
-    "soraiEvolutionGate":"Episode 4 discovery; do not advance SORAI evolution early",
-    "rule":"Episode 2 must continue from the canonical ending of Episode 1 and must not reset character/world state."
+  "continuity": {
+    "setting": "Neo Avalon 2047",
+    "protagonist": "Arda Moron, age 17",
+    "heroIdentity": "Ninja Cyber",
+    "soraiEvolutionGate": "Episode 4 discovery; do not advance SORAI evolution early",
+    "rule": "Episode 2 must continue from the canonical ending of Episode 1 and must not reset character/world state."
   },
-  "productionPolicy":{
-    "fixedPageCount":false,
-    "fullEpisodeBeforeRelease":true,
-    "ownerImageRevisionOnlyOnExplicitRequest":true,
-    "language":"Indonesian",
-    "canvas":"1080x1920"
+  "productionPolicy": {
+    "fixedPageCount": false,
+    "fullEpisodeBeforeRelease": true,
+    "ownerImageRevisionOnlyOnExplicitRequest": true,
+    "language": "Indonesian",
+    "canvas": "1080x1920"
   },
-  "releaseState":{
-    "episode1":"PUBLISHED_BASELINE",
-    "episode2":"NOT_STARTED",
-    "releaseMode":"FREE_BETA",
-    "monetization":"OFF"
+  "releaseState": {
+    "episode1": "PUBLISHED_BASELINE",
+    "episode2": "PUBLISHED_PARTIAL_3_PAGES",
+    "releaseMode": "FREE_BETA",
+    "monetization": "OFF",
+    "episode2AppendReceipt": "system/publisher/append-receipts/amu-ep002-p02-p03-20261030.json",
+    "episode2OriginalRelease": "f81c5c08-4df7-4384-869a-2bc2f123a973",
+    "episode2Reader": "https://comics.nadmo.id/?series=amu&episode=2"
   },
-  "updatedBy":"OWNER_VERIFIED_DIVISION_INITIALIZATION",
-  "updatedAt":"2026-08-14T17:21:00+08:00"
+  "updatedBy": "OWNER_APPROVED_EPISODE_002_PAGE_03_AND_VERIFIED_PUBLISHER_APPEND",
+  "updatedAt": "2026-10-30T03:58:06.609Z",
+  "activeEpisode": {
+    "number": 2,
+    "title": "The First Breach",
+    "production": "IN_PROGRESS",
+    "lastApprovedPage": 3,
+    "lastPublishedPage": 3,
+    "lastPageTitle": "Siapa yang Memegang Kunci?",
+    "lastSceneTime": "23:25",
+    "lastSceneLocation": "Moron Industries Cyber Security Center, Neo Avalon",
+    "lastSceneSummary": "Analis melaporkan permintaan baru dari sesi peretas yang sama menuju Access Control System. Adrian menuntut lokasi target; status keberhasilan penyusup masih UNKNOWN.",
+    "characterContinuity": {
+      "Adrian": "Wajah dewasa, kumis dan jenggot/goatee wajib konsisten.",
+      "Arda": "Di kamar rumah Moron dengan dua petugas resmi di luar; belum mengetahui penyelidikan lengkap.",
+      "Hacker": "Identitas dan maksud akhir tetap UNKNOWN."
+    },
+    "projectEclipse": "Direktori diblokir; sesi asing masih aktif; hasil pembacaan izin belum terkonfirmasi.",
+    "sorai": "Belum ditemukan maupun diaktifkan; gerbang evolusi Episode 4 tetap."
+  }
 }
