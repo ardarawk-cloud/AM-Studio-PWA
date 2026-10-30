@@ -53,3 +53,14 @@ The 2026-10-30 Page 004 append is a tested **agent-operated fallback**, not yet 
 - Live Cloudflare browser verification confirmed `Manusia yang Dilupakan`, `6 PAGES`, `PAGE 06 / 06`, and six `/media/comics/wukong-rebooted/ep001/page-NN.png` references.
 - Temporary R2 transfer chunks (17), transient Worker and temporary Drive bridge copy were deleted; final page, metadata, and append receipt retained.
 - **Next production checkpoint: Episode 001, Page 007.** Do not infer Episode 007 from this checkpoint.
+
+## Subsequent verified append — Page 007 (30 Oct 2026 WITA)
+
+- Owner approved the corrected New Chang'an maglev rescue page; three earlier attempted Page 007 drafts with repeated deployment/encounter imagery were rejected and not uploaded.
+- Original PNG final: `comics/wukong-rebooted/ep001/page-07.png`, size `3135373` bytes, SHA-256 `bae02652689ba6f4cb92804d069d9458a2c67c14adb108060e5d6c02d2857362`.
+- Prior Page 001–006 SHA-256 metadata verified unchanged before append; immutable initial release ID `bee59508-d077-4f19-a472-5bf25c4f8178` preserved.
+- Separate private append receipt `system/publisher/append-receipts/wukong-rebooted-ep001-p07-20261030.json`, status `APPENDED_AND_VERIFIED`.
+- Episode metadata `pageCount: 7`, `lastGeneratedPage: 7`; append history contains Pages 004–007.
+- Live reader verified: `Manusia yang Dilupakan` shows `7 PAGES`, `PAGE 07 / 07` and exactly seven page image references.
+- 16 private R2 transfer chunks, temporary upload Worker, and temporary Drive transfer copy deleted after verification.
+- **Next production checkpoint: Episode 001, Page 008** (not Episode 008).
