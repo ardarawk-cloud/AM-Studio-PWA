@@ -182,6 +182,31 @@ test('a published episode can be extended only by reusing every already-publishe
   const episode=(await (await f.call('/reader-assets.json')).json()).episodes.find(e=>e.seriesId==='royal-gambler'&&e.episode===1);
   assert.equal(episode.pageCount,5);assert.equal(episode.pages.length,5);
 });
+test('owner-trimmed published episode can replace a rejected page and continue forward',async()=>{
+  const f=fixture(),base=await f.job({count:3});const first=await f.finish(base);
+  f.r2.objects.delete('comics/royal-gambler/ep001/page-03.png');
+  await f.r2.put('comics/royal-gambler/ep001/meta.json',JSON.stringify({
+    seriesId:'royal-gambler',episode:1,title:'Approved original comic release',pageCount:2,
+    trimmedByOwner:true,trimmedAfterPage:2,pageDeletedByOwner:3
+  }));
+  const revised=await f.job({count:4});
+  revised.manifest.revision_of=first.id;
+  revised.manifest.replace_from_page=3;
+  revised.manifest.pages[0].reuse_existing=true;
+  revised.manifest.pages[1].reuse_existing=true;
+  const replacement=Buffer.concat([png,Buffer.from([99])]);
+  revised.manifest.pages[2].size=replacement.length;
+  revised.manifest.pages[2].sha256=sha(replacement);
+  await f.r2.put('system/publisher/staging/'+revised.id+'/3.png',replacement);
+  await f.r2.put(inboxKey(revised.id),JSON.stringify(revised.manifest));
+  const second=await f.finish(revised);
+  assert.equal(second.page_count,4);
+  assert.equal(second.assets[0].sha256,first.assets.find(a=>a.kind==='PAGE'&&a.number===1).sha256);
+  assert.equal(second.assets[1].sha256,first.assets.find(a=>a.kind==='PAGE'&&a.number===2).sha256);
+  assert.equal(second.assets[2].sha256,sha(replacement));
+  const episode=(await (await f.call('/reader-assets.json')).json()).episodes.find(e=>e.seriesId==='royal-gambler'&&e.episode===1);
+  assert.equal(episode.pageCount,4);assert.equal(episode.pages.length,4);
+});
 test('concurrent processing and conflicting release IDs do not activate or overwrite twice',async()=>{
   const f=fixture(),j=await f.job({count:2});const calls=await Promise.all([f.process(j),f.process(j)]);assert.ok(calls.every(r=>[200,202].includes(r.status)));await f.finish(j);
   assert.equal((await f.db.prepare("SELECT COUNT(*) AS n FROM audit_logs WHERE action='COMIC_RELEASE_VERIFIED'").first()).n,1);
