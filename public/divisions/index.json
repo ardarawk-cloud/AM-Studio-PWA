@@ -57,6 +57,17 @@
       "passport": "/divisions/han-kera/passport.json",
       "currentState": "/divisions/han-kera/current-state.json",
       "contextManifest": "/divisions/han-kera/context-manifest.json"
+    },
+    {
+      "divisionNumber": "006",
+      "divisionId": "ling-tian",
+      "seriesId": "lt",
+      "code": "SR-210",
+      "name": "Legenda Ling Tian",
+      "status": "ACTIVE_PUBLISHED_CANON_AUDIT",
+      "passport": "/divisions/ling-tian/passport.json",
+      "currentState": "/divisions/ling-tian/current-state.json",
+      "contextManifest": "/divisions/ling-tian/context-manifest.json"
     }
   ]
 }
