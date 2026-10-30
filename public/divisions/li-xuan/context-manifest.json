@@ -61,14 +61,16 @@
     "phase": "PRODUCTION",
     "cover": "PUBLISHED",
     "episode_001": "Pengantin Merah",
-    "episode_pages_produced": 2,
-    "next": "EPISODE_001_PAGE_03",
+    "episode_pages_produced": 7,
+    "next": "EPISODE_001_PAGE_08",
     "cover_release_id": "c3a09029-722b-7b2e-e334-947d74ba3993",
     "cover_asset": "/media/comics/li-xuan/cover.png",
     "cover_sha256": "c3a09029722b7b2ee334947d74ba39936fab491f2866b2fe94398eb26dbcc98f",
     "reader_qc": "PASS",
     "episode_001_state": "PARTIAL_PUBLISHED",
     "episode_target_pages": 24,
-    "episode_release_id": "7f2d3a91-3b54-4db7-9f61-cc4d8a6e2102"
+    "episode_release_id": "a41c9d53-89a2-4dd0-8b33-7b2d3511e711",
+    "episode_supersedes_release_id": "7f2d3a91-3b54-4db7-9f61-cc4d8a6e2102",
+    "publisher_receipt": "PUBLISHED"
   }
 }
