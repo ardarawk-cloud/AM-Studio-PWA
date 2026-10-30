@@ -169,6 +169,19 @@ test('a cover-only release creates the correct new catalog cover without inventi
   assert.equal(comic.episodes,0);assert.equal(comic.status,'COMING_SOON');assert.equal(comic.cover.asset,'/media/comics/wukong-rebooted/cover.png');
   assert.equal((await f.call('/media/comics/wukong-rebooted/cover.png')).status,200);
 });
+test('a published episode can be extended only by reusing every already-published page byte-for-byte',async()=>{
+  const f=fixture(),base=await f.job({count:2});const first=await f.finish(base);
+  const extended=await f.job({count:5});
+  extended.manifest.pages[0].reuse_existing=true;
+  extended.manifest.pages[1].reuse_existing=true;
+  await f.r2.put(inboxKey(extended.id),JSON.stringify(extended.manifest));
+  const second=await f.finish(extended);
+  assert.equal(first.page_count,2);assert.equal(second.page_count,5);
+  assert.equal(second.assets[0].sha256,first.assets[0].sha256);
+  assert.equal(second.assets[1].sha256,first.assets[1].sha256);
+  const episode=(await (await f.call('/reader-assets.json')).json()).episodes.find(e=>e.seriesId==='royal-gambler'&&e.episode===1);
+  assert.equal(episode.pageCount,5);assert.equal(episode.pages.length,5);
+});
 test('concurrent processing and conflicting release IDs do not activate or overwrite twice',async()=>{
   const f=fixture(),j=await f.job({count:2});const calls=await Promise.all([f.process(j),f.process(j)]);assert.ok(calls.every(r=>[200,202].includes(r.status)));await f.finish(j);
   assert.equal((await f.db.prepare("SELECT COUNT(*) AS n FROM audit_logs WHERE action='COMIC_RELEASE_VERIFIED'").first()).n,1);
