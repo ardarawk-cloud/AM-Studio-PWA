@@ -359,14 +359,14 @@
       "episodeTitles": [
         "Pengantin Merah"
       ],
-      "qc": "OWNER_APPROVED_EPISODE_PARTIAL_7_OF_24",
+      "qc": "OWNER_REJECTED_PAGE_07_REPLACEMENT_PENDING",
       "currentEpisode": {
         "number": 1,
         "title": "Pengantin Merah",
-        "publishedPages": 7,
+        "publishedPages": 6,
         "targetPages": 24,
         "status": "IN_PROGRESS",
-        "releaseId": "a41c9d53-89a2-4dd0-8b33-7b2d3511e711"
+        "replacementPendingPage": 7
       }
     }
   ],

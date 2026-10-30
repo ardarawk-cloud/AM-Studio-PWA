@@ -63,26 +63,23 @@
       "publicationState": "UNIVERSAL_COMICS_PUBLISHER",
       "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
       "coverAsset": "/media/comics/li-xuan/cover.png",
-      "pageCount": 7,
-      "availablePageCount": 7,
+      "pageCount": 6,
+      "availablePageCount": 6,
       "pages": [
         "/media/comics/li-xuan/ep001/page-01.png",
         "/media/comics/li-xuan/ep001/page-02.png",
         "/media/comics/li-xuan/ep001/page-03.png",
         "/media/comics/li-xuan/ep001/page-04.png",
         "/media/comics/li-xuan/ep001/page-05.png",
-        "/media/comics/li-xuan/ep001/page-06.png",
-        "/media/comics/li-xuan/ep001/page-07.png"
+        "/media/comics/li-xuan/ep001/page-06.png"
       ],
       "missingReaderPages": [],
       "readerState": "READER_COMPLETE",
       "assetQuality": "ORIGINAL_APPROVED_BYTES",
       "evidence": {
-        "type": "UNIVERSAL_COMICS_PUBLISHER",
-        "verifiedAt": "2026-10-30T03:50:39.229Z",
-        "releaseId": "a41c9d53-89a2-4dd0-8b33-7b2d3511e711",
-        "supersedesReleaseId": "7f2d3a91-3b54-4db7-9f61-cc4d8a6e2102",
-        "note": "Owner approved and published Pages 03-07 as an append-only superseding release; Pages 01-02 were reused byte-for-byte. Episode production continues toward 24 pages."
+        "type": "OWNER_REJECTION_AND_REPLACEMENT",
+        "verifiedAt": "2026-10-30T16:23:16.606Z",
+        "note": "Page 07 was rejected by owner for canon/character drift and removed from live assets; replacement production is pending."
       },
       "access": {
         "comic_id": "li-xuan",
@@ -93,7 +90,8 @@
         "source": "CATALOG_PREVIEW"
       },
       "targetPageCount": 24,
-      "productionState": "IN_PROGRESS"
+      "productionState": "IN_PROGRESS",
+      "replacementPendingPage": 7
     }
   ],
   "schema": {
