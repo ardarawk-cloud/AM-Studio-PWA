@@ -1,0 +1,85 @@
+{
+  "protocolVersion": "1.0",
+  "divisionNumber": "006",
+  "divisionId": "ling-tian",
+  "seriesId": "lt",
+  "identity": {
+    "name": "Legenda Ling Tian",
+    "code": "SR-210",
+    "channelId": "ch-ling-tian",
+    "type": "shared_universe_main_series",
+    "status": "ACTIVE_PUBLISHED_CANON_AUDIT",
+    "studio": "AM STUDIO",
+    "genre": "Cinematic Wuxia"
+  },
+  "brain": {
+    "mode": "ISOLATED_DIVISION_BRAIN",
+    "contextPolicy": "LOAD_THIS_DIVISION_ONLY",
+    "authorityOrder": [
+      "OWNER_APPROVED_MASTER_STORY",
+      "MASTER_CANON_UNIVERSE_BIBLE",
+      "CHARACTER_BIBLE",
+      "WORLD_BIBLE",
+      "POWER_COMBAT_BIBLE",
+      "VISUAL_BIBLE",
+      "TIMELINE_CANON_REGISTRY",
+      "OFFICIAL_CURRENT_STATE",
+      "OWNER_APPROVED_PAGES",
+      "CURRENT_OWNER_INSTRUCTION"
+    ],
+    "sharedUniverseContract": {
+      "universeId": "ling-tian",
+      "crossDivisionCanonImports": false
+    },
+    "rule": "DO_NOT_RECREATE_APPROVED_CANON_FROM_AI_GUESS"
+  },
+  "memory": {
+    "passport": "/divisions/ling-tian/passport.json",
+    "currentState": "/divisions/ling-tian/current-state.json",
+    "contextManifest": "/divisions/ling-tian/context-manifest.json",
+    "canonLock": "/divisions/ling-tian/canon-lock.json",
+    "sourceLedger": "/divisions/ling-tian/source-ledger.json",
+    "masterStory": null,
+    "characterBible": null,
+    "worldBible": null,
+    "visualBible": null,
+    "powerCombatBible": null,
+    "canonRegistry": "/canon-registry.json",
+    "episodeRegistry": "/reader-assets.json",
+    "audit": "/docs/LING_TIAN_CANON_PUBLISHER_AUDIT_2026-10-30.md"
+  },
+  "production": {
+    "generationAllowed": false,
+    "ownerApprovalRequired": true,
+    "language": "id-ID",
+    "nextTarget": {
+      "episode": 1,
+      "page": 8
+    },
+    "pageCountPolicy": "STORY_DRIVEN_NO_FIXED_PAGE_COUNT",
+    "noUnapprovedRegeneration": true
+  },
+  "release": {
+    "existingPublishedEpisode": 1,
+    "existingPublishedPages": 7,
+    "existingPublishedAssetsPreserved": true,
+    "newReleaseAllowed": false
+  },
+  "isolation": {
+    "story": "LING_TIAN_ONLY",
+    "character": "LING_TIAN_ONLY",
+    "visual": "LING_TIAN_APPROVED_REFERENCES_ONLY",
+    "currentState": "LING_TIAN_ONLY"
+  },
+  "handoff": {
+    "target": "AM_STUDIO_CORE",
+    "requiredGates": [
+      "MASTER_STORY_LOADED",
+      "CHARACTER_BIBLE_LOADED",
+      "CANON_QC_PASS",
+      "OWNER_APPROVED",
+      "ORIGINAL_ASSETS",
+      "VERIFIED_RECEIPT"
+    ]
+  }
+}
