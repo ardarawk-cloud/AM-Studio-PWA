@@ -1,0 +1,65 @@
+{
+  "protocolVersion": "1.0",
+  "divisionId": "ling-tian",
+  "seriesId": "lt",
+  "workingMemoryStatus": "PUBLISHED_ACTIVE_CANON_SOURCE_RECOVERY",
+  "currentEpisode": {
+    "number": 1,
+    "title": "Awal Seorang Legenda",
+    "publishedPages": 7,
+    "pageCountFinalized": false,
+    "publication": "PUBLISHED_PARTIAL",
+    "publisherReceipt": "9509a24b-3274-46fd-9f72-79774eb6e63b",
+    "editorialCanon": "OPEN_REVIEW"
+  },
+  "lastPublishedPage": 7,
+  "lastPublishedEpisode": 1,
+  "continuity": {
+    "lastScene": "At night in the training courtyard, a wounded and exhausted Ling Tian is approached by a silver-haired elder who speaks to him and offers a hand.",
+    "time": "NIGHT",
+    "location": "SECT_TRAINING_COURTYARD",
+    "charactersPresent": [
+      "Ling Tian",
+      "unidentified silver-haired elder"
+    ],
+    "physicalState": "Ling Tian exhausted following intensive training",
+    "injury": "Wounded hands; ensure no sudden healing",
+    "costume": "Keep visual continuity with published Page 07",
+    "artifacts": "UNKNOWN_DO_NOT_INVENT",
+    "elderIdentity": "UNKNOWN_PENDING_OFFICIAL_CHARACTER_BIBLE",
+    "interactionState": "ELDER_ALREADY_APPROACHED_AND_SPOKE_FACE_TO_FACE"
+  },
+  "nextProductionTarget": {
+    "number": 1,
+    "title": "Awal Seorang Legenda",
+    "page": 8,
+    "state": "BLOCKED_UNTIL_APPROVED_MASTER_STORY_AND_CHARACTER_BIBLE_RECOVERED"
+  },
+  "drafts": [
+    {
+      "page": 8,
+      "sourceFileId": "file_000000009aac821192574f55d6302cc2",
+      "status": "QUARANTINED_DRAFT",
+      "reason": "Observation repeated after face-to-face contact"
+    },
+    {
+      "page": 8,
+      "sourceFileId": "file_000000009f1082119ca1f7bd550ff8fa",
+      "status": "QUARANTINED_DRAFT",
+      "reason": "Invented Zhang Yuan and unsourced mentorship"
+    }
+  ],
+  "productionPolicy": {
+    "generationAllowed": false,
+    "autoRevisionAllowed": false,
+    "publishNewPagesAllowed": false,
+    "preservePublishedPages": true,
+    "verifyCompleteCanonFirst": true
+  },
+  "releaseState": {
+    "cover": "LEGACY_R2_PRESENT_RECEIPT_UNVERIFIED",
+    "episode1": "PUBLISHED_SEVEN_PAGES",
+    "readerUrl": "https://comics.nadmo.id/?series=lt&episode=1",
+    "assetsPreserved": true
+  }
+}
