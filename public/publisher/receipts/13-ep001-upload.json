@@ -1,0 +1,60 @@
+{
+  "version": "1.0",
+  "comic_id": "13",
+  "channel_id": "ch-13-pintu",
+  "title": "13 Pintu Neraka",
+  "episode": 1,
+  "episode_title": "Pintu Pertama",
+  "state": "ASSETS_UPLOADED",
+  "release_id": "5edc5ef6-12db-4fc2-89c7-a58a4d7c8129",
+  "storage": {
+    "bucket": "am-studio-comics",
+    "prefix": "comics/13/ep001/",
+    "page_count": 9
+  },
+  "gates": {
+    "owner_approved": true,
+    "canon_state": "CANON_FINAL",
+    "qc": "QC_PASS",
+    "reader_qc": "PENDING_EXTERNAL_VERIFY"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "sha256": "192f37db87fb458dba12355a7749a096a194f3a0876c0b2e6d72328a690cd32b"
+    },
+    {
+      "page": 2,
+      "sha256": "ff9dd2e2a509b911550339deb8568138b182146d2bcd982e7f16784611258265"
+    },
+    {
+      "page": 3,
+      "sha256": "a9cd3da81def9e2e14f66bdf1cfa4473986bad0e3dfbe749fe4f56d00909578d"
+    },
+    {
+      "page": 4,
+      "sha256": "40a1e6215e0ef5a03e59ffe5f4451c90479879657a6116bb2db4401fdde1abba"
+    },
+    {
+      "page": 5,
+      "sha256": "17c2576169b9442fda712154cab531a0b99a40c677bcbc6602496478ee02b4dc"
+    },
+    {
+      "page": 6,
+      "sha256": "9dd1c3398224476b379af3de96ed9adf41fcc41b2514adad0d29d7abbf144be1"
+    },
+    {
+      "page": 7,
+      "sha256": "d840267b052e59ef1e28d334c9020ab88b9cbc1159689c5991fc715a70d72841"
+    },
+    {
+      "page": 8,
+      "sha256": "ca99a426cc594e58d4f58593caf8cd6f1733ebb1b368902522317aebf487fd2d"
+    },
+    {
+      "page": 9,
+      "sha256": "f9266f0a6b33ec31338407f3ee94b8798b0df9dbc85ef2a7f25d3e363bc33f7b"
+    }
+  ],
+  "note": "PUBLISHED receipt is intentionally withheld until reader live verification passes."
+}
