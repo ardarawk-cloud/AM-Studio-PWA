@@ -1,0 +1,53 @@
+{
+  "version": "1.0",
+  "comic_id": "lt",
+  "channel_id": "ch-ling-tian",
+  "title": "Legenda Ling Tian",
+  "universe": "ling-tian",
+  "status": "REGISTERED",
+  "profile_code": "SR-210",
+  "genre": "Cinematic Wuxia",
+  "aliases": [
+    "ling-tian"
+  ],
+  "isolation": "ONE_COMIC_ONE_CHANNEL",
+  "canon_context": null,
+  "website": "https://comics.nadmo.id/",
+  "repository": "ardarawk-cloud/AM-Studio-PWA",
+  "branch": "main",
+  "storage": {
+    "bucket": "am-studio-comics",
+    "prefix": "comics/lt/",
+    "cover_target": "comics/lt/cover.{ext}",
+    "episode_target_pattern": "comics/lt/ep{NNN}/"
+  },
+  "publication_requirements": [
+    "OWNER_APPROVED",
+    "CANON_FINAL",
+    "QC_PASS",
+    "ORIGINAL_ASSETS",
+    "VERIFIED_RECEIPT"
+  ],
+  "cover": {
+    "publication_state": "LEGACY_R2_PRESENT",
+    "asset": "/media/comics/lt/cover.jpg",
+    "size": 2803033,
+    "sha256": "72ea843e6b46a0ddbe9190ce01732f50b7a63ea8487ceb11c9af8d98f7747d65",
+    "source": "EXISTING_OWNER_LIBRARY_R2",
+    "publisher_receipt": "UNVERIFIED"
+  },
+  "current_state": {
+    "catalog": "FB_CANON_AUDIT_PENDING",
+    "episodes": 1,
+    "current_episode": 1,
+    "current_episode_title": "Awal Seorang Legenda",
+    "published_pages": 5,
+    "episode_state": "CONTINUATION_APPROVED",
+    "next_production": "EPISODE_001_PAGE_06_AND_07"
+  },
+  "recovery": {
+    "registry_source": "/publisher-registry.json",
+    "existing_r2_pages_verified": 5,
+    "story_content_reconstructed": false
+  }
+}
