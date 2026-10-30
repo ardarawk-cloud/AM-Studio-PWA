@@ -216,7 +216,7 @@
       "status": "REGISTERED",
       "genre": "Monkey Warrior",
       "passport_url": "/publisher/passports/hk.json",
-      "canon_context": null,
+      "canon_context": "/divisions/han-kera/context-manifest.json",
       "source": {
         "type": "RECOVERED_CHANNEL_PASSPORT",
         "version": 3,
