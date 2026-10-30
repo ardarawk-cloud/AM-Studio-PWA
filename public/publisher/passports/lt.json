@@ -11,7 +11,7 @@
     "ling-tian"
   ],
   "isolation": "ONE_COMIC_ONE_CHANNEL",
-  "canon_context": null,
+  "canon_context": "/divisions/ling-tian/context-manifest.json",
   "website": "https://comics.nadmo.id/",
   "repository": "ardarawk-cloud/AM-Studio-PWA",
   "branch": "main",
@@ -43,7 +43,7 @@
     "current_episode_title": "Awal Seorang Legenda",
     "published_pages": 7,
     "episode_state": "PARTIAL_PUBLISHED",
-    "next_production": "EPISODE_001_PAGE_08",
+    "next_production": "EPISODE_001_PAGE_08_BLOCKED_CANON_SOURCE_RECOVERY",
     "episode_release_id": "9509a24b-3274-46fd-9f72-79774eb6e63b",
     "publisher_receipt": "PUBLISHED",
     "verified_at": "2026-10-30T04:17:24.747Z"
@@ -53,6 +53,11 @@
     "existing_r2_pages_verified": 7,
     "story_content_reconstructed": false,
     "legacy_pages_01_to_05_original_binary_preserved": true,
-    "legacy_extension_corrected_to_png": true
+    "legacy_extension_corrected_to_png": true,
+    "divisionContextRecovered": true,
+    "latestFullMasterStoryRecovered": false,
+    "latestCharacterBibleRecovered": false,
+    "canonicalSourceLedger": "/divisions/ling-tian/source-ledger.json",
+    "editorialGenerationGate": "CLOSED_UNTIL_ORIGINAL_MASTER_SOURCE_VERIFIED"
   }
 }
