@@ -1,0 +1,56 @@
+{
+  "protocolVersion": "1.0",
+  "divisionId": "han-kera",
+  "status": "UNRESOLVED_MASTER_STORY",
+  "safeToResolveByAI": false,
+  "recoveryComplete": false,
+  "sourceAuthority": "OWNER_LOCKED_STORY_FIRST",
+  "verifiedRegistry": {
+    "publisherRegistry": "/publisher-registry.json",
+    "comicId": "hk",
+    "channelId": "ch-han-kera",
+    "profileCode": "SR-208",
+    "title": "Han Kera",
+    "canonRegistry": "/canon-registry.json",
+    "sharedUniverse": "ling-tian",
+    "role": "REGISTERED_BRANCH",
+    "canonSourceForMasterStory": false
+  },
+  "recoveredOwnerDirections": [
+    {
+      "status": "RECOVERED_OWNER_DIRECTIVE",
+      "source": "AM_STUDIO_COMIC_CONVERSATION",
+      "detail": "Origin sequence: birth -> teacher finds -> training -> leaves mountain -> friends -> journey -> demons, before later universe events"
+    },
+    {
+      "status": "RECOVERED_OWNER_AGREED_EPISODE_OUTLINE",
+      "source": "CURRENT_COMIC_CONVERSATION",
+      "detail": "Episode 001 8-page outline in current-state is a production outline, not full series Master Story"
+    },
+    {
+      "status": "RECOVERED_OWNER_CORRECTIONS",
+      "source": "CURRENT_COMIC_CONVERSATION",
+      "detail": "Han Kera monkey, Guru Tian human, Bao boar demon, Shan human"
+    }
+  ],
+  "legacyArchive": {
+    "source": "/recovery-manifest.json",
+    "rule": "OLDER_ASSETS_CANON_CANDIDATE_OR_UNVERIFIED_NOT_AUTOMATIC_CANON"
+  },
+  "missing": [
+    "OWNER_APPROVED_COMPLETE_MASTER_STORY",
+    "OWNER_APPROVED_CHARACTER_BIBLES",
+    "OWNER_APPROVED_VISUAL_BIBLE",
+    "COMPLETE_OWNER_APPROVED_EPISODE_001_FINAL_PAGE_LIST",
+    "OFFICIAL_CURRENT_STATE_AFTER_APPROVED_PAGE"
+  ],
+  "conflicts": [],
+  "quarantined": [
+    "PAGE_06_REPEATED_FALL",
+    "PAGE_07_MONKEY_TROOP_INSTEAD_OF_GURU_TIAN",
+    "UNVERIFIED_OLD_EPISODE_ARTWORK"
+  ],
+  "safeToGenerate": false,
+  "safeToRelease": false,
+  "authorityNote": "No assertion that previous assistant scripts or image outputs are canon"
+}
