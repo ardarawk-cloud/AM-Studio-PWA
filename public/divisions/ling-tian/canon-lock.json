@@ -1,0 +1,50 @@
+{
+  "protocolVersion": "1.0",
+  "divisionId": "ling-tian",
+  "status": "HISTORICAL_CANON_APPROVED_SOURCE_CONTENT_NOT_RECOVERED",
+  "generationAllowed": false,
+  "stateAdvanceAllowed": false,
+  "releaseAllowed": false,
+  "masterStory": {
+    "historicalApprovalEvidence": "Owner confirmed Master Story Bible v1.0 July 28 2026 in previous conversation; later Master Story v2.0 documented August 2 2026",
+    "ownerApprovalHistorical": true,
+    "latestApprovedFullTextAvailable": false,
+    "sourcePath": null,
+    "status": "SOURCE_CONTENT_MISSING"
+  },
+  "characterBibles": {
+    "historicallyLocked": true,
+    "sourcePath": null,
+    "ownerApprovedFinalFilesAvailable": false,
+    "status": "SOURCE_CONTENT_MISSING"
+  },
+  "visualBible": {
+    "historicallyLocked": true,
+    "sourcePath": null,
+    "ownerApprovedFinalFileAvailable": false,
+    "status": "SOURCE_CONTENT_MISSING"
+  },
+  "officialPublishedPages": {
+    "episode": 1,
+    "pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "publisherReceipt": "9509a24b-3274-46fd-9f72-79774eb6e63b",
+    "binaryVerified": true,
+    "editorialDiscrepanciesOpen": true,
+    "rule": "PRESERVE_PUBLISHED_ASSETS_UNTIL_OWNER_DIRECTS_REVISION"
+  },
+  "page08": {
+    "ownerApproved": false,
+    "published": false,
+    "status": "TWO_DRIFTED_DRAFTS_QUARANTINED",
+    "rule": "NO_AUTO_REGEN_NO_UPLOAD"
+  },
+  "rule": "DO_NOT_INFER_FULL_CANON_FROM_METADATA_OLDER_POSTERS_OR_PUBLISHED_RECEIPT"
+}
