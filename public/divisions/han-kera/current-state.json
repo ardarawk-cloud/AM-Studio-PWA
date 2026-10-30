@@ -1,0 +1,93 @@
+{
+  "protocolVersion": "1.0",
+  "divisionId": "han-kera",
+  "seriesId": "hk",
+  "workingMemoryStatus": "CANON_RECOVERY_HOLD",
+  "currentEpisode": {
+    "number": 1,
+    "title": "Kelahiran Sang Kera",
+    "titleProvenance": "RECOVERED_OWNER_AGREED_EPISODE_OUTLINE",
+    "canon": "NOT_VERIFIED_MASTER_STORY",
+    "production": "DRAFT_REVIEW_ONLY",
+    "completedApprovedPages": null,
+    "pageCountFinalized": false,
+    "ownerFinalApproval": false
+  },
+  "lastCompletedEpisode": null,
+  "lastCompletedPage": null,
+  "nextProductionTarget": {
+    "number": 1,
+    "title": "Kelahiran Sang Kera",
+    "page": null,
+    "state": "STOP_UNTIL_OFFICIAL_MASTER_STORY_AND_APPROVED_PAGE_SEQUENCE_VERIFIED"
+  },
+  "continuity": {
+    "location": null,
+    "time": null,
+    "charactersPresent": null,
+    "physicalState": null,
+    "injury": null,
+    "costume": null,
+    "artifacts": null,
+    "lastOwnerApprovedPanel": null,
+    "unknownReason": "NO_OWNER_APPROVED_FINAL_PAGE_SEQUENCE_VERIFIED"
+  },
+  "recoveredEpisodeOutline": {
+    "status": "RECOVERED_CONVERSATION_OUTLINE_NOT_SUBSTITUTE_FOR_MASTER_STORY",
+    "beats": [
+      {
+        "page": 1,
+        "description": "Gunung Huaguo dan Batu Langit sebelum kelahiran"
+      },
+      {
+        "page": 2,
+        "description": "Batu bergetar dan retakan pertama; belum lahir"
+      },
+      {
+        "page": 3,
+        "description": "Batu pecah; bayi Han Kera muncul"
+      },
+      {
+        "page": 4,
+        "description": "Bayi mengenal dunia dan alam"
+      },
+      {
+        "page": 5,
+        "description": "Bayi memanjat, jatuh, belajar bangkit"
+      },
+      {
+        "page": 6,
+        "description": "Getaran kelahiran menyebar jauh dari Huaguo"
+      },
+      {
+        "page": 7,
+        "description": "Guru Tian MANUSIA merasakan aura di tempatnya; belum bertemu Han Kera"
+      },
+      {
+        "page": 8,
+        "description": "Guru Tian menatap Huaguo; dialog 'Setelah sekian lama... akhirnya ia datang.'; BERSAMBUNG"
+      }
+    ]
+  },
+  "visualIdentityRecovered": {
+    "status": "OWNER_CORRECTION_RECOVERED_NOT_COMPLETE_CHARACTER_BIBLE",
+    "HanKera": "ANTHROPOMORPHIC_MONKEY_NOT_HUMAN",
+    "GuruTian": "ELDERLY_HUMAN_NOT_MONKEY",
+    "Bao": "BOAR_DEMON",
+    "Shan": "HUMAN"
+  },
+  "productionPolicy": {
+    "generationAllowed": false,
+    "stateAdvanceAllowed": false,
+    "releaseAllowed": false,
+    "ownerImageRevisionOnlyOnExplicitRequest": true,
+    "unknownMeansStop": true,
+    "conflictMeansStop": true
+  },
+  "releaseState": {
+    "episode1": "BLOCKED_CANON_QC_OWNER_APPROVAL",
+    "cover": "QC_REQUIRED",
+    "publisherReceipt": null,
+    "readerQc": null
+  }
+}
