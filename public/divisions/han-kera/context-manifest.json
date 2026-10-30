@@ -1,0 +1,50 @@
+{
+  "protocolVersion": "1.0",
+  "divisionId": "han-kera",
+  "bootOrder": [
+    {
+      "priority": 1,
+      "type": "PASSPORT",
+      "path": "/divisions/han-kera/passport.json",
+      "required": true
+    },
+    {
+      "priority": 2,
+      "type": "CANON_LOCK",
+      "path": "/divisions/han-kera/canon-lock.json",
+      "required": true
+    },
+    {
+      "priority": 3,
+      "type": "SOURCE_LEDGER",
+      "path": "/divisions/han-kera/source-ledger.json",
+      "required": true
+    },
+    {
+      "priority": 4,
+      "type": "CURRENT_STATE",
+      "path": "/divisions/han-kera/current-state.json",
+      "required": true
+    },
+    {
+      "priority": 5,
+      "type": "CATALOG",
+      "path": "/catalog.json",
+      "required": true
+    }
+  ],
+  "divisionLocalOnly": true,
+  "crossDivisionImports": [],
+  "blockedImports": [
+    "other_division_master_story",
+    "other_division_character_bible",
+    "other_division_visual_bible",
+    "other_division_power_bible",
+    "other_division_current_state",
+    "unverified_ai_generated_story"
+  ],
+  "missingMemoryPolicy": "STOP_CANON_FIREWALL_NEVER_INVENT",
+  "generationAllowed": false,
+  "releaseAllowed": false,
+  "handoffTarget": "AM_STUDIO_CORE"
+}
