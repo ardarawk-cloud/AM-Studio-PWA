@@ -1,0 +1,95 @@
+{
+  "protocolVersion": "1.0",
+  "divisionNumber": "005",
+  "divisionId": "han-kera",
+  "seriesId": "hk",
+  "identity": {
+    "name": "Han Kera",
+    "code": "HK",
+    "type": "ling-tian-branch",
+    "status": "CANON_RECOVERY_HOLD",
+    "studio": "AM STUDIO",
+    "profileCode": "SR-208",
+    "publisherChannelId": "ch-han-kera",
+    "productionTitleCandidate": "Perjalanan Suci: Kera Abadi",
+    "productionTitleStatus": "UNVERIFIED_AGAINST_REGISTERED_DISPLAY_TITLE"
+  },
+  "brain": {
+    "mode": "ISOLATED_DIVISION_BRAIN",
+    "contextPolicy": "LOAD_THIS_DIVISION_ONLY",
+    "authorityOrder": [
+      "OWNER_EXPLICIT_LOCK",
+      "MASTER_STORY",
+      "CANON_UNIVERSE_BIBLE",
+      "CHARACTER_BIBLE",
+      "WORLD_BIBLE",
+      "POWER_COMBAT_BIBLE",
+      "VISUAL_BIBLE",
+      "CANON_REGISTRY",
+      "CURRENT_STATE",
+      "OWNER_APPROVED_EPISODE_PAGE"
+    ],
+    "sharedUniverseContract": {
+      "universeId": "ling-tian",
+      "registryRelation": "BRANCH",
+      "allowedCrossDivisionImports": [],
+      "rule": "REGISTERED_RELATIONSHIP_ONLY_NO_FOREIGN_STORY_IMPORT"
+    },
+    "rule": "CANON_UNKNOWN_MEANS_STOP"
+  },
+  "memory": {
+    "passport": "/divisions/han-kera/passport.json",
+    "contextManifest": "/divisions/han-kera/context-manifest.json",
+    "currentState": "/divisions/han-kera/current-state.json",
+    "masterStory": null,
+    "characterBible": null,
+    "worldBible": null,
+    "visualBible": null,
+    "powerCombatBible": null,
+    "canonRegistry": null,
+    "sourceLedger": "/divisions/han-kera/source-ledger.json",
+    "canonLock": "/divisions/han-kera/canon-lock.json",
+    "sourceNote": "Missing story/bible sources intentionally null; no reconstruction from AI-created artwork"
+  },
+  "production": {
+    "currentTarget": {
+      "episode": 1,
+      "title": "Kelahiran Sang Kera",
+      "state": "CANON_RECOVERY_STOP"
+    },
+    "ownerApprovalRequired": true,
+    "pageCountPolicy": "STORY_DRIVEN_NO_FIXED_PAGE_COUNT",
+    "generationAllowed": false,
+    "stateAdvanceAllowed": false,
+    "language": "id-ID"
+  },
+  "release": {
+    "mode": "FREE_BETA",
+    "pipeline": "AM_STUDIO_UNIVERSAL_COMICS_PUBLISHER_V3_1",
+    "monetization": {
+      "inheritGlobal": true,
+      "status": "OFF"
+    },
+    "releaseAllowed": false
+  },
+  "isolation": {
+    "character": "HAN_KERA_ONLY",
+    "canon": "HAN_KERA_ONLY",
+    "currentState": "HAN_KERA_DIVISION_WRITE_ONLY",
+    "visual": "OWNER_APPROVED_HAN_KERA_REFERENCES_ONLY",
+    "crossDivisionImports": []
+  },
+  "handoff": {
+    "target": "AM_STUDIO_CORE",
+    "schema": "/divisions/schema/release-package.schema.json",
+    "requiredGates": [
+      "MASTER_STORY_VERIFIED",
+      "CHARACTER_BIBLES_VERIFIED",
+      "CANON_FINAL",
+      "ASSET_COMPLETE",
+      "DIVISION_QC_PASS",
+      "OWNER_APPROVED",
+      "PUBLISHED_RECEIPT"
+    ]
+  }
+}
