@@ -6,11 +6,13 @@
   "stateAdvanceAllowed": false,
   "releaseAllowed": false,
   "masterStory": {
-    "historicalApprovalEvidence": "Owner confirmed Master Story Bible v1.0 July 28 2026 in previous conversation; later Master Story v2.0 documented August 2 2026",
+    "historicalApprovalEvidence": "Owner 'Ok' confirmed approval of AM STUDIO MASTER STORY BIBLE v4.0, SOURCE OF TRUTH, on 2026-08-02 11:40 UTC; supersedes historical v2.0/v3.0",
     "ownerApprovalHistorical": true,
     "latestApprovedFullTextAvailable": false,
     "sourcePath": null,
-    "status": "SOURCE_CONTENT_MISSING"
+    "status": "LATEST_APPROVED_VERSION_IDENTIFIED_ORIGINAL_SOURCE_CONTENT_MISSING",
+    "latestApprovedVersion": "4.0",
+    "latestApprovalEvidence": "2026-08-02T11:40:37Z"
   },
   "characterBibles": {
     "historicallyLocked": true,
@@ -46,5 +48,5 @@
     "status": "TWO_DRIFTED_DRAFTS_QUARANTINED",
     "rule": "NO_AUTO_REGEN_NO_UPLOAD"
   },
-  "rule": "DO_NOT_INFER_FULL_CANON_FROM_METADATA_OLDER_POSTERS_OR_PUBLISHED_RECEIPT"
+  "rule": "MASTER_STORY_BIBLE_V4_IS_HISTORICAL_SOURCE_OF_TRUTH; DO_NOT_USE_OLDER_VERSIONS_AS_FINAL; DO_NOT_INFER_FULL_CANON_FROM_SUMMARY_OR_RECEIPT"
 }
