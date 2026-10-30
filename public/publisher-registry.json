@@ -273,7 +273,7 @@
       "status": "REGISTERED",
       "genre": "Cinematic Wuxia",
       "passport_url": "/publisher/passports/lt.json",
-      "canon_context": null,
+      "canon_context": "/divisions/ling-tian/context-manifest.json",
       "source": {
         "type": "RECOVERED_CHANNEL_PASSPORT",
         "version": 3,
