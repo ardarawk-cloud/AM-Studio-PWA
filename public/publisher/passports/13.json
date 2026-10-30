@@ -29,13 +29,26 @@
     "VERIFIED_RECEIPT"
   ],
   "cover": {
-    "approval_state": "QC_REQUIRED",
-    "publication_state": "PENDING_OWNER_APPROVAL"
+    "approval_state": "OWNER_ADMIN_UPLOAD",
+    "publication_state": "R2_PRESENT",
+    "asset": "comics/13/cover.jpg",
+    "size": 2368506,
+    "etag": "1efa4e55dcb53255c52ec811094e355c",
+    "content_type": "image/png",
+    "verified_at": "2026-10-30T03:39:00Z"
   },
   "current_state": {
-    "catalog": "FB_CANON_AUDIT_PENDING",
-    "episodes": null,
-    "next_production": "CONTINUE_EPISODE_001_FROM_OFFICIAL_CURRENT_STATE",
-    "next_story": "Ritual yang Salah"
+    "catalog": "R2_EPISODE_READY",
+    "episodes": 1,
+    "current_episode": 1,
+    "current_episode_title": "Pintu Pertama",
+    "uploaded_pages": 9,
+    "episode_state": "ASSETS_UPLOADED",
+    "episode_release_id": "5edc5ef6-12db-4fc2-89c7-a58a4d7c8129",
+    "canon_state": "CANON_FINAL",
+    "owner_approved": true,
+    "qc": "QC_PASS",
+    "reader_qc": "PENDING_EXTERNAL_VERIFY",
+    "next_production": "VERIFY_READER_THEN_ISSUE_PUBLISHED_RECEIPT"
   }
 }
