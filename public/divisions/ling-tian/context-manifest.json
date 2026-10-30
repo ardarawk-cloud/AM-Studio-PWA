@@ -1,0 +1,64 @@
+{
+  "protocolVersion": "1.0",
+  "divisionId": "ling-tian",
+  "bootOrder": [
+    {
+      "priority": 1,
+      "type": "PASSPORT",
+      "path": "/divisions/ling-tian/passport.json",
+      "required": true
+    },
+    {
+      "priority": 2,
+      "type": "CANON_LOCK",
+      "path": "/divisions/ling-tian/canon-lock.json",
+      "required": true
+    },
+    {
+      "priority": 3,
+      "type": "SOURCE_LEDGER",
+      "path": "/divisions/ling-tian/source-ledger.json",
+      "required": true
+    },
+    {
+      "priority": 4,
+      "type": "CURRENT_STATE",
+      "path": "/divisions/ling-tian/current-state.json",
+      "required": true
+    },
+    {
+      "priority": 5,
+      "type": "CANON_REGISTRY",
+      "path": "/canon-registry.json",
+      "required": true
+    },
+    {
+      "priority": 6,
+      "type": "EPISODE_REGISTRY",
+      "path": "/reader-assets.json",
+      "required": true
+    },
+    {
+      "priority": 7,
+      "type": "CATALOG",
+      "path": "/catalog.json",
+      "required": true
+    }
+  ],
+  "divisionLocalOnly": true,
+  "crossDivisionImports": [],
+  "blockedImports": [
+    "other_division_master_story",
+    "other_division_character_bible",
+    "other_division_visual_bible",
+    "other_division_power_bible",
+    "other_division_current_state",
+    "unverified_ai_generated_story"
+  ],
+  "missingMemoryPolicy": "STOP_AND_RECOVER_EXISTING_OWNER_APPROVED_MASTER_NEVER_INVENT",
+  "generationAllowed": false,
+  "releaseAllowed": false,
+  "existingPublishedMediaMustRemainVisible": true,
+  "explanation": "Editorial generation hold only; do not set division status CANON_RECOVERY_HOLD because site canon-hold-runtime hides published reader assets.",
+  "handoffTarget": "AM_STUDIO_CORE"
+}
