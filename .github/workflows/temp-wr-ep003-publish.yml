@@ -1,0 +1,66 @@
+name: TEMP Warung Republik EP003 Publish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/temp-wr-ep003-publish.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Process fixed approved release
+        shell: bash
+        run: |
+          set -euo pipefail
+          ORIGIN='https://comics.nadmo.id'
+          ID='9c8d47b1-6c2a-4a87-9b4f-2b0d3273e6c1'
+          COMIC='wr'
+          CHANNEL='ch-warung-republik'
+          headers=(-H "Origin: $ORIGIN" -H "Accept: application/json" -H "Content-Type: application/json" -H "X-AM-Comic-ID: $COMIC" -H "X-AM-Channel-ID: $CHANNEL")
+          curl -fsS -X POST "$ORIGIN/api/publisher/process/$ID" "${headers[@]}" --data '{}' | tee /tmp/process.json
+          for i in $(seq 1 20); do
+            curl -fsS "$ORIGIN/api/publisher/releases/$ID" -H "Accept: application/json" -H "X-AM-Comic-ID: $COMIC" -H "X-AM-Channel-ID: $CHANNEL" | tee /tmp/release.json
+            status=$(python - <<'PY'
+          import json
+          print(json.load(open('/tmp/release.json')).get('status',''))
+          PY
+          )
+            if [ "$status" = 'PUBLISHED' ]; then break; fi
+            curl -fsS -X POST "$ORIGIN/api/publisher/process/$ID" "${headers[@]}" --data '{}' >/tmp/process.json
+            sleep 1
+          done
+          python - <<'PY'
+          import json
+          r=json.load(open('/tmp/release.json'))
+          assert r.get('status')=='PUBLISHED', r
+          assert r.get('comic_id')=='wr', r
+          assert r.get('channel_id')=='ch-warung-republik', r
+          assert r.get('episode')==3, r
+          assert r.get('page_count')==1, r
+          print('PUBLISHED_RECEIPT='+json.dumps(r,separators=(',',':')))
+          PY
+
+      - name: Verify catalog and reader
+        shell: bash
+        run: |
+          set -euo pipefail
+          ORIGIN='https://comics.nadmo.id'
+          curl -fsS "$ORIGIN/catalog.json?channel=play" -o /tmp/catalog.json
+          curl -fsS "$ORIGIN/reader-assets.json?channel=play" -o /tmp/reader.json
+          python - <<'PY'
+          import json
+          c=json.load(open('/tmp/catalog.json'))
+          r=json.load(open('/tmp/reader.json'))
+          s=next(x for x in c.get('series',[]) if x.get('id')=='wr')
+          e=next(x for x in r.get('episodes',[]) if x.get('seriesId')=='wr' and x.get('episode')==3)
+          assert s.get('episodes')==3,s
+          assert e.get('pageCount')==1,e
+          assert e.get('pages')==['/media/comics/wr/ep003/page-01.png'],e
+          print('CATALOG_WR='+json.dumps(s,separators=(',',':')))
+          print('READER_WR_EP003='+json.dumps(e,separators=(',',':')))
+          PY
