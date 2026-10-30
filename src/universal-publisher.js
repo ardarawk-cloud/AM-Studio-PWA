@@ -138,12 +138,25 @@ export async function processPublisherRelease(req,env,legacy,ctx,id){
   const claim=await db.prepare("UPDATE publisher_releases SET lease_token=?,lease_expires_at=?,status='PROCESSING',error_code=NULL,updated_at=? WHERE id=? AND status!='PUBLISHED' AND (lease_expires_at IS NULL OR lease_expires_at<=?)").bind(lease,until,now,id,now).run();
   if(!claim.meta.changes)return {ok:true,id,status:'PROCESSING',retry_after:2};
   try{
-    const conflict=await db.prepare("SELECT l.release_id,r.status FROM publisher_locks l JOIN publisher_releases r ON r.id=l.release_id WHERE l.comic_id=? AND l.episode=? AND l.release_id!=?").bind(manifest.comic_id,manifest.episode,id).first();
-    if(conflict)throw new MemberError('PUBLISHER_EPISODE_HAS_EXISTING_RELEASE',409);
-    await db.prepare('INSERT OR IGNORE INTO publisher_locks VALUES(?,?,?)').bind(manifest.comic_id,manifest.episode,id).run();
+    const conflict=await db.prepare("SELECT l.release_id,r.status,r.receipt_json FROM publisher_locks l JOIN publisher_releases r ON r.id=l.release_id WHERE l.comic_id=? AND l.episode=? AND l.release_id!=?").bind(manifest.comic_id,manifest.episode,id).first();
+    let supersedingAppend=false;
+    if(conflict){
+      if(conflict.status!=='PUBLISHED'||manifest.type!=='EPISODE')throw new MemberError('PUBLISHER_EPISODE_HAS_EXISTING_RELEASE',409);
+      let previous;try{previous=JSON.parse(conflict.receipt_json||'{}')}catch{throw new MemberError('PUBLISHER_PREVIOUS_RECEIPT_INVALID',409)}
+      const oldPages=(previous.assets||[]).filter(a=>a.kind==='PAGE').sort((a,b)=>Number(a.number)-Number(b.number));
+      if(previous.comic_id!==manifest.comic_id||Number(previous.episode)!==manifest.episode||oldPages.length<1||oldPages.length>=manifest.pages.length)throw new MemberError('PUBLISHER_EPISODE_HAS_EXISTING_RELEASE',409);
+      for(let n=0;n<oldPages.length;n++){
+        const prior=oldPages[n],next=manifest.assets.find(a=>a.kind==='PAGE'&&a.number===n+1);
+        if(!next?.reuse_existing||next.size!==prior.size||next.sha256!==prior.sha256||prior.url!=='https://comics.nadmo.id/media/'+next.destination)throw new MemberError('PUBLISHER_APPEND_BASE_MISMATCH',409);
+      }
+      supersedingAppend=true;
+      await db.prepare('UPDATE publisher_locks SET release_id=? WHERE comic_id=? AND episode=? AND release_id=?').bind(id,manifest.comic_id,manifest.episode,conflict.release_id).run();
+    }else{
+      await db.prepare('INSERT OR IGNORE INTO publisher_locks VALUES(?,?,?)').bind(manifest.comic_id,manifest.episode,id).run();
+    }
     const lock=await db.prepare('SELECT release_id FROM publisher_locks WHERE comic_id=? AND episode=?').bind(manifest.comic_id,manifest.episode).first();
     if(lock?.release_id!==id)throw new MemberError('PUBLISHER_EPISODE_HAS_EXISTING_RELEASE',409);
-    const row=await releaseRow(db,id),end=Math.min(row.next_asset+4,manifest.assets.length);
+    const row=await releaseRow(db,id),end=supersedingAppend?manifest.assets.length:Math.min(row.next_asset+4,manifest.assets.length);
     for(let index=row.next_asset;index<end;index++){
       const a=manifest.assets[index];
       if(a.kind==='COVER'){
