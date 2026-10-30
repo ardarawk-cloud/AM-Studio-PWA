@@ -61,5 +61,13 @@
     "episode1": "PUBLISHED_SEVEN_PAGES",
     "readerUrl": "https://comics.nadmo.id/?series=lt&episode=1",
     "assetsPreserved": true
+  },
+  "canonSourceCheckpoint": {
+    "masterStoryVersion": "4.0",
+    "ownerApprovalHistorical": true,
+    "fullApprovedSourceTextLoaded": false,
+    "storyAuthority": "MASTER_STORY_V4_OVER_V1_V2_V3",
+    "rebootCheckpoint": "2026-08-13",
+    "productionMustUseSameSourceOrder": true
   }
 }
