@@ -34,15 +34,13 @@
     "publication_state": "LEGACY_R2_ASSET_PRESENT"
   },
   "current_state": {
-    "catalog": "LEGACY_PUBLICATION_RECOVERY",
-    "episodes": 1,
-    "legacy_r2_assets": {
-      "cover_present": true,
-      "episode_001_pages_present": 5,
-      "status": "RECOVERY_IN_PROGRESS",
-      "note": "Legacy Episode 001 assets predate Universal Comics Publisher v3.1. Page 05 is being replaced by the owner-approved original from this conversation; Pages 01–04 are reused byte-for-byte."
-    },
-    "next_production": "RECOVER_EPISODE_001_THROUGH_UNIVERSAL_PUBLISHER",
-    "next_story": "Episode 002 — Anak Liar Huaguo"
+    "catalog": "PUBLISHED",
+    "episodes": 2,
+    "last_published_episode": 2,
+    "last_published_title": "Anak Liar Huaguo",
+    "last_release_id": "bc9d2d6b-b651-4e14-9b84-5b3dce2d8837",
+    "episode_002_pages": 4,
+    "next_production": "CANON_CHECK_FROM_MASTER_STORY",
+    "note": "Episode 01 and Episode 02 are published through Universal Comics Publisher with verified receipts. Next story target must be derived from the locked Master Story; do not invent it."
   }
 }
