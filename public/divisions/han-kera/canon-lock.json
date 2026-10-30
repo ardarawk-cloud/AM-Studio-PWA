@@ -1,0 +1,30 @@
+{
+  "protocolVersion": "1.0",
+  "divisionId": "han-kera",
+  "status": "CANON_RECOVERY_HOLD",
+  "generationAllowed": false,
+  "stateAdvanceAllowed": false,
+  "releaseAllowed": false,
+  "masterStory": {
+    "sourcePath": null,
+    "ownerApproved": false,
+    "immutable": true,
+    "status": "UNKNOWN"
+  },
+  "characterBibles": {
+    "sourcePath": null,
+    "ownerApproved": false,
+    "status": "UNKNOWN"
+  },
+  "visualBible": {
+    "sourcePath": null,
+    "ownerApproved": false,
+    "status": "UNKNOWN"
+  },
+  "officialPageSequence": {
+    "sourcePath": null,
+    "ownerApproved": false,
+    "status": "UNKNOWN"
+  },
+  "rule": "STOP_CANON_FIREWALL_NO_AI_REWRITE_OR_GENERATION"
+}
