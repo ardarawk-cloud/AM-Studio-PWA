@@ -1,7 +1,7 @@
 {
   "registry": {
     "name": "AM STUDIO Reader Asset Registry",
-    "version": 7,
+    "version": 8,
     "policy": "CANON_FINAL_OR_OWNER_APPROVED_PUBLICATION_RECOVERY",
     "publicBase": "/media/comics",
     "readerMode": "VERTICAL_LONGFORM",
@@ -63,23 +63,28 @@
       "publicationState": "UNIVERSAL_COMICS_PUBLISHER",
       "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
       "coverAsset": "/media/comics/li-xuan/cover.png",
-      "pageCount": 6,
-      "availablePageCount": 6,
+      "pageCount": 8,
+      "availablePageCount": 8,
       "pages": [
         "/media/comics/li-xuan/ep001/page-01.png",
         "/media/comics/li-xuan/ep001/page-02.png",
         "/media/comics/li-xuan/ep001/page-03.png",
         "/media/comics/li-xuan/ep001/page-04.png",
         "/media/comics/li-xuan/ep001/page-05.png",
-        "/media/comics/li-xuan/ep001/page-06.png"
+        "/media/comics/li-xuan/ep001/page-06.png",
+        "/media/comics/li-xuan/ep001/page-07.png",
+        "/media/comics/li-xuan/ep001/page-08.png"
       ],
       "missingReaderPages": [],
       "readerState": "READER_COMPLETE",
       "assetQuality": "ORIGINAL_APPROVED_BYTES",
       "evidence": {
-        "type": "OWNER_REJECTION_AND_REPLACEMENT",
-        "verifiedAt": "2026-10-30T16:23:16.606Z",
-        "note": "Page 07 was rejected by owner for canon/character drift and removed from live assets; replacement production is pending."
+        "type": "UNIVERSAL_COMICS_PUBLISHER_REVISION",
+        "verifiedAt": "2026-10-30T20:11:52.768Z",
+        "releaseId": "d4f3c29a-7e12-4c85-9b60-1a73e5f8c201",
+        "revisionOf": "a41c9d53-89a2-4dd0-8b33-7b2d3511e711",
+        "replacedPage": 7,
+        "note": "Owner-rejected Page 07 was replaced by the approved revision; approved Page 08 was added. Pages 01-06 were reused byte-for-byte."
       },
       "access": {
         "comic_id": "li-xuan",
@@ -91,7 +96,7 @@
       },
       "targetPageCount": 24,
       "productionState": "IN_PROGRESS",
-      "replacementPendingPage": 7
+      "replacementPendingPage": null
     }
   ],
   "schema": {

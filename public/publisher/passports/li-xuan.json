@@ -43,13 +43,14 @@
     "episodes": 1,
     "current_episode": 1,
     "current_episode_title": "Pengantin Merah",
-    "published_pages": 6,
+    "published_pages": 8,
     "target_pages": 24,
     "episode_state": "PARTIAL_PUBLISHED",
-    "episode_release_id": "a41c9d53-89a2-4dd0-8b33-7b2d3511e711",
-    "supersedes_release_id": "7f2d3a91-3b54-4db7-9f61-cc4d8a6e2102",
+    "episode_release_id": "d4f3c29a-7e12-4c85-9b60-1a73e5f8c201",
+    "supersedes_release_id": "a41c9d53-89a2-4dd0-8b33-7b2d3511e711",
     "publisher_receipt": "PUBLISHED",
-    "next_production": "EPISODE_001_PAGE_07_REPLACEMENT",
-    "replacement_pending_page": 7
+    "next_production": "EPISODE_001_PAGE_09",
+    "replacement_pending_page": null,
+    "replaced_page": 7
   }
 }
