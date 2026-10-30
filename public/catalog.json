@@ -241,18 +241,38 @@
       "title": "13 Pintu Neraka",
       "tag": "Horror • Mystery",
       "genre": "Horror",
-      "episodes": null,
-      "episodeCountVerified": false,
-      "verifiedEpisodes": [],
-      "freeEpisodes": 0,
+      "episodes": 1,
+      "episodeCountVerified": true,
+      "verifiedEpisodes": [
+        1
+      ],
+      "freeEpisodes": 1,
       "season": "The First Gate",
-      "status": "FB_CANON_AUDIT_PENDING",
+      "status": "PUBLISHING",
       "cover": {
         "required": true,
-        "status": "QC_REQUIRED"
+        "status": "R2_PRESENT",
+        "asset": "comics/13/cover.jpg"
       },
       "desc": "Tiga belas pintu. Tiga belas misteri. Apa yang menunggu di baliknya?",
-      "episodeTitles": []
+      "episodeTitles": [
+        "Pintu Pertama"
+      ],
+      "productionFormat": "PROFESSIONAL_MULTI_PAGE_EPISODE",
+      "currentEpisode": {
+        "number": 1,
+        "title": "Pintu Pertama",
+        "uploadedPages": 9,
+        "status": "ASSETS_UPLOADED"
+      },
+      "publication": {
+        "state": "R2_READY_READER_QC_PENDING",
+        "releaseId": "5edc5ef6-12db-4fc2-89c7-a58a4d7c8129",
+        "ownerApproved": true,
+        "canonState": "CANON_FINAL",
+        "qc": "QC_PASS"
+      },
+      "qc": "OWNER_APPROVED_CANON_FINAL_QC_PASS_READER_PENDING"
     },
     {
       "id": "wr",
