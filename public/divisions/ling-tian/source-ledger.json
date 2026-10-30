@@ -45,6 +45,31 @@
       "source": "Historical conversation recovery; not authority for unquoted plot details"
     },
     {
+      "id": "MASTER_STORY_V3_2026_08_02",
+      "type": "HISTORICAL_SUPERSEDED_MASTER",
+      "status": "SUPERSEDED_BY_V4_FULL_TEXT_MISSING",
+      "date": "2026-08-02",
+      "claims": [
+        "Ling Tian powerless Qi-less disciple to ancient tomb to inheritance and wider 10-fragment conflict",
+        "Crossover delayed until each IP establishes origin, setting and story"
+      ],
+      "source": "Historical production conversation summary; do not promote to final Bible"
+    },
+    {
+      "id": "MASTER_STORY_V4_2026_08_02",
+      "type": "OWNER_APPROVED_SOURCE_OF_TRUTH",
+      "status": "LATEST_APPROVED_VERSION_IDENTIFIED_FULL_TEXT_MISSING",
+      "date": "2026-08-02",
+      "claims": [
+        "Master Story Bible v4.0 explicitly SOURCE OF TRUTH",
+        "Supersedes v2.0 and v3.0",
+        "Era 1 Legenda Ling Tian; Era 2 Han You; Era 3 Han Kera",
+        "Mo Xuan / Dewan Naungan Gelap and 10 Fragmen Warisan are reported historical canon anchors",
+        "Universe authority is centralized; Production does not invent cross-series lore"
+      ],
+      "source": "Owner approval 'Ok' 2026-08-02T11:40:37Z, historical project conversation"
+    },
+    {
       "id": "EP01_REBOOT_2026_08_13",
       "type": "HISTORICAL_PRODUCTION_RECORD",
       "status": "REBOOT_APPROVAL_RECORDED",
@@ -93,7 +118,7 @@
     {
       "issue": "EPISODE_AND_TIMELINE",
       "status": "UNRESOLVED_SOURCE_PRIORITY",
-      "detail": "Older episode roadmap 200+ episodes, 28 July story revision, historical Episode 16 pre-reboot, and 13 August episode-one reboot have different contexts. Reboot is an explicit new production timeline; do not import legacy Episode 16 as live next episode."
+      "detail": "Historical July concept, v1-v3 Master Stories, owner-approved v4.0 (Aug 2), pre-reboot Episode 16, and Aug 13 explicit reboot are distinct sources. The v4.0 is higher-priority story authority; Aug13 reboot controls current release chronology without rewriting Master Story. Do not import legacy Episode 16 as live next episode."
     },
     {
       "issue": "PAGE_08_ZHANG_YUAN",
@@ -107,12 +132,21 @@
     }
   ],
   "unknowns": [
-    "full latest owner-approved Master Story text",
+    "full owner-approved MASTER STORY BIBLE v4.0 original text",
     "complete latest Character Bible and reference sheets",
     "identity of silver-haired elder shown in published Page 07",
     "exact full Episode 01 intended page outline after reboot",
     "final visual bible source files"
   ],
   "ownerNotRequiredToRetell": true,
-  "sourceRecoveryWorkRequired": true
+  "sourceRecoveryWorkRequired": true,
+  "latestAuthoritativeMaster": {
+    "version": "4.0",
+    "title": "AM STUDIO MASTER STORY BIBLE",
+    "date": "2026-08-02",
+    "approval": "OWNER_OK_CONFIRMED",
+    "fullOriginalTextRecovered": false,
+    "sourceLocation": "HISTORICAL_CONVERSATION_RECOVERY_ONLY",
+    "rule": "DO_NOT_USE_V1_V2_V3_AS_REPLACEMENT_FOR_V4"
+  }
 }
