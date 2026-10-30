@@ -34,14 +34,32 @@
   },
   "current_state": {
     "catalog": "FB_CANON_AUDIT_PENDING",
-    "episodes": null,
+    "episodes": 1,
     "legacy_r2_assets": {
       "cover_present": true,
       "episode_001_pages_present": 8,
-      "status": "AUDIT_REQUIRED",
-      "note": "Legacy R2 objects predate current professional publisher workflow; .jpg keys report image/png MIME and must not be treated as final publisher assets without owner approval, hash verification, receipt, and reader QC."
+      "status": "BYTE_MATCH_VERIFIED",
+      "note": "Eight owner-approved Episode 001 conversation originals match existing R2 object byte sizes and MD5/ETags exactly. Legacy keys use .jpg while object MIME is image/png; do not duplicate or rewrite until publisher receipt audit."
     },
-    "next_production": "AUDIT_OWNER_APPROVED_COVER_AND_EPISODE_001_ORIGINALS",
-    "next_story": "Episode 002 — Pengawal yang Tidak Patuh"
+    "next_production": "EPISODE_002_PAGE_2_CANON_RECOVERY",
+    "next_story": "Episode 002 — Pengawal yang Tidak Patuh",
+    "episode_001": {
+      "title": "Gunung Lima Elemen",
+      "pages": 8,
+      "owner_approved": true,
+      "r2_originals": "BYTE_MATCH_VERIFIED",
+      "storage_prefix": "comics/sg-journey/ep001/",
+      "publication_state": "LEGACY_R2_ASSET_PRESENT_RECEIPT_AUDIT_REQUIRED",
+      "sha256": [
+        "651438d39d7849a4e5f573a6ba78383e260600dc93473b78e0d75f04e46d90e8",
+        "d708a7ceff7ef94cff4938aaf72d495a6a6344d01c6b5ec254de30e34b20b6e6",
+        "b7f35ced72ccaacfab05012216812d8571b67d57f3a2b3ace4e4f7bc9fa07df3",
+        "7e7c47f7d35a51febbf84a9b0de4b18d9d61f25a4557dcf5caa788ff1924672b",
+        "90182cd2492fd2005e53952ba20c2c04448b9adb34b2535551cce936d52532a1",
+        "427d5631e4d94ae0f9c91b5e132c97fa0232a2549aa57b8f1df1bb374e4d8f44",
+        "8ad33a3db0c381e2b36c7983b9838f64bbbe1ee869c060576f2b6d159ef7fbe9",
+        "8a013b87b5d81582c6ac432064a322e4700a85860952909df3e76040107c8c81"
+      ]
+    }
   }
 }
