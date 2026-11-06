@@ -128,3 +128,49 @@ test('publisher preflight protects premium pages before the upload and keeps the
   const f=fixture();const r=await f.call('/api/publisher/access',{comic_id:'royal-gambler',episode:1,visibility:'PREMIUM',preview_pages:[1],preview_verified:true,reason:'Verified premium release and preview plan'}, {},{'x-am-studio-admin-key':f.env.AM_STUDIO_ADMIN_KEY});
   assert.equal(r.status,200);assert.equal((await f.call('/media/comics/royal-gambler/ep001/page-02.jpg')).status,402);assert.equal((await f.call('/media/comics/royal-gambler/ep001/page-01.jpg')).status,200);
 });
+
+
+test('Nadmo Studio static QRIS invoice cannot grant premium before merchant-ledger admin verification',async()=>{
+  const f=fixture(),a=await f.register('manual-reader'),b=await f.register('different-reader');
+  f.db.sql.exec("UPDATE billing_settings SET provider='STATIC_QRIS',merchant_name='Nadmo Studio, Konter',merchant_nmid='ID1026631571449',qr_type='STATIC_REFERENCE',checkout_enabled=1");
+  const setup=await (await f.call('/api/membership')).json();
+  assert.equal(setup.checkout_available,true);assert.equal(setup.checkout_mode,'STATIC_QRIS_REVIEW');
+  const i=await f.invoice(a,'monthly');
+  assert.equal(i.amount_idr,9900);assert.equal(i.provider_mode,'PRODUCTION');
+  assert.match(i.qr_content,/ID1026631571449/);
+  assert.match(i.qr_content,/Nadmo Studio, Konter/);
+  const qr=await f.call('/api/billing/invoices/'+i.id+'/qr',undefined,a);
+  assert.equal(qr.status,200);assert.match(await qr.text(),/<svg/);
+  const when=new Date().toISOString();
+  const claim={transaction_reference:'WALLET_12345678',payer_name:'Pembaca',paid_at:when,note:'Saya sudah membayar dari aplikasi'};
+  assert.equal((await f.call('/api/billing/invoices/'+i.id+'/claim',claim,b)).status,404);
+  assert.equal((await f.call('/api/billing/invoices/'+i.id+'/claim',claim,a)).status,200);
+  assert.equal((await f.call('/api/billing/invoices/'+i.id+'/claim',claim,a)).status,200);
+  assert.equal((await f.call('/api/billing/invoices/'+i.id+'/claim',{...claim,transaction_reference:'OTHER_12345678'},a)).status,409);
+  assert.equal(await memberActive(f.db,a.id),false);
+  const login=await f.call('/api/admin/billing/session',{key:f.env.AM_STUDIO_ADMIN_KEY});
+  const loginData=await login.json(),admin={cookie:login.headers.get('set-cookie').split(';')[0],csrf:loginData.csrf};
+  const proof={invoice_id:i.id,action:'APPROVE',merchant_transaction_id:'MERCHANT_TX_90000001',merchant_amount_idr:100,merchant_paid_at:when,reason:'Sudah cek mutasi QRIS merchant DANA'};
+  assert.equal((await f.call('/api/admin/billing/manual-qris',proof,a)).status,401);
+  assert.equal((await f.call('/api/admin/billing/manual-qris',proof,admin)).status,422);
+  assert.equal(await memberActive(f.db,a.id),false);
+  const accepted=await f.call('/api/admin/billing/manual-qris',{...proof,merchant_amount_idr:9900},admin);
+  assert.equal(accepted.status,200);
+  assert.equal((await accepted.json()).review.status,'VERIFIED');
+  assert.equal(await memberActive(f.db,a.id),true);
+  assert.equal((await f.db.prepare('SELECT COUNT(*) AS count FROM payments').first()).count,1);
+  assert.equal((await f.db.prepare('SELECT COUNT(*) AS count FROM member_entitlements').first()).count,1);
+  assert.equal((await f.call('/api/admin/billing/manual-qris',{...proof,merchant_amount_idr:9900},admin)).status,409);
+  assert.equal((await f.call('/api/billing/invoices/'+i.id,undefined,a)).status,200);
+});
+test('Rejected static QRIS claim never grants access',async()=>{
+  const f=fixture(),a=await f.register('manual-rejected');
+  f.db.sql.exec("UPDATE billing_settings SET provider='STATIC_QRIS',merchant_name='Nadmo Studio, Konter',merchant_nmid='ID1026631571449',checkout_enabled=1");
+  const i=await f.invoice(a);
+  await f.call('/api/billing/invoices/'+i.id+'/claim',{transaction_reference:'PAY_99887766',paid_at:new Date().toISOString()},a);
+  const r=await f.call('/api/admin/billing/session',{key:f.env.AM_STUDIO_ADMIN_KEY});
+  const data=await r.json(),admin={cookie:r.headers.get('set-cookie').split(';')[0],csrf:data.csrf};
+  assert.equal((await f.call('/api/admin/billing/manual-qris',{invoice_id:i.id,action:'REJECT',reason:'Tidak ditemukan di mutasi QRIS merchant'},admin)).status,200);
+  assert.equal(await memberActive(f.db,a.id),false);
+  assert.equal((await f.db.prepare('SELECT status FROM manual_qris_claims WHERE invoice_id=?').bind(i.id).first()).status,'REJECTED');
+});
