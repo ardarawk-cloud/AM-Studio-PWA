@@ -1,7 +1,7 @@
 name: Comics Membership Validation
 on:
   push:
-    branches: [main, feat/comics-nadmo-static-qris-20261107]
+    branches: [main]
     paths:
       - src/**
       - migrations/**
