@@ -1,7 +1,7 @@
 name: Nadmo QRIS Checkout Validation
 on:
   push:
-    branches: [feat/comics-nadmo-static-qris-20261107]
+    branches: [main, feat/comics-nadmo-static-qris-20261107]
     paths:
       - src/**
       - migrations/**
