@@ -174,3 +174,18 @@ test('Rejected static QRIS claim never grants access',async()=>{
   assert.equal(await memberActive(f.db,a.id),false);
   assert.equal((await f.db.prepare('SELECT status FROM manual_qris_claims WHERE invoice_id=?').bind(i.id).first()).status,'REJECTED');
 });
+
+
+test('Timely static QRIS payment can be reviewed after the invoice expires',async()=>{
+  const f=fixture(),a=await f.register('manual-late-review');
+  f.db.sql.exec("UPDATE billing_settings SET provider='STATIC_QRIS',merchant_name='Nadmo Studio, Konter',merchant_nmid='ID1026631571449',checkout_enabled=1");
+  const i=await f.invoice(a),paidAt=new Date().toISOString();
+  assert.equal((await f.call('/api/billing/invoices/'+i.id+'/claim',{transaction_reference:'WALLET_TIMELY_8899',paid_at:paidAt},a)).status,200);
+  f.db.sql.exec("UPDATE invoices SET status='EXPIRED' WHERE id='"+i.id+"'");
+  const login=await f.call('/api/admin/billing/session',{key:f.env.AM_STUDIO_ADMIN_KEY});
+  const data=await login.json(),admin={cookie:login.headers.get('set-cookie').split(';')[0],csrf:data.csrf};
+  const r=await f.call('/api/admin/billing/manual-qris',{invoice_id:i.id,action:'APPROVE',merchant_transaction_id:'MERCHANT_LATE_REVIEW_8899',merchant_paid_at:paidAt,merchant_amount_idr:i.amount_idr,reason:'Mutasi merchant membuktikan pembayaran sebelum jatuh tempo'},admin);
+  assert.equal(r.status,200);
+  assert.equal(await memberActive(f.db,a.id),true);
+  assert.equal((await f.db.prepare('SELECT status FROM invoices WHERE id=?').bind(i.id).first()).status,'PAID');
+});

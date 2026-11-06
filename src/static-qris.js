@@ -70,7 +70,7 @@ export async function reviewManualClaim(db,data) {
   if(!['APPROVE','REJECT'].includes(action)||reason.length<10||reason.length>500)throw new MemberError('REVIEW_REASON_REQUIRED',400);
   const c=await db.prepare('SELECT c.*,i.user_id,i.order_id,i.amount_idr,i.period_months,i.price_id,i.plan_id,i.status AS invoice_status,i.created_at AS invoice_created_at,i.expires_at AS invoice_expires_at,i.provider FROM manual_qris_claims c JOIN invoices i ON i.id=c.invoice_id WHERE c.invoice_id=?').bind(id).first();
   if(!c||c.provider!=='STATIC_QRIS')throw new MemberError('MANUAL_CLAIM_NOT_FOUND',404);
-  if(c.status!=='SUBMITTED'||c.invoice_status!=='PENDING')throw new MemberError('CLAIM_ALREADY_REVIEWED',409);
+  if(c.status!=='SUBMITTED'||!['PENDING','EXPIRED'].includes(c.invoice_status))throw new MemberError('CLAIM_ALREADY_REVIEWED',409);
   const now=iso();
   if(action==='REJECT'){
     await db.batch([
@@ -91,7 +91,7 @@ export async function reviewManualClaim(db,data) {
     db.prepare(`INSERT INTO payments (id,invoice_id,order_id,user_id,plan_id,period_months,provider,provider_mode,provider_transaction_id,amount_idr,fee_idr,currency,paid_at,created_at)
       SELECT ?,i.id,i.order_id,i.user_id,i.plan_id,i.period_months,'STATIC_QRIS','PRODUCTION',?,i.amount_idr,NULL,'IDR',?,?
       FROM invoices i JOIN manual_qris_claims c ON c.invoice_id=i.id
-      WHERE i.id=? AND i.provider='STATIC_QRIS' AND i.status='PENDING' AND c.status='SUBMITTED'`)
+      WHERE i.id=? AND i.provider='STATIC_QRIS' AND i.status IN ('PENDING','EXPIRED') AND c.status='SUBMITTED'`)
        .bind(paymentId,reference,paidAt,now,id),
     db.prepare("UPDATE manual_qris_claims SET status='VERIFIED',verified_provider_reference=?,verified_amount_idr=?,verified_paid_at=?,reviewer_reason=?,reviewed_at=?,updated_at=? WHERE invoice_id=? AND status='SUBMITTED'")
       .bind(reference,amount,paidAt,reason,now,now,id),
