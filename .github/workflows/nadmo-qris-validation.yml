@@ -1,0 +1,27 @@
+name: Nadmo QRIS Checkout Validation
+on:
+  push:
+    branches: [main, feat/comics-nadmo-static-qris-20261107]
+    paths:
+      - src/**
+      - migrations/**
+      - tests/membership-flow.test.mjs
+      - tests/membership-browser-build.test.mjs
+      - package*.json
+      - wrangler.jsonc
+      - .github/workflows/nadmo-qris-validation.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: node --test tests/membership-flow.test.mjs tests/membership-browser-build.test.mjs
+      - run: npx wrangler deploy --dry-run --outdir /tmp/am-studio-qris-build
