@@ -22,7 +22,8 @@ export async function ensureBridgeTable(db){
 }
 function cleanRef(s){return String(s||'').trim();}
 function validateBridgeEvent(env,b){
-  if(!b||typeof b!=='object'||b.device_id!==env.NADMO_BRIDGE_DEVICE_ID||b.package_name!==env.NADMO_BRIDGE_PACKAGE
+  const allowedPackages=String(env.NADMO_BRIDGE_PACKAGE||'').split(',').map(x=>x.trim()).filter(Boolean);
+  if(!b||typeof b!=='object'||b.device_id!==env.NADMO_BRIDGE_DEVICE_ID||!allowedPackages.includes(b.package_name)
      ||b.merchant_nmid!==NADMO_QRIS_NMID||b.payment_status!=='SUCCESS'
      ||!/^[a-zA-Z0-9._:-]{8,120}$/.test(b.event_id||'')
      ||!/^[a-zA-Z0-9._:/ -]{8,120}$/.test(b.transaction_reference||'')
