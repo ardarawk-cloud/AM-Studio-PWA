@@ -1,5 +1,6 @@
 import base from './play-firewall-runtime.js';
 import qrcode from 'qrcode-generator';
+import {qrisPng} from './qris-png.js';
 import {MemberError,iso,hash,equal,json,bodyJson,sameOrigin,rate,passwordHash,passwordValid,newSession,session,optionalMember,auditStatement,subscriptionState,sessionCookie} from './membership-auth.js';
 import {billingConfig,makeInvoice,reconcile,finance,csv} from './membership-billing.js';
 import {shopeepay,providerReadiness,CALLBACK_PATH} from './shopeepay-qris.js';
@@ -167,7 +168,7 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
           const settlement=ai_review.status==='AI_CONSISTENT_NOT_VERIFIED'?await reconcileAiClaim(db,i.id):{status:'NOT_AI_CLEARED'};
           return json({ok:true,ai_review,settlement});
         }
-        const match=path.match(/^\/api\/billing\/invoices\/([a-f0-9-]{36})(?:\/(status|qr))?$/);
+        const match=path.match(/^\/api\/billing\/invoices\/([a-f0-9-]{36})(?:\/(status|qr|qr\.png))?$/);
         if(match) {
           if(match[2]==='status'&&method==='POST') {
             const {s,i}=await ownInvoice(db,req,match[1],true);await rate(db,req,'payment-status',30,600000,s.user_id);
@@ -179,10 +180,19 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
             const c=await billingConfig(db);if(!providerReadiness(env,c.settings).ready)throw new MemberError('PROVIDER_NOT_READY',503);
             return json({ok:true,invoice:await reconcile(db,env,provider,i)});
           }
-          if(match[2]==='qr'&&method==='GET') {
+          if((match[2]==='qr'||match[2]==='qr.png')&&method==='GET') {
             const {i}=await ownInvoice(db,req,match[1]);
             if(i.status!=='PENDING'||Date.parse(i.expires_at)<=Date.now()||!i.qr_content)throw new MemberError('QRIS_NOT_AVAILABLE',409);
             const qr=qrcode(0,'M');qr.addData(i.qr_content);qr.make();
+            if(match[2]==='qr.png'){
+              const view=url.searchParams.get('view')==='1';
+              return new Response(await qrisPng(qr),{headers:{
+                'content-type':'image/png',
+                'content-disposition':view?'inline; filename="AM-STUDIO-QRIS.png"':'attachment; filename="AM-STUDIO-QRIS.png"',
+                'cache-control':'private, no-store',
+                'x-content-type-options':'nosniff'
+              }});
+            }
             return new Response(qr.createSvgTag({cellSize:5,margin:20,scalable:true}),{headers:{'content-type':'image/svg+xml','cache-control':'private, no-store','x-content-type-options':'nosniff','content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; sandbox"}});
           }
           if(!match[2]&&method==='GET'){const {i}=await ownInvoice(db,req,match[1]);const {publicInvoice}=await import('./membership-billing.js');const claim=i.provider==='STATIC_QRIS'?await db.prepare('SELECT status,created_at,reviewed_at FROM manual_qris_claims WHERE invoice_id=?').bind(i.id).first():null;if(i.provider==='STATIC_QRIS')await ensureAiReceiptTable(db);const ai_review=i.provider==='STATIC_QRIS'?await db.prepare('SELECT status,reason,reviewed_at FROM receipt_ai_reviews WHERE invoice_id=?').bind(i.id).first():null;return json({ok:true,invoice:{...publicInvoice(i),provider:i.provider},claim,ai_review})}
