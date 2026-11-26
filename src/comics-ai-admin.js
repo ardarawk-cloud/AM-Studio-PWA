@@ -38,7 +38,13 @@ export function assessReceipt(invoice,claim,parsed) {
     return {status:'AI_CONSISTENT_NOT_VERIFIED',reason:'CUSTOMER_EVIDENCE_CONSISTENT'};
   return {status:'AI_INCONCLUSIVE',reason:'INSUFFICIENT_READABLE_FIELDS'};
 }
+export async function ensureAiReceiptTable(db) {
+  // Idempotent bootstrap keeps payment and catalog readable if the new
+  // D1 migration has not yet been applied by infrastructure automation.
+  await db.prepare("CREATE TABLE IF NOT EXISTS receipt_ai_reviews (invoice_id TEXT PRIMARY KEY REFERENCES invoices(id), receipt_sha256 TEXT NOT NULL, status TEXT NOT NULL CHECK(status IN ('AI_CONSISTENT_NOT_VERIFIED','MISMATCH','AI_INCONCLUSIVE','AI_UNAVAILABLE')), reason TEXT NOT NULL, extracted_amount_idr INTEGER, extracted_reference TEXT, model TEXT NOT NULL, attempts INTEGER NOT NULL DEFAULT 1 CHECK(attempts BETWEEN 1 AND 3), reviewed_at TEXT NOT NULL)").run();
+}
 export async function inspectReceipt(db,env,invoice,claim,data) {
+  await ensureAiReceiptTable(db);
   if(invoice.provider!=='STATIC_QRIS'||claim?.status!=='SUBMITTED'||!['PENDING','EXPIRED'].includes(invoice.status))throw new MemberError('RECEIPT_CLAIM_NOT_READY',409);
   const image=decodeReceiptImage(data.image_data_url),prior=await db.prepare('SELECT * FROM receipt_ai_reviews WHERE invoice_id=?').bind(invoice.id).first();
   if(prior?.receipt_sha256===image.hash)return {status:prior.status,reason:prior.reason,reviewed_at:prior.reviewed_at};
@@ -62,6 +68,6 @@ export async function inspectReceipt(db,env,invoice,claim,data) {
   await db.prepare(`INSERT INTO receipt_ai_reviews (invoice_id,receipt_sha256,status,reason,extracted_amount_idr,extracted_reference,model,attempts,reviewed_at)
     VALUES(?,?,?,?,?,?,?,1,?)
     ON CONFLICT(invoice_id) DO UPDATE SET receipt_sha256=excluded.receipt_sha256,status=excluded.status,reason=excluded.reason,extracted_amount_idr=excluded.extracted_amount_idr,extracted_reference=excluded.extracted_reference,model=excluded.model,attempts=receipt_ai_reviews.attempts+1,reviewed_at=excluded.reviewed_at`)
-    .bind(invoice.id,image.hash,decision.status,decision.reason,Number.isSafeInteger(Number(parsed?.amount_idr))?Number(parsed.amount_idr):null,clean(parsed?.transaction_reference).slice(0,120)||null,AI_RECEIPT_MODEL,at).run();
+    .bind(invoice.id,image.hash,decision.status,decision.reason,parsed?.amount_idr!=null&&Number.isSafeInteger(Number(parsed.amount_idr))?Number(parsed.amount_idr):null,clean(parsed?.transaction_reference).slice(0,120)||null,AI_RECEIPT_MODEL,at).run();
   return {...decision,reviewed_at:at};
 }
