@@ -189,3 +189,39 @@ test('Timely static QRIS payment can be reviewed after the invoice expires',asyn
   assert.equal(await memberActive(f.db,a.id),true);
   assert.equal((await f.db.prepare('SELECT status FROM invoices WHERE id=?').bind(i.id).first()).status,'PAID');
 });
+
+
+test('Admin AI inspects receipt image but never activates membership from screenshot alone',async()=>{
+  const f=fixture(),a=await f.register('ai-reader');
+  f.db.sql.exec("UPDATE billing_settings SET provider='STATIC_QRIS',merchant_name='Nadmo Studio, Konter',merchant_nmid='ID1026631571449',checkout_enabled=1");
+  const i=await f.invoice(a),paidAt=new Date().toISOString();
+  await f.call('/api/billing/invoices/'+i.id+'/claim',{transaction_reference:'DANA-REF-123456',paid_at:paidAt},a);
+  const png=Buffer.concat([Buffer.from('89504e470d0a1a0a','hex'),Buffer.alloc(100,5)]);
+  const image_data_url='data:image/png;base64,'+png.toString('base64');
+  let attempts=0;
+  f.env.AI={run:async(model,args)=>{
+    attempts++;assert.equal(model,'@cf/moondream/moondream3.1-9B-A2B');assert.equal(args.task,'query');assert.match(args.image,/^data:image\/png;base64/);
+    return {answer:JSON.stringify({amount_idr:9900,transaction_reference:'DANA-REF-123456',merchant_name:'Nadmo Studio, Konter',payment_status:'Berhasil'})};
+  }};
+  let res=await f.call('/api/billing/invoices/'+i.id+'/ai-receipt',{image_data_url},a);
+  assert.equal(res.status,200);assert.equal((await res.json()).ai_review.status,'AI_CONSISTENT_NOT_VERIFIED');assert.equal(await memberActive(f.db,a.id),false);
+  res=await f.call('/api/billing/invoices/'+i.id+'/ai-receipt',{image_data_url},a);
+  assert.equal(res.status,200);assert.equal(attempts,1);
+  const review=(await f.call('/api/billing/invoices/'+i.id,undefined,a));
+  assert.equal((await review.json()).ai_review.status,'AI_CONSISTENT_NOT_VERIFIED');
+  assert.equal((await f.call('/api/billing/invoices/'+i.id+'/ai-receipt',{image_data_url},await f.register('unrelated'))).status,404);
+  const counts=await f.db.prepare('SELECT COUNT(*) AS c FROM payments').first();assert.equal(counts.c,0);
+});
+test('AI receipt mismatch or fabricated file must not validate payment',async()=>{
+  const f=fixture(),a=await f.register('ai-mismatch');
+  f.db.sql.exec("UPDATE billing_settings SET provider='STATIC_QRIS',merchant_name='Nadmo Studio, Konter',merchant_nmid='ID1026631571449',checkout_enabled=1");
+  const i=await f.invoice(a),paidAt=new Date().toISOString();
+  await f.call('/api/billing/invoices/'+i.id+'/claim',{transaction_reference:'DANA-REF-100000',paid_at:paidAt},a);
+  f.env.AI={run:async()=>({answer:JSON.stringify({amount_idr:100,transaction_reference:'OTHER-REF',merchant_name:'Someone Else',payment_status:'Berhasil'})})};
+  assert.equal((await f.call('/api/billing/invoices/'+i.id+'/ai-receipt',{image_data_url:'data:image/png;base64,'+Buffer.from('not a png').toString('base64')},a)).status,413);
+  const bytes=Buffer.concat([Buffer.from('89504e470d0a1a0a','hex'),Buffer.alloc(128,3)]),image_data_url='data:image/png;base64,'+bytes.toString('base64');
+  const r=await f.call('/api/billing/invoices/'+i.id+'/ai-receipt',{image_data_url},a);
+  assert.equal(r.status,200);assert.equal((await r.json()).ai_review.status,'MISMATCH');
+  assert.equal(await memberActive(f.db,a.id),false);
+  assert.equal((await f.db.prepare('SELECT COUNT(*) AS n FROM payments').first()).n,0);
+});
