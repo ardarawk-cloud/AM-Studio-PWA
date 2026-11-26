@@ -59,9 +59,9 @@ export async function inspectReceipt(db,env,invoice,claim,data) {
     }
   }
   const at=iso();
-  await db.prepare(\`INSERT INTO receipt_ai_reviews (invoice_id,receipt_sha256,status,reason,extracted_amount_idr,extracted_reference,model,attempts,reviewed_at)
+  await db.prepare(`INSERT INTO receipt_ai_reviews (invoice_id,receipt_sha256,status,reason,extracted_amount_idr,extracted_reference,model,attempts,reviewed_at)
     VALUES(?,?,?,?,?,?,?,1,?)
-    ON CONFLICT(invoice_id) DO UPDATE SET receipt_sha256=excluded.receipt_sha256,status=excluded.status,reason=excluded.reason,extracted_amount_idr=excluded.extracted_amount_idr,extracted_reference=excluded.extracted_reference,model=excluded.model,attempts=receipt_ai_reviews.attempts+1,reviewed_at=excluded.reviewed_at\`)
+    ON CONFLICT(invoice_id) DO UPDATE SET receipt_sha256=excluded.receipt_sha256,status=excluded.status,reason=excluded.reason,extracted_amount_idr=excluded.extracted_amount_idr,extracted_reference=excluded.extracted_reference,model=excluded.model,attempts=receipt_ai_reviews.attempts+1,reviewed_at=excluded.reviewed_at`)
     .bind(invoice.id,image.hash,decision.status,decision.reason,Number.isSafeInteger(Number(parsed?.amount_idr))?Number(parsed.amount_idr):null,clean(parsed?.transaction_reference).slice(0,120)||null,AI_RECEIPT_MODEL,at).run();
   return {...decision,reviewed_at:at};
 }
