@@ -4,7 +4,7 @@ import {MemberError,iso,hash,equal,json,bodyJson,sameOrigin,rate,passwordHash,pa
 import {billingConfig,makeInvoice,reconcile,finance,csv} from './membership-billing.js';
 import {shopeepay,providerReadiness,CALLBACK_PATH} from './shopeepay-qris.js';
 import {manualQrisReady,makeManualInvoice,submitManualClaim,reviewManualClaim} from './static-qris.js';
-import {inspectReceipt} from './comics-ai-admin.js';
+import {inspectReceipt,ensureAiReceiptTable} from './comics-ai-admin.js';
 import {protectAsset,mayRead,configureAccess,publisherPolicy,membershipServiceWorker,catalogAccess,resolveAccess} from './membership-access.js';
 import {memberDocument,readerClient} from './membership-ui.js';
 import {publisherRegistry,publisherPassport,mergeRegisteredCatalog} from './publisher-registry.js';
@@ -166,7 +166,7 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
             const {s,i}=await ownInvoice(db,req,match[1],true);await rate(db,req,'payment-status',30,600000,s.user_id);
             if(i.provider==='STATIC_QRIS'){
               const claim=await db.prepare('SELECT status,created_at,reviewed_at FROM manual_qris_claims WHERE invoice_id=?').bind(i.id).first();
-              const ai_review=await db.prepare('SELECT status,reason,reviewed_at FROM receipt_ai_reviews WHERE invoice_id=?').bind(i.id).first();
+              await ensureAiReceiptTable(db);const ai_review=await db.prepare('SELECT status,reason,reviewed_at FROM receipt_ai_reviews WHERE invoice_id=?').bind(i.id).first();
               const {publicInvoice}=await import('./membership-billing.js');return json({ok:true,invoice:publicInvoice(i),claim,ai_review});
             }
             const c=await billingConfig(db);if(!providerReadiness(env,c.settings).ready)throw new MemberError('PROVIDER_NOT_READY',503);
@@ -178,7 +178,7 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
             const qr=qrcode(0,'M');qr.addData(i.qr_content);qr.make();
             return new Response(qr.createSvgTag({cellSize:5,margin:20,scalable:true}),{headers:{'content-type':'image/svg+xml','cache-control':'private, no-store','x-content-type-options':'nosniff','content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; sandbox"}});
           }
-          if(!match[2]&&method==='GET'){const {i}=await ownInvoice(db,req,match[1]);const {publicInvoice}=await import('./membership-billing.js');const claim=i.provider==='STATIC_QRIS'?await db.prepare('SELECT status,created_at,reviewed_at FROM manual_qris_claims WHERE invoice_id=?').bind(i.id).first():null;const ai_review=i.provider==='STATIC_QRIS'?await db.prepare('SELECT status,reason,reviewed_at FROM receipt_ai_reviews WHERE invoice_id=?').bind(i.id).first():null;return json({ok:true,invoice:{...publicInvoice(i),provider:i.provider},claim,ai_review})}
+          if(!match[2]&&method==='GET'){const {i}=await ownInvoice(db,req,match[1]);const {publicInvoice}=await import('./membership-billing.js');const claim=i.provider==='STATIC_QRIS'?await db.prepare('SELECT status,created_at,reviewed_at FROM manual_qris_claims WHERE invoice_id=?').bind(i.id).first():null;if(i.provider==='STATIC_QRIS')await ensureAiReceiptTable(db);const ai_review=i.provider==='STATIC_QRIS'?await db.prepare('SELECT status,reason,reviewed_at FROM receipt_ai_reviews WHERE invoice_id=?').bind(i.id).first():null;return json({ok:true,invoice:{...publicInvoice(i),provider:i.provider},claim,ai_review})}
         }
         if(path===CALLBACK_PATH&&method==='POST') {
           const c=await billingConfig(db);if(!providerReadiness(env,c.settings).ready)throw new MemberError('PROVIDER_NOT_READY',503);
@@ -190,7 +190,7 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
           return json({responseCode:'2005600',responseMessage:'Successful'});
         }
         if(path==='/api/admin/billing'&&method==='GET') {
-          const s=await admin(db,req),config=await billingConfig(db);
+          const s=await admin(db,req),config=await billingConfig(db);await ensureAiReceiptTable(db);
           const invoices=(await db.prepare('SELECT id,order_id,user_id,amount_idr,status,provider_mode,created_at FROM invoices ORDER BY created_at DESC LIMIT 200').all()).results;
           const members=(await db.prepare('SELECT u.id,u.name,u.email,u.status,u.created_at,s.starts_at,s.ends_at,s.status AS subscription_status FROM users u LEFT JOIN subscriptions s ON s.user_id=u.id ORDER BY u.created_at DESC LIMIT 200').all()).results;
           const payments=(await db.prepare('SELECT * FROM payments ORDER BY created_at DESC LIMIT 200').all()).results;
