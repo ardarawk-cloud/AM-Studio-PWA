@@ -4,6 +4,7 @@ import {MemberError,iso,hash,equal,json,bodyJson,sameOrigin,rate,passwordHash,pa
 import {billingConfig,makeInvoice,reconcile,finance,csv} from './membership-billing.js';
 import {shopeepay,providerReadiness,CALLBACK_PATH} from './shopeepay-qris.js';
 import {manualQrisReady,makeManualInvoice,submitManualClaim,reviewManualClaim} from './static-qris.js';
+import {inspectReceipt} from './comics-ai-admin.js';
 import {protectAsset,mayRead,configureAccess,publisherPolicy,membershipServiceWorker,catalogAccess,resolveAccess} from './membership-access.js';
 import {memberDocument,readerClient} from './membership-ui.js';
 import {publisherRegistry,publisherPassport,mergeRegisteredCatalog} from './publisher-registry.js';
@@ -152,13 +153,21 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
           await rate(db,req,'manual-qris-claim',6,600000,s.user_id);
           return json({ok:true,claim:await submitManualClaim(db,i,await bodyJson(req))});
         }
+        const receiptPath=path.match(/^\/api\/billing\/invoices\/([a-f0-9-]{36})\/ai-receipt$/);
+        if(receiptPath&&method==='POST'){
+          const {s,i}=await ownInvoice(db,req,receiptPath[1],true);
+          await rate(db,req,'comics-ai-receipt',6,86400000,s.user_id);
+          const claim=await db.prepare('SELECT * FROM manual_qris_claims WHERE invoice_id=?').bind(i.id).first();
+          return json({ok:true,ai_review:await inspectReceipt(db,env,i,claim,await bodyJson(req,2200000))});
+        }
         const match=path.match(/^\/api\/billing\/invoices\/([a-f0-9-]{36})(?:\/(status|qr))?$/);
         if(match) {
           if(match[2]==='status'&&method==='POST') {
             const {s,i}=await ownInvoice(db,req,match[1],true);await rate(db,req,'payment-status',30,600000,s.user_id);
             if(i.provider==='STATIC_QRIS'){
               const claim=await db.prepare('SELECT status,created_at,reviewed_at FROM manual_qris_claims WHERE invoice_id=?').bind(i.id).first();
-              const {publicInvoice}=await import('./membership-billing.js');return json({ok:true,invoice:publicInvoice(i),claim});
+              const ai_review=await db.prepare('SELECT status,reason,reviewed_at FROM receipt_ai_reviews WHERE invoice_id=?').bind(i.id).first();
+              const {publicInvoice}=await import('./membership-billing.js');return json({ok:true,invoice:publicInvoice(i),claim,ai_review});
             }
             const c=await billingConfig(db);if(!providerReadiness(env,c.settings).ready)throw new MemberError('PROVIDER_NOT_READY',503);
             return json({ok:true,invoice:await reconcile(db,env,provider,i)});
@@ -169,7 +178,7 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
             const qr=qrcode(0,'M');qr.addData(i.qr_content);qr.make();
             return new Response(qr.createSvgTag({cellSize:5,margin:20,scalable:true}),{headers:{'content-type':'image/svg+xml','cache-control':'private, no-store','x-content-type-options':'nosniff','content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; sandbox"}});
           }
-          if(!match[2]&&method==='GET'){const {i}=await ownInvoice(db,req,match[1]);const {publicInvoice}=await import('./membership-billing.js');const claim=i.provider==='STATIC_QRIS'?await db.prepare('SELECT status,created_at,reviewed_at FROM manual_qris_claims WHERE invoice_id=?').bind(i.id).first():null;return json({ok:true,invoice:{...publicInvoice(i),provider:i.provider},claim})}
+          if(!match[2]&&method==='GET'){const {i}=await ownInvoice(db,req,match[1]);const {publicInvoice}=await import('./membership-billing.js');const claim=i.provider==='STATIC_QRIS'?await db.prepare('SELECT status,created_at,reviewed_at FROM manual_qris_claims WHERE invoice_id=?').bind(i.id).first():null;const ai_review=i.provider==='STATIC_QRIS'?await db.prepare('SELECT status,reason,reviewed_at FROM receipt_ai_reviews WHERE invoice_id=?').bind(i.id).first():null;return json({ok:true,invoice:{...publicInvoice(i),provider:i.provider},claim,ai_review})}
         }
         if(path===CALLBACK_PATH&&method==='POST') {
           const c=await billingConfig(db);if(!providerReadiness(env,c.settings).ready)throw new MemberError('PROVIDER_NOT_READY',503);
@@ -188,7 +197,7 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
           const events=(await db.prepare('SELECT * FROM payment_events ORDER BY received_at DESC LIMIT 100').all()).results;
           const audits=(await db.prepare('SELECT * FROM audit_logs ORDER BY created_at DESC LIMIT 100').all()).results;
           const policies=(await db.prepare('SELECT * FROM comic_access ORDER BY comic_id,episode').all()).results;
-          const manual_claims=(await db.prepare("SELECT c.*,i.order_id,i.amount_idr,i.status AS invoice_status,u.email FROM manual_qris_claims c JOIN invoices i ON i.id=c.invoice_id JOIN users u ON u.id=i.user_id ORDER BY CASE WHEN c.status='SUBMITTED' THEN 0 ELSE 1 END,c.created_at DESC LIMIT 200").all()).results;
+          const manual_claims=(await db.prepare("SELECT c.*,i.order_id,i.amount_idr,i.status AS invoice_status,u.email,a.status AS ai_status,a.reason AS ai_reason FROM manual_qris_claims c JOIN invoices i ON i.id=c.invoice_id JOIN users u ON u.id=i.user_id LEFT JOIN receipt_ai_reviews a ON a.invoice_id=c.invoice_id ORDER BY CASE WHEN c.status='SUBMITTED' THEN 0 ELSE 1 END,c.created_at DESC LIMIT 200").all()).results;
           return json({ok:true,csrf:s.csrf,config,preview:await catalogAccess(db),readiness:providerReadiness(env,config.settings),manual_checkout:manualQrisReady(config.settings),manual_claims,finance:await finance(db),members,invoices,payments,events,audits,policies});
         }
         if(path==='/api/admin/billing/manual-qris'&&method==='POST'){
