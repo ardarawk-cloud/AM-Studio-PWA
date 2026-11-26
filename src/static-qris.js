@@ -63,7 +63,7 @@ export async function submitManualClaim(db,invoice,data) {
   return {status:row.status,submitted_at:row.created_at};
 }
 
-export async function reviewManualClaim(db,data) {
+export async function reviewManualClaim(db,data,actor='OWNER') {
   const id=String(data.invoice_id||'');
   if(!/^[a-f0-9-]{36}$/.test(id))throw new MemberError('INVOICE_NOT_FOUND',404);
   const action=data.action,reason=String(data.reason||'').trim();
@@ -75,7 +75,7 @@ export async function reviewManualClaim(db,data) {
   if(action==='REJECT'){
     await db.batch([
       db.prepare("UPDATE manual_qris_claims SET status='REJECTED',reviewer_reason=?,reviewed_at=?,updated_at=? WHERE invoice_id=? AND status='SUBMITTED'").bind(reason,now,now,id),
-      auditStatement(db,'OWNER','MANUAL_QRIS_REJECTED',id,{reference:c.claimed_reference},{status:'REJECTED'},reason)
+      auditStatement(db,actor,'MANUAL_QRIS_REJECTED',id,{reference:c.claimed_reference},{status:'REJECTED'},reason)
     ]);
     return {invoice_id:id,status:'REJECTED'};
   }
@@ -95,7 +95,7 @@ export async function reviewManualClaim(db,data) {
        .bind(paymentId,reference,paidAt,now,id),
     db.prepare("UPDATE manual_qris_claims SET status='VERIFIED',verified_provider_reference=?,verified_amount_idr=?,verified_paid_at=?,reviewer_reason=?,reviewed_at=?,updated_at=? WHERE invoice_id=? AND status='SUBMITTED'")
       .bind(reference,amount,paidAt,reason,now,now,id),
-    auditStatement(db,'OWNER','MANUAL_QRIS_APPROVED',id,{claimed_reference:c.claimed_reference},{status:'VERIFIED',merchant_transaction_id:reference,amount_idr:amount,paid_at:paidAt},reason)
+    auditStatement(db,actor,'MANUAL_QRIS_APPROVED',id,{claimed_reference:c.claimed_reference},{status:'VERIFIED',merchant_transaction_id:reference,amount_idr:amount,paid_at:paidAt},reason)
   ]);
   const payment=await db.prepare('SELECT id FROM payments WHERE id=? AND invoice_id=?').bind(paymentId,id).first();
   if(!payment)throw new MemberError('PAYMENT_REQUIRES_REVIEW',409);

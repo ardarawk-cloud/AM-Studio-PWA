@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import fs from 'node:fs';
-import {generateKeyPairSync,sign,createHash} from 'node:crypto';
+import {generateKeyPairSync,sign,createHash,createHmac} from 'node:crypto';
 import {createMembershipWorker} from '../src/membership-runtime.js';
 import {shopeepay,CALLBACK_PATH,providerReadiness} from '../src/shopeepay-qris.js';
 import {reconcile,finance,csv} from '../src/membership-billing.js';
@@ -188,4 +188,81 @@ test('Timely static QRIS payment can be reviewed after the invoice expires',asyn
   assert.equal(r.status,200);
   assert.equal(await memberActive(f.db,a.id),true);
   assert.equal((await f.db.prepare('SELECT status FROM invoices WHERE id=?').bind(i.id).first()).status,'PAID');
+});
+
+
+test('Admin AI inspects receipt image but never activates membership from screenshot alone',async()=>{
+  const f=fixture(),a=await f.register('ai-reader');
+  f.db.sql.exec("UPDATE billing_settings SET provider='STATIC_QRIS',merchant_name='Nadmo Studio, Konter',merchant_nmid='ID1026631571449',checkout_enabled=1");
+  const i=await f.invoice(a),paidAt=new Date().toISOString();
+  await f.call('/api/billing/invoices/'+i.id+'/claim',{transaction_reference:'DANA-REF-123456',paid_at:paidAt},a);
+  const png=Buffer.concat([Buffer.from('89504e470d0a1a0a','hex'),Buffer.alloc(100,5)]);
+  const image_data_url='data:image/png;base64,'+png.toString('base64');
+  let attempts=0;
+  f.env.AI={run:async(model,args)=>{
+    attempts++;assert.equal(model,'@cf/moondream/moondream3.1-9B-A2B');assert.equal(args.task,'query');assert.match(args.image,/^data:image\/png;base64/);
+    return {answer:JSON.stringify({amount_idr:9900,transaction_reference:'DANA-REF-123456',merchant_name:'Nadmo Studio, Konter',payment_status:'Berhasil'})};
+  }};
+  let res=await f.call('/api/billing/invoices/'+i.id+'/ai-receipt',{image_data_url},a);
+  assert.equal(res.status,200);assert.equal((await res.json()).ai_review.status,'AI_CONSISTENT_NOT_VERIFIED');assert.equal(await memberActive(f.db,a.id),false);
+  res=await f.call('/api/billing/invoices/'+i.id+'/ai-receipt',{image_data_url},a);
+  assert.equal(res.status,200);assert.equal(attempts,1);
+  const review=(await f.call('/api/billing/invoices/'+i.id,undefined,a));
+  assert.equal((await review.json()).ai_review.status,'AI_CONSISTENT_NOT_VERIFIED');
+  assert.equal((await f.call('/api/billing/invoices/'+i.id+'/ai-receipt',{image_data_url},await f.register('unrelated'))).status,404);
+  const counts=await f.db.prepare('SELECT COUNT(*) AS c FROM payments').first();assert.equal(counts.c,0);
+});
+test('AI receipt mismatch or fabricated file must not validate payment',async()=>{
+  const f=fixture(),a=await f.register('ai-mismatch');
+  f.db.sql.exec("UPDATE billing_settings SET provider='STATIC_QRIS',merchant_name='Nadmo Studio, Konter',merchant_nmid='ID1026631571449',checkout_enabled=1");
+  const i=await f.invoice(a),paidAt=new Date().toISOString();
+  await f.call('/api/billing/invoices/'+i.id+'/claim',{transaction_reference:'DANA-REF-100000',paid_at:paidAt},a);
+  f.env.AI={run:async()=>({answer:JSON.stringify({amount_idr:100,transaction_reference:'OTHER-REF',merchant_name:'Someone Else',payment_status:'Berhasil'})})};
+  assert.equal((await f.call('/api/billing/invoices/'+i.id+'/ai-receipt',{image_data_url:'data:image/png;base64,'+Buffer.from('not a png').toString('base64')},a)).status,413);
+  const bytes=Buffer.concat([Buffer.from('89504e470d0a1a0a','hex'),Buffer.alloc(128,3)]),image_data_url='data:image/png;base64,'+bytes.toString('base64');
+  const r=await f.call('/api/billing/invoices/'+i.id+'/ai-receipt',{image_data_url},a);
+  assert.equal(r.status,200);assert.equal((await r.json()).ai_review.status,'MISMATCH');
+  assert.equal(await memberActive(f.db,a.id),false);
+  assert.equal((await f.db.prepare('SELECT COUNT(*) AS n FROM payments').first()).n,0);
+});
+
+test('AI admin can settle only with matching screenshot plus signed existing NADMO Bridge merchant event',async()=>{
+  const f=fixture(),a=await f.register('bridge-reader');
+  f.db.sql.exec("UPDATE billing_settings SET provider='STATIC_QRIS',merchant_name='Nadmo Studio, Konter',merchant_nmid='ID1026631571449',checkout_enabled=1");
+  f.env.NADMO_PAYMENT_BRIDGE_SECRET='fixture-secret-not-in-production';
+  f.env.NADMO_BRIDGE_DEVICE_ID='phone-1';
+  f.env.NADMO_BRIDGE_PACKAGE='id.dana.business.fixture';
+  const i=await f.invoice(a),paidAt=new Date().toISOString();
+  const claim={transaction_reference:'DANA-RECEIPT-889988',paid_at:paidAt};
+  assert.equal((await f.call('/api/billing/invoices/'+i.id+'/claim',claim,a)).status,200);
+  const event={event_id:'EVENT-12345678',transaction_reference:'DANA-RECEIPT-889988',amount_idr:9900,paid_at:paidAt,merchant_nmid:'ID1026631571449',payment_status:'SUCCESS',device_id:'phone-1',package_name:'id.dana.business.fixture'};
+  const raw=JSON.stringify(event),timestamp=new Date().toISOString();
+  const sig=createHmac('sha256',f.env.NADMO_PAYMENT_BRIDGE_SECRET).update(timestamp+'.'+raw).digest('hex');
+  assert.equal((await f.call('/api/billing/nadmo-bridge/event',event,{}, {'x-nadmo-bridge-timestamp':timestamp,'x-nadmo-bridge-signature':'0'.repeat(64)})).status,401);
+  assert.equal(await memberActive(f.db,a.id),false);
+  let r=await f.call('/api/billing/nadmo-bridge/event',event,{}, {'x-nadmo-bridge-timestamp':timestamp,'x-nadmo-bridge-signature':sig});
+  assert.equal(r.status,200);assert.equal((await r.json()).settlement.status,'PENDING_AI');
+  assert.equal(await memberActive(f.db,a.id),false);
+  f.env.AI={run:async()=>({answer:JSON.stringify({amount_idr:9900,transaction_reference:'DANA-RECEIPT-889988',merchant_name:'Nadmo Studio, Konter',payment_status:'Berhasil'})})};
+  const png=Buffer.concat([Buffer.from('89504e470d0a1a0a','hex'),Buffer.alloc(130,7)]);
+  r=await f.call('/api/billing/invoices/'+i.id+'/ai-receipt',{image_data_url:'data:image/png;base64,'+png.toString('base64')},a);
+  assert.equal(r.status,200);assert.equal((await r.json()).settlement.status,'MATCHED');
+  assert.equal(await memberActive(f.db,a.id),true);
+  assert.equal((await f.db.prepare('SELECT COUNT(*) AS n FROM payments').first()).n,1);
+  assert.equal((await f.db.prepare("SELECT COUNT(*) AS n FROM audit_logs WHERE actor='AI_ADMIN_BRIDGE'").first()).n,1);
+  r=await f.call('/api/billing/nadmo-bridge/event',event,{}, {'x-nadmo-bridge-timestamp':timestamp,'x-nadmo-bridge-signature':sig});
+  assert.equal(r.status,200);assert.equal((await r.json()).settlement.status,'MATCHED');
+  assert.equal((await f.db.prepare('SELECT COUNT(*) AS n FROM payments').first()).n,1);
+});
+test('A screenshot that matches without trusted bridge proof must remain pending',async()=>{
+  const f=fixture(),a=await f.register('no-bridge-reader');
+  f.db.sql.exec("UPDATE billing_settings SET provider='STATIC_QRIS',merchant_name='Nadmo Studio, Konter',merchant_nmid='ID1026631571449',checkout_enabled=1");
+  const i=await f.invoice(a),paidAt=new Date().toISOString();
+  await f.call('/api/billing/invoices/'+i.id+'/claim',{transaction_reference:'RECEIPT-558899',paid_at:paidAt},a);
+  f.env.AI={run:async()=>({answer:JSON.stringify({amount_idr:9900,transaction_reference:'RECEIPT-558899',merchant_name:'Nadmo Studio, Konter',payment_status:'Berhasil'})})};
+  const png=Buffer.concat([Buffer.from('89504e470d0a1a0a','hex'),Buffer.alloc(85,7)]);
+  const r=await f.call('/api/billing/invoices/'+i.id+'/ai-receipt',{image_data_url:'data:image/png;base64,'+png.toString('base64')},a);
+  assert.equal(r.status,200);assert.equal((await r.json()).settlement.status,'WAITING_FOR_BRIDGE');
+  assert.equal(await memberActive(f.db,a.id),false);
+  assert.equal((await f.db.prepare('SELECT COUNT(*) AS n FROM payments').first()).n,0);
 });
