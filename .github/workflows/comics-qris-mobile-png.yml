@@ -1,0 +1,32 @@
+name: Comics QRIS Mobile PNG Validation
+on:
+  pull_request:
+    paths:
+      - 'src/qris-png.js'
+      - 'src/membership-runtime.js'
+      - 'src/membership-ui.js'
+      - 'tests/qris-mobile-png.test.mjs'
+      - '.github/workflows/comics-qris-mobile-png.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/qris-png.js'
+      - 'src/membership-runtime.js'
+      - 'src/membership-ui.js'
+      - 'tests/qris-mobile-png.test.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  png:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: node --check src/qris-png.js
+      - run: node --check src/membership-runtime.js
+      - run: node --test tests/qris-mobile-png.test.mjs
