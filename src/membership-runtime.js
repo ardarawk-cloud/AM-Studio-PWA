@@ -5,6 +5,7 @@ import {billingConfig,makeInvoice,reconcile,finance,csv} from './membership-bill
 import {shopeepay,providerReadiness,CALLBACK_PATH} from './shopeepay-qris.js';
 import {manualQrisReady,makeManualInvoice,submitManualClaim,reviewManualClaim} from './static-qris.js';
 import {inspectReceipt,ensureAiReceiptTable} from './comics-ai-admin.js';
+import {receiveBridgeEvent,reconcileAiClaim} from './comics-nadmo-bridge-adapter.js';
 import {protectAsset,mayRead,configureAccess,publisherPolicy,membershipServiceWorker,catalogAccess,resolveAccess} from './membership-access.js';
 import {memberDocument,readerClient} from './membership-ui.js';
 import {publisherRegistry,publisherPassport,mergeRegisteredCatalog} from './publisher-registry.js';
@@ -153,12 +154,18 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
           await rate(db,req,'manual-qris-claim',6,600000,s.user_id);
           return json({ok:true,claim:await submitManualClaim(db,i,await bodyJson(req))});
         }
+        if(path==='/api/billing/nadmo-bridge/event'&&method==='POST'){
+          const raw=await readRaw(req,4096);
+          return json({ok:true,settlement:await receiveBridgeEvent(db,env,req.headers,raw)});
+        }
         const receiptPath=path.match(/^\/api\/billing\/invoices\/([a-f0-9-]{36})\/ai-receipt$/);
         if(receiptPath&&method==='POST'){
           const {s,i}=await ownInvoice(db,req,receiptPath[1],true);
           await rate(db,req,'comics-ai-receipt',6,86400000,s.user_id);
           const claim=await db.prepare('SELECT * FROM manual_qris_claims WHERE invoice_id=?').bind(i.id).first();
-          return json({ok:true,ai_review:await inspectReceipt(db,env,i,claim,await bodyJson(req,2200000))});
+          const ai_review=await inspectReceipt(db,env,i,claim,await bodyJson(req,2200000));
+          const settlement=ai_review.status==='AI_CONSISTENT_NOT_VERIFIED'?await reconcileAiClaim(db,i.id):{status:'NOT_AI_CLEARED'};
+          return json({ok:true,ai_review,settlement});
         }
         const match=path.match(/^\/api\/billing\/invoices\/([a-f0-9-]{36})(?:\/(status|qr))?$/);
         if(match) {
