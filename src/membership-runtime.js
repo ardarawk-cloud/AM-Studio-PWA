@@ -58,7 +58,7 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
         }
         if(path==='/api/membership/health'&&method==='GET') {
           const c=await billingConfig(db),r=providerReadiness(env,c.settings),manual=manualQrisReady(c.settings);
-          return json({ok:true,membership:'ACCOUNT_AND_BILLING_CORE',database:'READY',payment_method:'QRIS',provider:manual?'STATIC_QRIS':'SHOPEEPAY',checkout_available:manual||r.ready,automatic_activation:manual?'ADMIN_VERIFICATION_REQUIRED':r.ready?'AWAITING_END_TO_END_VERIFICATION':'BLOCKED_PROVIDER_SETUP',preview:await catalogAccess(db),publisher_profiles:publisherRegistry().profiles.length});
+          return json({ok:true,membership:'ACCOUNT_AND_BILLING_CORE',database:'READY',payment_method:'QRIS',provider:manual?'STATIC_QRIS':'SHOPEEPAY',checkout_available:manual||r.ready,ai_admin_receipt:!!env.AI?.run,bridge_connection:env.NADMO_PAYMENT_BRIDGE_SECRET&&env.NADMO_BRIDGE_DEVICE_ID&&env.NADMO_BRIDGE_PACKAGE?'CONFIGURED':'NOT_CONNECTED',automatic_activation:manual?(env.AI?.run&&env.NADMO_PAYMENT_BRIDGE_SECRET&&env.NADMO_BRIDGE_DEVICE_ID&&env.NADMO_BRIDGE_PACKAGE?'AI_BRIDGE_VERIFICATION':'AWAITING_VERIFIED_BRIDGE'):r.ready?'AWAITING_END_TO_END_VERIFICATION':'BLOCKED_PROVIDER_SETUP',preview:await catalogAccess(db),publisher_profiles:publisherRegistry().profiles.length});
         }
         const publication=path.match(/^\/api\/publisher\/(releases|uploads|process)\/([a-f0-9-]{36})(?:\/(\d{1,3}))?$/i);
         if(publication){
@@ -205,7 +205,7 @@ export function createMembershipWorker(legacy=base,provider=shopeepay) {
           const audits=(await db.prepare('SELECT * FROM audit_logs ORDER BY created_at DESC LIMIT 100').all()).results;
           const policies=(await db.prepare('SELECT * FROM comic_access ORDER BY comic_id,episode').all()).results;
           const manual_claims=(await db.prepare("SELECT c.*,i.order_id,i.amount_idr,i.status AS invoice_status,u.email,a.status AS ai_status,a.reason AS ai_reason FROM manual_qris_claims c JOIN invoices i ON i.id=c.invoice_id JOIN users u ON u.id=i.user_id LEFT JOIN receipt_ai_reviews a ON a.invoice_id=c.invoice_id ORDER BY CASE WHEN c.status='SUBMITTED' THEN 0 ELSE 1 END,c.created_at DESC LIMIT 200").all()).results;
-          return json({ok:true,csrf:s.csrf,config,preview:await catalogAccess(db),readiness:providerReadiness(env,config.settings),manual_checkout:manualQrisReady(config.settings),manual_claims,finance:await finance(db),members,invoices,payments,events,audits,policies});
+          return json({ok:true,csrf:s.csrf,config,preview:await catalogAccess(db),readiness:providerReadiness(env,config.settings),manual_checkout:manualQrisReady(config.settings),ai_receipt_ready:!!env.AI?.run,bridge_connected:!!(env.NADMO_PAYMENT_BRIDGE_SECRET&&env.NADMO_BRIDGE_DEVICE_ID&&env.NADMO_BRIDGE_PACKAGE),manual_claims,finance:await finance(db),members,invoices,payments,events,audits,policies});
         }
         if(path==='/api/admin/billing/manual-qris'&&method==='POST'){
           await admin(db,req,true);return json({ok:true,review:await reviewManualClaim(db,await bodyJson(req))});
