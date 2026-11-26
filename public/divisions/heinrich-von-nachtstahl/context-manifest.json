@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "comic_id": "heinrich-von-nachtstahl",
+  "title": "Heinrich von Nachtstahl — The Last Order",
+  "canon_status": "OWNER_APPROVED_EPISODE_001_ONLY",
+  "creative_director": "KAI ZERO / NIHIL",
+  "final_authority": "OWNER",
+  "primary_character": {
+    "name": "Heinrich von Nachtstahl",
+    "role": "Former military colonel subjected to a secret cybernetic experiment; begins resisting orders to harm civilians."
+  },
+  "visual_lock": {
+    "style": "WWII military alternate history, dieselpunk, dark sci-fi",
+    "costume": "Black long coat, peaked colonel cap, mechanical mask and red eyes after augmentation; fictional X insignia; period firearms, no long sword or swastika"
+  },
+  "current_state": {
+    "cover": "APPROVED_NOT_PUBLISHED",
+    "episode_001": "The Last Colonel",
+    "episode_pages_produced": 9,
+    "episode_001_state": "OWNER_APPROVED_FOR_UPLOAD_NOT_PUBLISHED",
+    "next": "PUBLISH_APPROVED_ASSETS",
+    "rejected_assets": "First cover, first page 01, and first two page 08 renders excluded"
+  },
+  "canon_limits": "Master lore outside approved conversation remains unverified; no new canon inferred."
+}
