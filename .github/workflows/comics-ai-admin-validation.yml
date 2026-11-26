@@ -1,0 +1,27 @@
+name: Comics AI Admin Receipt Validation
+on:
+  push:
+    branches: [main, feat/comics-ai-admin-receipt-20261127]
+    paths:
+      - src/comics-ai-admin.js
+      - src/membership-runtime.js
+      - src/membership-ui.js
+      - migrations/**
+      - tests/membership-flow.test.mjs
+      - tests/membership-browser-build.test.mjs
+      - .github/workflows/comics-ai-admin-validation.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ai-admin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: node --test tests/membership-flow.test.mjs tests/membership-browser-build.test.mjs
+      - run: npx wrangler deploy --dry-run --outdir /tmp/comics-ai-admin-build
