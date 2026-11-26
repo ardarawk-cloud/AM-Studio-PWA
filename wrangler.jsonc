@@ -39,6 +39,8 @@
     "head_sampling_rate": 1
   },
   "vars": {
-    "BILLING_ENVIRONMENT": "PRODUCTION"
+    "BILLING_ENVIRONMENT": "PRODUCTION",
+    "NADMO_BRIDGE_DEVICE_ID": "nadmo-merchant-primary-20261127",
+    "NADMO_BRIDGE_PACKAGE": "id.dana,id.dana.kasir"
   }
 }
