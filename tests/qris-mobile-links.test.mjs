@@ -14,8 +14,9 @@ test('QRIS download and open image links interpolate real invoice id, never lite
   assert.doesNotMatch(section,/href="\/api\/billing\/invoices\/\$\{i\.id\}/);
   assert.match(routes,/status\|qr\|qr\\\.png/);
 });
-test('Payment status page still contains executable client and QRIS upload flow',()=>{
-  assert.ok(memberDocument('/payment-status').includes('membership-reader.js'));
+test('Payment status page still contains executable client and QRIS upload flow',async()=>{
+  const page=memberDocument('/payment-status');
+  assert.ok((await page.text()).includes('membership-reader.js'));
   assert.match(readerClient,/Simpan QRIS ke HP \(PNG\)/);
   assert.match(readerClient,/Konfirmasi pembayaran/);
 });
