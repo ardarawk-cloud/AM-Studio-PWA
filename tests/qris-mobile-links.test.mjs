@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {memberDocument,readerClient} from '../src/membership-ui.js';
+import {memberDocument} from '../src/membership-ui.js';
 
 const ui=readFileSync(new URL('../src/membership-ui.js',import.meta.url),'utf8');
 const routes=readFileSync(new URL('../src/membership-runtime.js',import.meta.url),'utf8');
@@ -16,7 +16,8 @@ test('QRIS download and open image links interpolate real invoice id, never lite
 });
 test('Payment status page still contains executable client and QRIS upload flow',async()=>{
   const page=memberDocument('/payment-status');
-  assert.ok((await page.text()).includes('membership-reader.js'));
-  assert.match(readerClient,/Simpan QRIS ke HP \(PNG\)/);
-  assert.match(readerClient,/Konfirmasi pembayaran/);
+  const html=await page.text();
+  assert.match(html,/<script nonce=/);
+  assert.match(html,/Simpan QRIS ke HP \(PNG\)/);
+  assert.match(html,/Konfirmasi pembayaran/);
 });
