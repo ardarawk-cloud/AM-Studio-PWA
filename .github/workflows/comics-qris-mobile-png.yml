@@ -6,6 +6,7 @@ on:
       - 'src/membership-runtime.js'
       - 'src/membership-ui.js'
       - 'tests/qris-mobile-png.test.mjs'
+      - 'tests/qris-mobile-links.test.mjs'
       - '.github/workflows/comics-qris-mobile-png.yml'
   push:
     branches: [main]
@@ -29,4 +30,4 @@ jobs:
       - run: npm ci
       - run: node --check src/qris-png.js
       - run: node --check src/membership-runtime.js
-      - run: node --test tests/qris-mobile-png.test.mjs
+      - run: node --test tests/qris-mobile-*.test.mjs
